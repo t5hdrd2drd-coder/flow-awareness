@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=25">
+    <link rel="manifest" href="manifest.json?v=26">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -35,13 +35,12 @@
             --c-b: 80;
         }
 
-        /* 【修復 Bug 3】全域禁止長按選單、文字選取、與 iOS 的 Callout 放大鏡 */
+        /* 【重點修復】全域與所有偽元素鎖死選取與 Callout 預設行為 */
         *, *::before, *::after {
             box-sizing: border-box;
             user-select: none !important;
             -webkit-user-select: none !important;
             -webkit-touch-callout: none !important;
-            -webkit-user-callout: none !important; 
             -webkit-tap-highlight-color: transparent !important;
         }
 
@@ -159,9 +158,12 @@
         }
         .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
+        /* 【重點修復】互動層加入手勢鎖死屬性 */
         #interaction-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 15; display: none; cursor: pointer; touch-action: none;
+            z-index: 15; display: none; cursor: pointer; 
+            touch-action: none !important; -webkit-user-select: none !important;
+            -webkit-touch-callout: none !important;
         }
 
         .container {
@@ -217,16 +219,13 @@
                 width: 105px; height: 105px; 
                 margin-top: -52.5px; margin-left: -52.5px;
             }
-
             #breath-text { top: -24px; }
-
             #btn-stop.capsule-btn {
                 background: transparent !important;
                 color: rgba(255, 255, 255, 0.15) !important; 
                 border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px;
             }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
-
             #btn-end.capsule-btn {
                 background: rgba(255, 255, 255, 0.06) !important; color: rgba(255, 255, 255, 0.85) !important;
                 border: 1px solid rgba(255, 255, 255, 0.22) !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.08) !important;
@@ -413,15 +412,14 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v25';
+        const APP_VERSION = 'v26';
 
+        // 【重點修復】頁面載入後立即註冊 SW，不再延遲 3.5 秒
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                setTimeout(() => {
-                    navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
-                        .then((reg) => { console.log('PWA Service Worker 延遲註冊成功'); })
-                        .catch((err) => { console.log('PWA 註冊失敗:', err); });
-                }, 3500);
+                navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
+                    .then((reg) => { console.log('PWA Service Worker 註冊成功'); })
+                    .catch((err) => { console.log('PWA 註冊失敗:', err); });
             });
         }
 
@@ -511,6 +509,7 @@
             if (startupElem) startupElem.href = splashCanvas.toDataURL('image/png');
         })();
 
+        // 【重點修復】防止全域手勢干擾
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length > 1) e.preventDefault(); 
         }, { passive: false });
@@ -518,11 +517,9 @@
         let lastTouchEnd = 0;
         document.addEventListener('touchend', (e) => {
             const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault(); 
-            }
+            if (now - lastTouchEnd <= 300) { e.preventDefault(); }
             lastTouchEnd = now;
-        }, false);
+        }, { passive: false });
 
         document.addEventListener('gesturestart', (e) => e.preventDefault());
         document.addEventListener('gesturechange', (e) => e.preventDefault());
@@ -588,27 +585,14 @@
         let breathScale = 1.0;
         let targetBreathScale = 1.0;
 
-        // 【修復 Bug 2】全域防護機制：若 iOS 強制鎖死 AudioContext，依靠任何一次螢幕點擊強制喚醒
-        function unlockAudio() {
-            if (audioCtx && audioCtx.state !== 'running') {
-                audioCtx.resume().catch(()=>{});
-            }
-            if (silentAudioAnchor && silentAudioAnchor.paused) {
-                silentAudioAnchor.play().catch(()=>{});
-            }
-        }
-        document.addEventListener('pointerdown', unlockAudio, { passive: true });
-        document.addEventListener('touchstart', unlockAudio, { passive: true });
-
         function fadeMasterOutAndSuspend() {
             if (!audioCtx || !masterGain) return;
             const now = audioCtx.currentTime;
             try {
                 masterGain.gain.cancelScheduledValues(now);
-                // 【修復 Bug 1】極速降至極低音量，避免 iOS 切換時卡住硬體 Buffer 造成爆音
-                masterGain.gain.setTargetAtTime(0.0001, now, 0.015);
+                masterGain.gain.setTargetAtTime(0, now, 0.015);
                 if (audioCtx.state === 'running') {
-                    setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 40);
+                    setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50);
                 }
             } catch(e){}
         }
@@ -648,7 +632,7 @@
 
             masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
 
-            if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
+            if (audioCtx.state === 'suspended') {
                 audioCtx.resume().then(() => {
                     setTimeout(restoreAudioLogic, 150);
                 }).catch(e => {});
@@ -665,7 +649,6 @@
 
             if (state === 'MINDFULNESS') {
                 requestWakeLock();
-                updateHintState();
             } else if (state === 'INTRO') {
                 playIntroAudio();
             }
@@ -771,15 +754,8 @@
                 masterGain = audioCtx.createGain();
                 masterGain.gain.value = 1.0;
                 masterGain.connect(audioCtx.destination);
-            } else { 
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume().catch(e=>{});
-                }
-                // 【修復 Bug 6】第二次進來時，把音量拉回正常，避免被之前的 fadeMasterOutAndSuspend 鎖在 0
-                if (masterGain) {
-                    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-                    masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-                }
+            } else if (audioCtx.state === 'suspended') { 
+                audioCtx.resume(); 
             }
 
             if (!silentAudioAnchor) {
@@ -1034,11 +1010,22 @@
             }
         }
 
+        // 【重點修復】互動層加入 preventDefault 徹底封死 iOS 預設手勢
         const interactLayer = document.getElementById('interaction-layer');
-        interactLayer.addEventListener('pointerdown', (e) => { e.preventDefault(); setPressState(true); });
-        interactLayer.addEventListener('pointerup', (e) => { e.preventDefault(); setPressState(false); });
-        interactLayer.addEventListener('pointerleave', (e) => { e.preventDefault(); setPressState(false); });
-        interactLayer.addEventListener('pointercancel', (e) => { e.preventDefault(); setPressState(false); });
+        const handlePress = (e) => { e.preventDefault(); setPressState(true); };
+        const handleRelease = (e) => { e.preventDefault(); setPressState(false); };
+        
+        interactLayer.addEventListener('touchstart', handlePress, { passive: false });
+        interactLayer.addEventListener('touchend', handleRelease, { passive: false });
+        interactLayer.addEventListener('touchcancel', handleRelease, { passive: false });
+        interactLayer.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+
+        interactLayer.addEventListener('pointerdown', handlePress);
+        interactLayer.addEventListener('pointerup', handleRelease);
+        interactLayer.addEventListener('pointerleave', handleRelease);
+        interactLayer.addEventListener('pointercancel', handleRelease);
+        interactLayer.addEventListener('contextmenu', (e) => e.preventDefault());
+
         window.addEventListener('keydown', (e) => { if (e.code === 'Space' && !e.repeat) { e.preventDefault(); setPressState(true); }});
         window.addEventListener('keyup', (e) => { if (e.code === 'Space') setPressState(false); });
 
@@ -1249,7 +1236,7 @@
 
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation());
         document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation());
-        document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation());
+        document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
         document.getElementById('btn-stop').addEventListener('click', (e) => {
             e.stopPropagation(); if(state !== 'MINDFULNESS') return; state = 'SUMMARY';
