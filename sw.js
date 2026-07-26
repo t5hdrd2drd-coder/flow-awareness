@@ -46,8 +46,8 @@ self.addEventListener('fetch', (event) => {
                 return response;
             })
             .catch(() => {
-                // 離線時使用快取
-                return caches.match(event.request);
+                // 【修復 Bug 5】離線時使用快取，並忽略 query string (例如 ?v=25)，確保離線時能精確命中
+                return caches.match(event.request, { ignoreSearch: true });
             })
     );
 });

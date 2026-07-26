@@ -35,11 +35,13 @@
             --c-b: 80;
         }
 
+        /* 【修復 Bug 3】全域禁止長按選單、文字選取、與 iOS 的 Callout 放大鏡 */
         *, *::before, *::after {
             box-sizing: border-box;
             user-select: none !important;
             -webkit-user-select: none !important;
             -webkit-touch-callout: none !important;
+            -webkit-user-callout: none !important; 
             -webkit-tap-highlight-color: transparent !important;
         }
 
@@ -432,7 +434,6 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 動態生成高解析度 App Icon 與 iOS 啟動防閃白圖片（包含記憶體優化）
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas');
             iconCanvas.width = 512; iconCanvas.height = 512;
@@ -493,7 +494,6 @@
             document.getElementById('dynamic-favicon').href = pngDataUrl;
             document.getElementById('dynamic-apple-icon').href = pngDataUrl;
 
-            // 限制 Splash Screen Canvas 的上限尺寸，避免記憶體溢出
             const maxDimension = 1280;
             let rawSw = window.screen.width * (window.devicePixelRatio || 1);
             let rawSh = window.screen.height * (window.devicePixelRatio || 1);
@@ -588,14 +588,27 @@
         let breathScale = 1.0;
         let targetBreathScale = 1.0;
 
+        // 【修復 Bug 2】全域防護機制：若 iOS 強制鎖死 AudioContext，依靠任何一次螢幕點擊強制喚醒
+        function unlockAudio() {
+            if (audioCtx && audioCtx.state !== 'running') {
+                audioCtx.resume().catch(()=>{});
+            }
+            if (silentAudioAnchor && silentAudioAnchor.paused) {
+                silentAudioAnchor.play().catch(()=>{});
+            }
+        }
+        document.addEventListener('pointerdown', unlockAudio, { passive: true });
+        document.addEventListener('touchstart', unlockAudio, { passive: true });
+
         function fadeMasterOutAndSuspend() {
             if (!audioCtx || !masterGain) return;
             const now = audioCtx.currentTime;
             try {
                 masterGain.gain.cancelScheduledValues(now);
-                masterGain.gain.setTargetAtTime(0, now, 0.015);
+                // 【修復 Bug 1】極速降至極低音量，避免 iOS 切換時卡住硬體 Buffer 造成爆音
+                masterGain.gain.setTargetAtTime(0.0001, now, 0.015);
                 if (audioCtx.state === 'running') {
-                    setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50);
+                    setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 40);
                 }
             } catch(e){}
         }
@@ -635,7 +648,7 @@
 
             masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
 
-            if (audioCtx.state === 'suspended') {
+            if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
                 audioCtx.resume().then(() => {
                     setTimeout(restoreAudioLogic, 150);
                 }).catch(e => {});
@@ -652,6 +665,7 @@
 
             if (state === 'MINDFULNESS') {
                 requestWakeLock();
+                updateHintState();
             } else if (state === 'INTRO') {
                 playIntroAudio();
             }
@@ -757,8 +771,15 @@
                 masterGain = audioCtx.createGain();
                 masterGain.gain.value = 1.0;
                 masterGain.connect(audioCtx.destination);
-            } else if (audioCtx.state === 'suspended') { 
-                audioCtx.resume(); 
+            } else { 
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(e=>{});
+                }
+                // 【修復 Bug 6】第二次進來時，把音量拉回正常，避免被之前的 fadeMasterOutAndSuspend 鎖在 0
+                if (masterGain) {
+                    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                    masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+                }
             }
 
             if (!silentAudioAnchor) {
