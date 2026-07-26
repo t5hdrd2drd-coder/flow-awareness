@@ -1,8 +1,9 @@
-const CACHE_NAME = 'flow-awareness-v18'; // 版號已升級至 v18
+const CACHE_NAME = 'flow-awareness-v25';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
-    './manifest.json'
+    './manifest.json',
+    './icon-512.png'
 ];
 
 // 安裝 Service Worker 並快取最新檔案

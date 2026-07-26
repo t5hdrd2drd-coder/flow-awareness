@@ -411,10 +411,12 @@
     </div>
 
     <script>
+        const APP_VERSION = 'v25';
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 setTimeout(() => {
-                    navigator.serviceWorker.register('./sw.js?v=25')
+                    navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
                         .then((reg) => { console.log('PWA Service Worker 延遲註冊成功'); })
                         .catch((err) => { console.log('PWA 註冊失敗:', err); });
                 }, 3500);
@@ -430,7 +432,7 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 動態生成高解析度 App Icon 與「完全精準對應設備解析度」的舊版 iOS 啟動防閃白圖片
+        // 動態生成高解析度 App Icon 與 iOS 啟動防閃白圖片（包含記憶體優化）
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas');
             iconCanvas.width = 512; iconCanvas.height = 512;
@@ -491,9 +493,15 @@
             document.getElementById('dynamic-favicon').href = pngDataUrl;
             document.getElementById('dynamic-apple-icon').href = pngDataUrl;
 
-            // 破解舊版 iOS 嚴格 Splash Screen 尺寸驗證機制：取實際 screen 寬高乘以 DPR 繪製完美的純黑底圖
-            const sw = window.screen.width * (window.devicePixelRatio || 1);
-            const sh = window.screen.height * (window.devicePixelRatio || 1);
+            // 限制 Splash Screen Canvas 的上限尺寸，避免記憶體溢出
+            const maxDimension = 1280;
+            let rawSw = window.screen.width * (window.devicePixelRatio || 1);
+            let rawSh = window.screen.height * (window.devicePixelRatio || 1);
+            
+            let scale = Math.min(1, maxDimension / Math.max(rawSw, rawSh));
+            let sw = Math.floor(rawSw * scale);
+            let sh = Math.floor(rawSh * scale);
+
             const splashCanvas = document.createElement('canvas');
             splashCanvas.width = sw; splashCanvas.height = sh;
             const sctx = splashCanvas.getContext('2d');
@@ -544,7 +552,7 @@
         let currentBreathGain = null;
         let currentBreathResonanceFilter = null; 
         let bowlMasterGain = null; 
-        let activeEndingOscillators = []; // 用於焦土政策紀錄結尾鐘聲
+        let activeEndingOscillators = [];
 
         let currentPace = 5.0; 
         let consecutiveHighResonance = 0;
@@ -587,7 +595,6 @@
                 masterGain.gain.cancelScheduledValues(now);
                 masterGain.gain.setTargetAtTime(0, now, 0.015);
                 if (audioCtx.state === 'running') {
-                    // 延遲執行 suspend 以確保緩衝區清空
                     setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50);
                 }
             } catch(e){}
@@ -599,11 +606,10 @@
             try {
                 masterGain.gain.cancelScheduledValues(now);
                 masterGain.gain.setValueAtTime(0, now);
-                masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3); // 更平滑的恢復曲線
+                masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3);
             } catch(e){}
         }
 
-        // 焦土政策：切換背景前強行屠殺所有 AudioNode，避免舊系統從背景喚醒時將 stale buffer 衝出爆音
         function killAllOldNodes() {
             if (introOscillator) { try { introOscillator.stop(); introOscillator.disconnect(); } catch(e){} introOscillator = null; }
             if (currentBreathSource) { try { currentBreathSource.stop(); currentBreathSource.disconnect(); } catch(e){} currentBreathSource = null; }
@@ -615,7 +621,7 @@
 
         function handleAppVisibilityLoss() {
             isPressing = false; 
-            killAllOldNodes(); // 先殺節點，再降 Gain 暫停
+            killAllOldNodes();
             fadeMasterOutAndSuspend();
             releaseWakeLock();
         }
@@ -866,7 +872,7 @@
         function playEndingBowl() {
             if(!audioCtx || document.visibilityState !== 'visible') return; const now = audioCtx.currentTime;
             
-            activeEndingOscillators = []; // 清空之前的紀錄
+            activeEndingOscillators = [];
             const compressor = audioCtx.createDynamicsCompressor();
             compressor.threshold.value = -10;
             compressor.knee.value = 10;
@@ -1254,7 +1260,7 @@
             blackScreen.style.pointerEvents = 'auto';
             blackScreen.style.opacity = '1';
             
-            killAllOldNodes(); // 確保離開時 Audio 完全清空
+            killAllOldNodes();
             fadeMasterOutAndSuspend();
 
             setTimeout(() => {
