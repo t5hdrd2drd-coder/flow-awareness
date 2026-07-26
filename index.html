@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="zh-TW" style="background-color: #030105; background: #030105;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#030105">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="流動覺察">
+
+    <meta name="title" content="流動覺察 Flow Awareness">
+    <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
+    
+    <link rel="manifest" href="manifest.json?v=25">
+    <meta name="author" content="Flow Awareness Studio">
+    <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="流動覺察 Flow Awareness">
+    <meta property="og:description" content="一場讓你活在當下的正念體驗。An Audio-Visual Mindfulness Ritual.">
+    
+    <link rel="icon" id="dynamic-favicon" type="image/png">
+    <link rel="apple-touch-icon" id="dynamic-apple-icon">
+    <link rel="apple-touch-startup-image" id="dynamic-startup-image">
+
+    <title>流動覺察 Flow Awareness</title>
+    <style>
+        html { background-color: #030105 !important; background: #030105 !important; }
+
+        :root {
+            --breath-half: 5s; 
+            --c-r: 255;
+            --c-g: 180;
+            --c-b: 80;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        html, body {
+            margin: 0; padding: 0;
+            width: 100vw; 
+            height: 100dvh; 
+            overflow: hidden; 
+            position: fixed; 
+            background-color: #030105 !important; 
+            background: #030105 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            
+            touch-action: none; 
+            -webkit-user-drag: none;
+            
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        .sky-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; z-index: 0; opacity: 0; 
+            transition: opacity 4s ease-in-out, filter 5s ease;
+            filter: blur(60px); animation: hueShift 75s infinite linear; 
+            will-change: opacity, transform;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(0);
+        }
+        .sky-container.active { opacity: 0.45; }
+
+        .sky-cloud {
+            position: absolute; mix-blend-mode: screen;
+            animation: cloudFlow 23s infinite alternate ease-in-out; 
+            will-change: transform;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(0);
+        }
+        #cloud1 { width: 140vw; height: 140vh; background: radial-gradient(circle, rgba(255, 94, 98, 0.8) 0%, rgba(255, 153, 102, 0.4) 45%, transparent 70%); top: -50vh; left: -20vw; border-radius: 50%; }
+        #cloud2 { width: 150vw; height: 110vh; background: radial-gradient(circle, rgba(56, 189, 248, 0.8) 0%, rgba(75, 0, 130, 0.4) 50%, transparent 70%); bottom: -30vh; right: -30vw; border-radius: 50%; animation-duration: 30s; animation-delay: -5s; }
+        #cloud3 { width: 110vw; height: 130vh; background: radial-gradient(circle, rgba(255, 0, 127, 0.7) 0%, rgba(255, 140, 0, 0.3) 50%, transparent 70%); top: 10vh; left: -10vw; border-radius: 50%; animation-duration: 26s; animation-delay: -12s; }
+
+        #intro-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none; transition: opacity 2s ease;
+        }
+
+        .first-click-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 999; background: #030105;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: opacity 1s ease;
+        }
+        
+        .brand-logo-icon {
+            width: 72px; height: 72px; margin-bottom: 24px;
+            filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3));
+            animation: logoPulse 4s infinite ease-in-out;
+        }
+
+        .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
+        
+        .headphone-hint { 
+            position: absolute; bottom: 75px; 
+            font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
+            color: rgba(241, 245, 249, 0.85); 
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 20px; border-radius: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: headphoneGlow 4s infinite ease-in-out;
+            white-space: nowrap;
+        }
+
+        .intro-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 1.5s ease;
+        }
+        .intro-card { text-align: center; max-width: 90vw; width: 420px; padding: 20px; z-index: 101; pointer-events: auto; box-sizing: border-box; }
+        
+        .brand-heading { margin-bottom: 20px; width: 100%; }
+        .chinese-title {
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            font-weight: 300;
+            letter-spacing: clamp(6px, 2.5vw, 14px); margin-right: calc(-1 * clamp(6px, 2.5vw, 14px));
+            color: #ffffff;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+        }
+        .main-slogan {
+            font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+            font-weight: 400;
+            letter-spacing: clamp(3px, 1.5vw, 6px); margin-right: calc(-1 * clamp(3px, 1.5vw, 6px));
+            color: #ffffff;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+        .sub-slogan {
+            font-size: clamp(0.65rem, 2.2vw, 0.85rem);
+            font-weight: 300;
+            letter-spacing: clamp(1.5px, 0.8vw, 3px); margin-right: calc(-1 * clamp(1.5px, 0.8vw, 3px));
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .btn-start {
+            margin-top: 28px; background: #ffffff; color: #030105; border: none;
+            padding: 12px 42px; border-radius: 30px; font-size: 0.9rem; letter-spacing: 3px; margin-right: -3px; font-weight: 400;
+            cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 15px rgba(255,255,255,0.12);
+        }
+        .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+
+        #interaction-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 15; display: none; cursor: pointer; touch-action: none;
+        }
+
+        .container {
+            text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 2s ease; pointer-events: none; 
+            transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+        }
+
+        h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; }
+        p.subtitle { font-size: 0.8rem; font-weight: 300; color: #cbd5e1; letter-spacing: 2px; margin-right: -2px; white-space: nowrap; }
+
+        .breath-wrapper {
+            position: relative; 
+            width: clamp(280px, 35vw, 420px); 
+            height: clamp(280px, 35vw, 420px);
+            display: flex; justify-content: center; align-items: center;
+            margin-top: 10px; perspective: 1000px; overflow: visible;
+        }
+
+        .guide-ring, .ripple-wave, .interactive-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 140px; height: 140px;
+            margin-top: -70px; margin-left: -70px;
+        }
+
+        .affirmation-water-drop { 
+            position: absolute; top: 50%; left: 50%;
+            width: 140px; height: 140px;
+            margin-top: -70px; margin-left: -70px;
+            transform: scale(0.7);
+        }
+
+        #breath-text {
+            position: absolute; top: -32px; 
+            left: 50%; transform: translateX(-50%);
+            font-weight: 400; letter-spacing: 10px; margin-right: -10px;
+            font-size: 1.2rem;
+            z-index: 15; will-change: transform, color; opacity: 0.9; white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .breath-wrapper {
+                width: clamp(200px, 62vw, 290px);
+                height: clamp(200px, 62vw, 290px);
+            }
+            .guide-ring, .ripple-wave, .interactive-core {
+                width: 105px; height: 105px;
+                margin-top: -52.5px; margin-left: -52.5px;
+            }
+            .affirmation-water-drop { 
+                width: 105px; height: 105px; 
+                margin-top: -52.5px; margin-left: -52.5px;
+            }
+
+            #breath-text { top: -24px; }
+
+            #btn-stop.capsule-btn {
+                background: transparent !important;
+                color: rgba(255, 255, 255, 0.15) !important; 
+                border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px;
+            }
+            #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
+
+            #btn-end.capsule-btn {
+                background: rgba(255, 255, 255, 0.06) !important; color: rgba(255, 255, 255, 0.85) !important;
+                border: 1px solid rgba(255, 255, 255, 0.22) !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.08) !important;
+                backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important;
+            }
+        }
+
+        .guide-ring {
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; 
+            will-change: transform, opacity, border-color, box-shadow;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2), inset 0 0 6px rgba(255, 255, 255, 0.15);
+            transform: translateZ(0); -webkit-backface-visibility: hidden;
+        }
+
+        .ripple-wave {
+            border-radius: 50%; pointer-events: none; z-index: 1; opacity: 0; transform: scale(1);
+            background: radial-gradient(circle, transparent 40%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.3) 75%, transparent 100%);
+            will-change: transform, opacity; border: none;
+        }
+        .ripple-wave.active { animation: softRadiantExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+
+        .affirmation-water-drop {
+            border-radius: 50%; border: none;
+            background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%);
+            backdrop-filter: blur(2px) contrast(1.1); -webkit-backdrop-filter: blur(2px) contrast(1.1);
+            pointer-events: none; z-index: 5; opacity: 0;
+            will-change: transform, opacity;
+            animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards;
+        }
+
+        .interactive-core {
+            border-radius: 50% !important; overflow: hidden !important;
+            -webkit-mask-image: -webkit-radial-gradient(white, black); mask-image: radial-gradient(white, black);
+            background: radial-gradient(circle at 35% 35%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.18) 0%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.06) 60%, transparent 100%);
+            box-shadow: 0 0 18px rgba(var(--c-r), var(--c-g), var(--c-b), 0.12), inset 0 0 10px rgba(255, 255, 255, 0.08);
+            transform: scale(1) translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            z-index: 2; display: flex; justify-content: center; align-items: center;
+            opacity: 0; will-change: transform, box-shadow;
+        }
+
+        .flame {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; mix-blend-mode: screen; 
+            animation: fireDance 1.5s infinite alternate ease-in-out;
+            will-change: border-radius, opacity; pointer-events: none; border-radius: 50%;
+        }
+        .flame-1 { background: radial-gradient(circle at 50% 50%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.45) 0%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.1) 50%, transparent 70%); }
+        .flame-2 { background: radial-gradient(circle at 45% 45%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.35) 0%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.08) 55%, transparent 65%); animation-duration: 2s; animation-direction: alternate-reverse; }
+        .flame-3 { background: radial-gradient(circle at 55% 55%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.25) 0%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.05) 50%, transparent 60%); animation-duration: 1.2s; animation-delay: -0.5s; }
+
+        .interaction-hint {
+            position: absolute; bottom: clamp(100px, 18vh, 160px); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300;
+            padding: 0; background: transparent; border: none; box-shadow: none;
+            pointer-events: none; opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease; white-space: nowrap;
+        }
+        .interaction-hint.flash-mild { animation: hintPulse 2.8s infinite ease-in-out; }
+
+        #btn-stop { position: absolute; bottom: clamp(25px, 5vh, 40px); left: 50%; transform: translateX(-50%); z-index: 9999; display: none; opacity: 0; }
+        .capsule-btn { 
+            background: rgba(255, 255, 255, 0.03); color: rgba(241, 245, 249, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); 
+            padding: 8px 26px; border-radius: 25px; font-size: 0.8rem; letter-spacing: 2px; margin-right: -2px; font-weight: 300; 
+            cursor: pointer; transition: all 0.4s ease; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); pointer-events: auto; 
+        }
+        .capsule-btn:hover, .capsule-btn:active { background: rgba(255, 255, 255, 0.15); color: #ffffff; border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
+
+        .summary-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; 
+            background: rgba(3, 1, 5, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); opacity: 0; transition: opacity 7.5s ease-in-out; pointer-events: none; 
+            user-select: none !important; -webkit-user-select: none !important; -webkit-touch-callout: none !important;
+        }
+        .summary-title { font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 200; letter-spacing: clamp(6px, 2vw, 12px); margin-right: calc(-1 * clamp(6px, 2vw, 12px)); color: #ffffff; margin-bottom: 16px; white-space: nowrap; }
+        .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
+        .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
+        #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
+
+        .countdown-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; display: none; justify-content: center; align-items: center; pointer-events: none; opacity: 1; transition: opacity 0.6s ease; }
+        .countdown-text { 
+            font-size: clamp(5.5rem, 20vw, 8rem); font-weight: 100; color: #ffffff; opacity: 0; transform: scale(0.88); 
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+            will-change: transform, opacity; mix-blend-mode: plus-lighter; -webkit-font-smoothing: antialiased;
+        }
+        .countdown-text.active { opacity: 0.95; transform: scale(1.02); }
+
+        .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
+
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4)); } }
+        @keyframes hueShift { 0% { filter: blur(60px) hue-rotate(0deg); } 100% { filter: blur(60px) hue-rotate(360deg); } }
+        @keyframes cloudFlow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(8deg) scale(1.05); } 100% { transform: rotate(-5deg) scale(0.98); } }
+        @keyframes fireDance { 0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: scale(1) rotate(0deg);} 25% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; transform: scale(1.03) rotate(5deg);} 50% { border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; transform: scale(0.97) rotate(-5deg);} 75% { border-radius: 30% 70% 50% 50% / 50% 40% 70% 40%; transform: scale(1.02) rotate(8deg);} 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: scale(1) rotate(0deg); } }
+        
+        @keyframes softRadiantExpand { 0% { transform: scale(0.9); opacity: 0.85; } 100% { transform: scale(2.4); opacity: 0; } }
+        @keyframes pureBorderlessWater { 0% { transform: scale(0.7); opacity: 0; } 15% { opacity: 0.85; } 60% { opacity: 0.45; } 100% { transform: scale(6.0); opacity: 0; } }
+        @keyframes hintPulse { 0%, 100% { opacity: 0.35; transform: scale(0.98); } 50% { opacity: 0.9; transform: scale(1.01); } }
+        @keyframes headphoneGlow { 0%, 100% { opacity: 0.7; border-color: rgba(255, 255, 255, 0.05); } 50% { opacity: 0.95; border-color: rgba(255, 255, 255, 0.18); } }
+        @keyframes slowBlink { 0%, 100% { opacity: 0.35; transform: scale(0.98); } 50% { opacity: 0.95; transform: scale(1); } }
+        
+        @keyframes textSwitchInhale { 0% { opacity: 0.1; transform: translateX(-50%) translateY(5px) scale(0.92); color: #fff7ed; } 35% { opacity: 1; transform: translateX(-50%) translateY(-2px) scale(1.12); color: #fff7ed; } 100% { opacity: 0.9; transform: translateX(-50%) translateY(0) scale(1.0); color: #ffffff; } }
+        @keyframes textSwitchExhale { 0% { opacity: 0.1; transform: translateX(-50%) translateY(-5px) scale(0.92); color: #f0f9ff; } 35% { opacity: 1; transform: translateX(-50%) translateY(2px) scale(1.12); color: #f0f9ff; } 100% { opacity: 0.9; transform: translateX(-50%) translateY(0) scale(1.0); color: #ffffff; } }
+        .glow-inhale { animation: textSwitchInhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; }
+        .glow-exhale { animation: textSwitchExhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; }
+    </style>
+</head>
+<body>
+
+    <div class="sky-container" id="sky-bg">
+        <div class="sky-cloud" id="cloud1"></div>
+        <div class="sky-cloud" id="cloud2"></div>
+        <div class="sky-cloud" id="cloud3"></div>
+    </div>
+
+    <canvas id="intro-canvas"></canvas>
+    <div class="black-transition" id="black-transition"></div>
+
+    <div class="first-click-overlay" id="first-click">
+        <svg class="brand-logo-icon" viewBox="0 0 100 100">
+            <defs>
+                <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="65%" stop-color="#ffb450" />
+                    <stop offset="100%" stop-color="#030105" stop-opacity="0" />
+                </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="46" fill="url(#logoGlow)" opacity="0.65" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#ffb450" stroke-width="3.5" opacity="0.9" />
+            <circle cx="50" cy="50" r="26" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.9" />
+            <circle cx="50" cy="50" r="6" fill="#ffffff" />
+        </svg>
+        <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
+        <div class="headphone-hint">🎧 佩戴耳機 獲得深層沉浸</div>
+    </div>
+
+    <div class="intro-overlay" id="intro">
+        <div class="intro-card">
+            <div class="brand-heading">
+                <div class="chinese-title">流 動 覺 察</div>
+                <div class="main-slogan">Flow Awareness</div>
+                <div class="sub-slogan">An Audio-Visual Mindfulness</div>
+            </div>
+            
+            <p style="color: #cbd5e1; line-height: 1.8; font-weight: 300; font-size: clamp(0.8rem, 2.8vw, 0.92rem); letter-spacing: 0.8px; margin-top: 16px;">
+                戴上耳機，卸下外界的喧囂。<br>
+                讓視覺隨光舒展，讓聽覺隨聲沉降。<br><br>
+                <b>跟隨外圍光環的韻律</b>：<br>
+                長按螢幕，隨光環擴散「吸氣」<br>
+                鬆開按鍵，隨光環收縮「呼氣」<br>
+            </p>
+            <button class="btn-start" id="btn-start">開始正念</button>
+        </div>
+    </div>
+
+    <div class="countdown-overlay" id="countdown">
+        <div class="countdown-text" id="countdown-number">3</div>
+    </div>
+
+    <div id="interaction-layer"></div>
+
+    <div class="container" id="main-container">
+        <div style="position: absolute; top: clamp(25px, 6vh, 45px); pointer-events: none;">
+            <h1 style="font-weight: 300;">流 動 覺 察</h1>
+            <p class="subtitle">將注意力錨定於當下</p>
+        </div>
+
+        <div class="breath-wrapper" id="breath-wrapper">
+            <span id="breath-text">吸 氣</span>
+            <div class="guide-ring" id="guide-ring"></div>
+            <div class="ripple-wave" id="ripple-wave"></div>
+            <div class="interactive-core" id="core">
+                <div class="flame flame-1" id="flame1"></div>
+                <div class="flame flame-2" id="flame2"></div>
+                <div class="flame flame-3" id="flame3"></div>
+            </div>
+        </div>
+
+        <div class="interaction-hint" id="hint">按住 空白鍵 / 螢幕 以吸氣</div>
+    </div>
+
+    <button id="btn-stop" class="capsule-btn">停止</button>
+
+    <div class="summary-overlay" id="summary-overlay">
+        <h2 class="summary-title">活 在 當 下</h2>
+        <div class="summary-time" id="summary-time">00:00</div>
+        <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        <button id="btn-end" class="capsule-btn" style="margin-top: 40px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    navigator.serviceWorker.register('./sw.js?v=25')
+                        .then((reg) => { console.log('PWA Service Worker 延遲註冊成功'); })
+                        .catch((err) => { console.log('PWA 註冊失敗:', err); });
+                }, 3500);
+            });
+        }
+
+        (function setupLanguage() {
+            const userLang = navigator.language || navigator.userLanguage || '';
+            const isZh = userLang.toLowerCase().includes('zh');
+            const titleStr = isZh ? "流動覺察" : "Flow awareness";
+            document.title = `${titleStr} — Flow Awareness`;
+            const appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            if (appleTitleMeta) appleTitleMeta.content = titleStr;
+        })();
+
+        // 動態生成高解析度 App Icon 與「完全精準對應設備解析度」的舊版 iOS 啟動防閃白圖片
+        (function generateHighResAppIcon() {
+            const iconCanvas = document.createElement('canvas');
+            iconCanvas.width = 512; iconCanvas.height = 512;
+            const ictx = iconCanvas.getContext('2d');
+
+            ictx.fillStyle = '#030105';
+            ictx.fillRect(0, 0, 512, 512);
+
+            const bgGlow = ictx.createRadialGradient(256, 256, 10, 256, 256, 240);
+            bgGlow.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+            bgGlow.addColorStop(0.2, 'rgba(56, 189, 248, 0.5)');
+            bgGlow.addColorStop(0.5, 'rgba(255, 180, 80, 0.35)');
+            bgGlow.addColorStop(0.85, 'rgba(120, 50, 255, 0.15)');
+            bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
+            ictx.fillStyle = bgGlow;
+            ictx.fillRect(0, 0, 512, 512);
+
+            const goldGrad = ictx.createLinearGradient(110, 110, 402, 402);
+            goldGrad.addColorStop(0, '#ffe5a3');
+            goldGrad.addColorStop(0.5, '#ffb450');
+            goldGrad.addColorStop(1, '#ff7e1d');
+
+            ictx.save();
+            ictx.shadowColor = 'rgba(255, 180, 80, 0.85)';
+            ictx.shadowBlur = 32;
+            ictx.beginPath();
+            ictx.arc(256, 256, 138, 0, Math.PI * 2);
+            ictx.lineWidth = 12;
+            ictx.strokeStyle = goldGrad;
+            ictx.stroke();
+            ictx.restore();
+
+            const blueGrad = ictx.createLinearGradient(160, 160, 352, 352);
+            blueGrad.addColorStop(0, '#e0f2fe');
+            blueGrad.addColorStop(0.5, '#38bdf8');
+            blueGrad.addColorStop(1, '#0284c7');
+
+            ictx.save();
+            ictx.shadowColor = 'rgba(56, 189, 248, 0.9)';
+            ictx.shadowBlur = 24;
+            ictx.beginPath();
+            ictx.arc(256, 256, 90, 0, Math.PI * 2);
+            ictx.lineWidth = 9;
+            ictx.strokeStyle = blueGrad;
+            ictx.stroke();
+            ictx.restore();
+
+            ictx.save();
+            ictx.shadowColor = '#ffffff';
+            ictx.shadowBlur = 20;
+            ictx.beginPath();
+            ictx.arc(256, 256, 20, 0, Math.PI * 2);
+            ictx.fillStyle = '#ffffff';
+            ictx.fill();
+            ictx.restore();
+
+            const pngDataUrl = iconCanvas.toDataURL('image/png');
+            document.getElementById('dynamic-favicon').href = pngDataUrl;
+            document.getElementById('dynamic-apple-icon').href = pngDataUrl;
+
+            // 破解舊版 iOS 嚴格 Splash Screen 尺寸驗證機制：取實際 screen 寬高乘以 DPR 繪製完美的純黑底圖
+            const sw = window.screen.width * (window.devicePixelRatio || 1);
+            const sh = window.screen.height * (window.devicePixelRatio || 1);
+            const splashCanvas = document.createElement('canvas');
+            splashCanvas.width = sw; splashCanvas.height = sh;
+            const sctx = splashCanvas.getContext('2d');
+            sctx.fillStyle = '#030105';
+            sctx.fillRect(0, 0, sw, sh);
+            const startupElem = document.getElementById('dynamic-startup-image');
+            if (startupElem) startupElem.href = splashCanvas.toDataURL('image/png');
+        })();
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault(); 
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault(); 
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('gesturechange', (e) => e.preventDefault());
+        document.addEventListener('gestureend', (e) => e.preventDefault());
+        document.addEventListener('selectstart', (e) => e.preventDefault());
+
+        const summaryOverlayEl = document.getElementById('summary-overlay');
+        if (summaryOverlayEl) {
+            summaryOverlayEl.addEventListener('contextmenu', (e) => e.preventDefault());
+            summaryOverlayEl.addEventListener('selectstart', (e) => e.preventDefault());
+        }
+
+        window.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        let state = 'INIT'; 
+        let audioCtx = null;
+        let sessionStartTime = 0;
+        let globalNoiseBuffer = null; 
+        let wakeLock = null;
+        
+        let masterGain = null; 
+        let silentAudioAnchor = null;
+        
+        let introGain = null;
+        let introOscillator = null;
+        let currentBreathSource = null;
+        let currentBreathGain = null;
+        let currentBreathResonanceFilter = null; 
+        let bowlMasterGain = null; 
+        let activeEndingOscillators = []; // 用於焦土政策紀錄結尾鐘聲
+
+        let currentPace = 5.0; 
+        let consecutiveHighResonance = 0;
+        let missedInhaleCount = 0; 
+        let userPressedInInhale = false;
+
+        let phaseChangeCount = 0; 
+        let totalBreaths = 0;
+        let sumResonance = 0;
+        let resonanceSamples = 0;
+        let cycleResonanceSum = 0;
+        let cycleResonanceCount = 0;
+        
+        let lastTime = 0;
+        let guidePhase = 0; 
+        let guideDir = 1;
+        let guideAnimFrame = null;
+        let isCurrentPhaseInhale = true; 
+        
+        let currentResonance = 1.0; 
+        let isPressing = false;
+
+        let currentCoreScale = 1.0; 
+        let isEndingDissolve = false; 
+
+        let currR = 255, currG = 180, currB = 80; 
+        let currHue = 0; let currY = 0; let currTextScale = 1.0;
+
+        const canvas = document.getElementById('intro-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let canvasAnimFrame = null;
+        let breathScale = 1.0;
+        let targetBreathScale = 1.0;
+
+        function fadeMasterOutAndSuspend() {
+            if (!audioCtx || !masterGain) return;
+            const now = audioCtx.currentTime;
+            try {
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setTargetAtTime(0, now, 0.015);
+                if (audioCtx.state === 'running') {
+                    // 延遲執行 suspend 以確保緩衝區清空
+                    setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50);
+                }
+            } catch(e){}
+        }
+
+        function fadeMasterIn() {
+            if (!audioCtx || !masterGain) return;
+            const now = audioCtx.currentTime;
+            try {
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setValueAtTime(0, now);
+                masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3); // 更平滑的恢復曲線
+            } catch(e){}
+        }
+
+        // 焦土政策：切換背景前強行屠殺所有 AudioNode，避免舊系統從背景喚醒時將 stale buffer 衝出爆音
+        function killAllOldNodes() {
+            if (introOscillator) { try { introOscillator.stop(); introOscillator.disconnect(); } catch(e){} introOscillator = null; }
+            if (currentBreathSource) { try { currentBreathSource.stop(); currentBreathSource.disconnect(); } catch(e){} currentBreathSource = null; }
+            if (activeEndingOscillators.length > 0) {
+                activeEndingOscillators.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch(e){} });
+                activeEndingOscillators = [];
+            }
+        }
+
+        function handleAppVisibilityLoss() {
+            isPressing = false; 
+            killAllOldNodes(); // 先殺節點，再降 Gain 暫停
+            fadeMasterOutAndSuspend();
+            releaseWakeLock();
+        }
+
+        function handleAppVisibilityRestore() {
+            if (!audioCtx) return;
+
+            if (silentAudioAnchor && silentAudioAnchor.paused) {
+                silentAudioAnchor.play().catch(e => {});
+            }
+
+            masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => {
+                    setTimeout(restoreAudioLogic, 150);
+                }).catch(e => {});
+            } else {
+                setTimeout(restoreAudioLogic, 150);
+            }
+        }
+
+        function restoreAudioLogic() {
+            if (document.visibilityState !== 'visible') return;
+
+            killAllOldNodes();
+            fadeMasterIn();
+
+            if (state === 'MINDFULNESS') {
+                requestWakeLock();
+            } else if (state === 'INTRO') {
+                playIntroAudio();
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                handleAppVisibilityLoss();
+            } else if (document.visibilityState === 'visible') {
+                handleAppVisibilityRestore();
+            }
+        });
+
+        window.addEventListener('pagehide', handleAppVisibilityLoss);
+        window.addEventListener('pageshow', handleAppVisibilityRestore);
+        window.addEventListener('blur', handleAppVisibilityLoss);
+        window.addEventListener('focus', handleAppVisibilityRestore);
+
+        function initCanvas() {
+            const dpr = Math.max(window.devicePixelRatio || 1, 2.5);
+            canvas.width = window.innerWidth * dpr; 
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+            
+            stars = [];
+            for(let i=0; i<250; i++) {
+                let layerRand = Math.random();
+                let layerType = layerRand > 0.85 ? 'foreground' : (layerRand > 0.35 ? 'midground' : 'background');
+                stars.push({ 
+                    x: Math.random() * 2400 - 1200, y: Math.random() * 2400 - 1200, 
+                    z: Math.random() * 1900 + 100, 
+                    baseRadius: Math.random() * 1.2 + 0.4, layer: layerType 
+                });
+            }
+            if(canvasAnimFrame) cancelAnimationFrame(canvasAnimFrame); drawCanvas();
+        }
+
+        function drawCanvas() {
+            const displayWidth = window.innerWidth;
+            const displayHeight = window.innerHeight;
+            ctx.clearRect(0, 0, displayWidth, displayHeight);
+            const cx = displayWidth * 0.5; const cy = displayHeight * 0.5;
+            breathScale += (targetBreathScale - breathScale) * 0.015;
+            
+            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY');
+            let zFlowSpeed = isCurrentPhaseInhale ? -1.2 : 1.0;
+            if (isEndingDissolve) zFlowSpeed = -8.5; 
+            else if (!isMindful) zFlowSpeed = 0.8;
+
+            for(let i=0, len=stars.length; i<len; i++) {
+                let star = stars[i];
+                if (isMindful && star.layer === 'background' && !isEndingDissolve) continue;
+                
+                star.z -= zFlowSpeed; 
+                if(star.z <= 25) { star.z = 2000; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
+                if(star.z >= 2000) { star.z = 25; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
+                
+                let baseScale = 400 / star.z;
+                let finalScale = baseScale * breathScale; 
+                let px = cx + star.x * finalScale; let py = cy + star.y * finalScale;
+                
+                let isFG = star.layer === 'foreground';
+                let alpha = baseScale * (isFG ? 0.9 : 1.2); 
+                
+                let nearFade = Math.min(1.0, Math.max(0.0, (star.z - 25) / 275));
+                alpha = alpha * nearFade;
+
+                if(alpha > 1) alpha = 1;
+                if(alpha <= 0.01) continue; 
+
+                ctx.globalAlpha = alpha * (isMindful ? (isFG ? 0.75 : 0.35) : 0.6); 
+
+                ctx.beginPath(); 
+                ctx.arc(px, py, star.baseRadius * baseScale * (isFG ? 2.8 : 1.0), 0, Math.PI * 2); 
+                if (isMindful && isFG) { ctx.fillStyle = `rgb(${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)})`; } 
+                else { ctx.fillStyle = 'white'; }
+                ctx.fill();
+            }
+            canvasAnimFrame = requestAnimationFrame(drawCanvas);
+        }
+
+        window.addEventListener('resize', () => { 
+            if(canvas) { 
+                initCanvas();
+            }
+        });
+
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+                try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => { wakeLock = null; }).catch(err => {});
+            }
+        }
+
+        function initAudio() {
+            if (!audioCtx) { 
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 1.0;
+                masterGain.connect(audioCtx.destination);
+            } else if (audioCtx.state === 'suspended') { 
+                audioCtx.resume(); 
+            }
+
+            if (!silentAudioAnchor) {
+                silentAudioAnchor = document.createElement('audio');
+                silentAudioAnchor.loop = true;
+                silentAudioAnchor.setAttribute('playsinline', '');
+                silentAudioAnchor.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
+                document.body.appendChild(silentAudioAnchor);
+            }
+            silentAudioAnchor.play().catch(e => {});
+        }
+        
+        function getNoiseBuffer() {
+            if (!globalNoiseBuffer && audioCtx) {
+                const bufferSize = audioCtx.sampleRate * 2;
+                globalNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = globalNoiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+            }
+            return globalNoiseBuffer;
+        }
+
+        function playIntroAudio() {
+            if (!audioCtx || state === 'MINDFULNESS') return; 
+            killAllOldNodes();
+
+            const now = audioCtx.currentTime; 
+            introGain = audioCtx.createGain();
+            introGain.gain.setValueAtTime(0.0001, now); 
+            introGain.gain.setTargetAtTime(0.48, now, 0.5); 
+            introGain.connect(masterGain); 
+            
+            introOscillator = audioCtx.createOscillator(); 
+            introOscillator.type = 'sine'; 
+            introOscillator.frequency.value = 108.0; 
+            
+            const filter = audioCtx.createBiquadFilter(); 
+            filter.type = 'lowpass'; 
+            filter.frequency.value = 180; 
+            
+            introOscillator.connect(filter).connect(introGain); 
+            introOscillator.start(now);
+        }
+
+        function stopIntroAudio() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            if (introGain) {
+                try {
+                    introGain.gain.cancelScheduledValues(now);
+                    introGain.gain.setValueAtTime(introGain.gain.value, now);
+                    introGain.gain.setTargetAtTime(0.0001, now, 0.015);
+                } catch(e){}
+            }
+            if (introOscillator) {
+                const osc = introOscillator;
+                setTimeout(() => { try { osc.stop(); osc.disconnect(); } catch(e){} }, 100);
+                introOscillator = null;
+            }
+        }
+
+        function stopAllBreathAudio() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            if (currentBreathGain) {
+                try {
+                    currentBreathGain.gain.cancelScheduledValues(now);
+                    currentBreathGain.gain.setValueAtTime(currentBreathGain.gain.value, now);
+                    currentBreathGain.gain.setTargetAtTime(0.0001, now, 0.015);
+                } catch(e){}
+            }
+            if (currentBreathSource) {
+                const src = currentBreathSource;
+                setTimeout(() => { try { src.stop(); src.disconnect(); } catch(e){} }, 100);
+                currentBreathSource = null;
+            }
+        }
+
+        function playBreathSound(isInhale) {
+            if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
+            stopAllBreathAudio();
+            
+            const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
+            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.Q.value = 0.38;
+            
+            currentBreathResonanceFilter = audioCtx.createBiquadFilter(); 
+            currentBreathResonanceFilter.type = 'lowpass'; 
+            
+            const gain = audioCtx.createGain(); 
+            gain.gain.setValueAtTime(0.0001, audioCtx.currentTime); 
+            currentBreathGain = gain;
+            const dur = currentPace;
+
+            if (isInhale) {
+                currentBreathResonanceFilter.frequency.value = 2600;
+                filter.frequency.setValueAtTime(180, audioCtx.currentTime); 
+                filter.frequency.exponentialRampToValueAtTime(1250, audioCtx.currentTime + dur);
+                gain.gain.linearRampToValueAtTime(0.28, audioCtx.currentTime + dur / 2); 
+                gain.gain.linearRampToValueAtTime(0.025, audioCtx.currentTime + dur + 0.8);
+            } else {
+                currentBreathResonanceFilter.frequency.value = 1800; 
+                filter.frequency.setValueAtTime(780, audioCtx.currentTime); 
+                filter.frequency.exponentialRampToValueAtTime(240, audioCtx.currentTime + dur);
+                gain.gain.linearRampToValueAtTime(0.36, audioCtx.currentTime + dur * 0.35); 
+                gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime + dur, 0.1); 
+            }
+            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); 
+            noiseSource.start(audioCtx.currentTime);
+        }
+
+        function playEndingBowl() {
+            if(!audioCtx || document.visibilityState !== 'visible') return; const now = audioCtx.currentTime;
+            
+            activeEndingOscillators = []; // 清空之前的紀錄
+            const compressor = audioCtx.createDynamicsCompressor();
+            compressor.threshold.value = -10;
+            compressor.knee.value = 10;
+            compressor.ratio.value = 12;
+            compressor.attack.value = 0.003;
+            compressor.release.value = 0.25;
+
+            const delay = audioCtx.createDelay();
+            delay.delayTime.value = 0.38; 
+            const feedback = audioCtx.createGain();
+            feedback.gain.value = 0.35;    
+            const delayFilter = audioCtx.createBiquadFilter();
+            delayFilter.type = 'lowpass';
+            delayFilter.frequency.value = 900; 
+
+            delay.connect(delayFilter);
+            delayFilter.connect(feedback);
+            feedback.connect(delay); 
+
+            bowlMasterGain = audioCtx.createGain(); 
+            const bowlLP = audioCtx.createBiquadFilter(); 
+            bowlLP.type = 'lowpass'; 
+            bowlLP.frequency.value = 1500; 
+
+            bowlMasterGain.connect(bowlLP);
+            bowlLP.connect(compressor).connect(masterGain); 
+            
+            bowlLP.connect(delay);
+            delayFilter.connect(compressor);
+
+            bowlMasterGain.gain.setValueAtTime(0.0001, now); 
+            bowlMasterGain.gain.exponentialRampToValueAtTime(0.88, now + 0.40); 
+            bowlMasterGain.gain.exponentialRampToValueAtTime(0.0001, now + 14.0); 
+
+            const oscs = [
+                { freq: 108.0, gain: 0.16, pan: 0.0 },   
+                { freq: 216.0, gain: 0.32, pan: -0.25 }, 
+                { freq: 216.7, gain: 0.28, pan: 0.25 },  
+                { freq: 432.0, gain: 0.22, pan: -0.5 },  
+                { freq: 648.0, gain: 0.09, pan: 0.5 }    
+            ];
+
+            oscs.forEach(o => {
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                
+                osc.type = 'sine';
+                osc.frequency.value = o.freq;
+                g.gain.value = o.gain;
+                
+                if (panner) {
+                    panner.pan.value = o.pan;
+                    osc.connect(g).connect(panner).connect(bowlMasterGain);
+                } else {
+                    osc.connect(g).connect(bowlMasterGain);
+                }
+                
+                osc.start(now);
+                osc.stop(now + 14.5);
+                activeEndingOscillators.push(osc);
+            });
+        }
+
+        const coreEl = document.getElementById('core');
+        const textEl = document.getElementById('breath-text');
+        const hintEl = document.getElementById('hint');
+        const flame1 = document.getElementById('flame1');
+        const flame2 = document.getElementById('flame2');
+        const flame3 = document.getElementById('flame3');
+        const rippleEl = document.getElementById('ripple-wave');
+        const guideRingEl = document.getElementById('guide-ring');
+        const mainContainerEl = document.getElementById('main-container');
+
+        function triggerAffirmativeGlow() {
+            if (mainContainerEl) {
+                const sw = document.createElement('div');
+                sw.className = 'affirmation-water-drop';
+                mainContainerEl.appendChild(sw);
+                
+                setTimeout(() => {
+                    if (sw && sw.parentNode) sw.parentNode.removeChild(sw);
+                }, 2250);
+            }
+        }
+
+        function updateHintState() {
+            if (state !== 'MINDFULNESS') return;
+            const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
+            if (hintEl.innerText !== hintStr) hintEl.innerText = hintStr;
+
+            let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
+            let shouldShow = (phaseChangeCount < 6) || (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
+
+            if (shouldShow) {
+                hintEl.style.opacity = '0.9'; 
+                hintEl.classList.add('flash-mild');
+            } else {
+                hintEl.style.opacity = '0'; 
+                hintEl.classList.remove('flash-mild');
+            }
+        }
+
+        function triggerBreathTextChange(isInhale) {
+            textEl.innerText = isInhale ? "吸 氣" : "呼 氣";
+            textEl.classList.remove('glow-inhale', 'glow-exhale');
+            void textEl.offsetWidth; 
+            
+            if (isInhale) { textEl.classList.add('glow-inhale'); } 
+            else { textEl.classList.add('glow-exhale'); }
+
+            if (rippleEl) {
+                rippleEl.classList.remove('active'); void rippleEl.offsetWidth;
+                rippleEl.classList.add('active');
+            }
+            
+            if (navigator.vibrate && phaseChangeCount < 10) { 
+                try { navigator.vibrate(5); } catch(e){} 
+            }
+            
+            updateHintState();
+        }
+
+        function setPressState(isPress) {
+            if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
+            if (isPressing === isPress) return;
+            isPressing = isPress;
+            if (isPressing) {
+                playBreathSound(true); 
+
+                if (isCurrentPhaseInhale) {
+                    userPressedInInhale = true;
+                    missedInhaleCount = 0;
+                    updateHintState();
+                }
+            } else {
+                playBreathSound(false); 
+            }
+        }
+
+        const interactLayer = document.getElementById('interaction-layer');
+        interactLayer.addEventListener('pointerdown', (e) => { e.preventDefault(); setPressState(true); });
+        interactLayer.addEventListener('pointerup', (e) => { e.preventDefault(); setPressState(false); });
+        interactLayer.addEventListener('pointerleave', (e) => { e.preventDefault(); setPressState(false); });
+        interactLayer.addEventListener('pointercancel', (e) => { e.preventDefault(); setPressState(false); });
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space' && !e.repeat) { e.preventDefault(); setPressState(true); }});
+        window.addEventListener('keyup', (e) => { if (e.code === 'Space') setPressState(false); });
+
+        function checkPaceAdaptation() {
+            phaseChangeCount++;
+            if (!isCurrentPhaseInhale) totalBreaths++; 
+
+            let avgPhaseResonance = cycleResonanceCount > 0 ? (cycleResonanceSum / cycleResonanceCount) : 0;
+            
+            let isFirstTwoPhasePass = (phaseChangeCount <= 4 && userPressedInInhale);
+            let isNormalPhasePass = (userPressedInInhale && avgPhaseResonance >= 0.65);
+
+            if (phaseChangeCount <= 10 && !isCurrentPhaseInhale && (isFirstTwoPhasePass || isNormalPhasePass)) {
+                triggerAffirmativeGlow();
+            }
+
+            if (isCurrentPhaseInhale) {
+                if (!userPressedInInhale) {
+                    missedInhaleCount++; 
+                } else {
+                    missedInhaleCount = 0; 
+                }
+                userPressedInInhale = false; 
+            }
+
+            if (avgPhaseResonance >= 0.7) { 
+                consecutiveHighResonance++; 
+            } else {
+                consecutiveHighResonance = 0;
+            }
+
+            if (consecutiveHighResonance >= 2 && currentPace < 6.0) {
+                currentPace = Math.min(6.0, currentPace + 0.2);
+                consecutiveHighResonance = 0; 
+            }
+            cycleResonanceSum = 0; cycleResonanceCount = 0;
+            document.documentElement.style.setProperty('--breath-half', `${currentPace}s`);
+        }
+
+        function animateGuide(now) {
+            if (state !== 'MINDFULNESS') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
+            if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
+
+            guidePhase += guideDir * (dt / currentPace);
+            
+            if (guidePhase >= 1) { 
+                guidePhase = 1; guideDir = -1; 
+                if (isCurrentPhaseInhale) { isCurrentPhaseInhale = false; checkPaceAdaptation(); triggerBreathTextChange(false); } 
+            } else if (guidePhase <= 0) { 
+                guidePhase = 0; guideDir = 1; 
+                if (!isCurrentPhaseInhale) { isCurrentPhaseInhale = true; checkPaceAdaptation(); triggerBreathTextChange(true); } 
+            }
+
+            let p = guidePhase;
+            let eased = p * p * p * (p * (p * 6 - 15) + 10);
+            
+            let scale = 1 + eased * 1.2; let opacity = 0.25 + eased * 0.55; 
+            if (guideRingEl) { guideRingEl.style.transform = `scale(${scale})`; guideRingEl.style.opacity = opacity; }
+            
+            let targetCoreScale = 1.0;
+            if (isPressing) {
+                targetCoreScale = 1.0 + eased * 1.2; 
+            } else {
+                if (!isCurrentPhaseInhale) {
+                    targetCoreScale = 1.0 + eased * 1.2; 
+                } else {
+                    targetCoreScale = 1.0; 
+                }
+            }
+            
+            currentCoreScale += (targetCoreScale - currentCoreScale) * 0.12;
+            if (coreEl) {
+                coreEl.style.transform = `scale(${currentCoreScale})`;
+                
+                if (isCurrentPhaseInhale) {
+                    coreEl.style.boxShadow = isPressing 
+                        ? `0 0 28px rgba(255, 180, 50, 0.3), inset 0 0 12px rgba(255, 255, 255, 0.15)`
+                        : `0 0 16px rgba(255, 140, 0, 0.1), inset 0 0 8px rgba(255, 255, 255, 0.08)`;
+                } else {
+                    if (isPressing) {
+                        coreEl.style.boxShadow = `0 0 10px rgba(100, 116, 139, 0.2)`;
+                    } else {
+                        coreEl.style.boxShadow = `0 0 25px rgba(56, 189, 248, 0.35), inset 0 0 12px rgba(186, 230, 253, 0.2)`;
+                    }
+                }
+            }
+
+            let expectedPressing = isCurrentPhaseInhale;
+            let isAligned = (expectedPressing === isPressing);
+            let targetRes = isAligned ? 1.0 : 0.0;
+            currentResonance += (targetRes - currentResonance) * 0.08;
+
+            updateHintState();
+
+            cycleResonanceSum += currentResonance; cycleResonanceCount++;
+            sumResonance += currentResonance; resonanceSamples++;
+
+            let targetR = isCurrentPhaseInhale ? 255 : 56; 
+            let targetG = isCurrentPhaseInhale ? 180 : 189; 
+            let targetB = isCurrentPhaseInhale ? 77 : 248;
+            
+            currR += (targetR - currR) * 0.05; 
+            currG += (targetG - currG) * 0.05; 
+            currB += (targetB - currB) * 0.05;
+            
+            let rInt = Math.floor(currR);
+            let gInt = Math.floor(currG);
+            let bInt = Math.floor(currB);
+
+            document.documentElement.style.setProperty('--c-r', rInt);
+            document.documentElement.style.setProperty('--c-g', gInt);
+            document.documentElement.style.setProperty('--c-b', bInt);
+
+            let baseColorStr = `${rInt}, ${gInt}, ${bInt}`;
+
+            if(coreEl) {
+                coreEl.style.background = `radial-gradient(circle at 35% 35%, rgba(${baseColorStr}, 0.18) 0%, rgba(${baseColorStr}, 0.06) 60%, transparent 100%)`;
+            }
+
+            if(flame1) { 
+                flame1.style.opacity = (0.15 + currentResonance * 0.85).toString(); 
+                flame1.style.background = `radial-gradient(circle at 50% 50%, rgba(${baseColorStr}, 0.45) 0%, rgba(${baseColorStr}, 0.1) 50%, transparent 70%)`;
+            }
+            if(flame2) { 
+                flame2.style.opacity = (0.10 + currentResonance * 0.90).toString(); 
+                flame2.style.background = `radial-gradient(circle at 45% 45%, rgba(${baseColorStr}, 0.35) 0%, rgba(${baseColorStr}, 0.08) 55%, transparent 65%)`;
+            }
+            if(flame3) { 
+                flame3.style.opacity = currentResonance.toString(); 
+                flame3.style.background = `radial-gradient(circle at 55% 55%, rgba(${baseColorStr}, 0.25) 0%, rgba(${baseColorStr}, 0.05) 50%, transparent 60%)`;
+            }
+
+            let targetY = isCurrentPhaseInhale ? -4 : 4; let targetTextScale = isCurrentPhaseInhale ? 1.06 : 0.96;
+            currY += (targetY - currY) * 0.05; currTextScale += (targetTextScale - currTextScale) * 0.05;
+
+            if (textEl.style.opacity === '0') textEl.style.opacity = '0.9';
+
+            guideRingEl.style.borderColor = `rgba(${baseColorStr}, 0.75)`; 
+            guideRingEl.style.boxShadow = `0 0 12px rgba(${baseColorStr}, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
+
+            if (isPressing) { targetBreathScale = 0.7 - currentResonance * 0.1; } else { targetBreathScale = 1.1 + currentResonance * 0.2; }
+            
+            guideAnimFrame = requestAnimationFrame(animateGuide);
+        }
+
+        document.getElementById('first-click').addEventListener('click', () => {
+            if (state !== 'INIT') return; state = 'INTRO';
+            if(document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(err=>{}); } 
+            else if (document.webkitRequestFullscreen) { document.webkitExitFullscreen().catch(err=>{}); }
+            initAudio(); playIntroAudio(); initCanvas(); 
+            document.getElementById('first-click').style.pointerEvents = 'none'; document.getElementById('first-click').style.opacity = '0';
+            setTimeout(() => { document.getElementById('first-click').style.display = 'none'; document.getElementById('intro').style.display = 'flex'; setTimeout(()=> { document.getElementById('intro').style.opacity = '1'; }, 50); }, 1000);
+        });
+
+        document.getElementById('btn-start').addEventListener('click', (e) => {
+            e.stopPropagation(); if (state !== 'INTRO') return; state = 'COUNTDOWN';
+            document.getElementById('intro').style.opacity = '0'; document.getElementById('btn-start').classList.add('disabled');
+            stopIntroAudio();
+            
+            setTimeout(() => {
+                document.getElementById('intro').style.display = 'none'; document.getElementById('sky-bg').classList.add('active');
+                const cdOverlay = document.getElementById('countdown'); const cdNum = document.getElementById('countdown-number');
+                cdOverlay.style.opacity = '1'; cdOverlay.style.display = 'flex';
+                const sequence = [3, 2, 1]; let seqIdx = 0;
+                function renderCountdown() {
+                    if (seqIdx < sequence.length) {
+                        cdNum.innerText = sequence[seqIdx]; cdNum.classList.add('active');
+                        setTimeout(() => { cdNum.classList.remove('active'); setTimeout(() => { seqIdx++; renderCountdown(); }, 400); }, 800);
+                    } else {
+                        cdOverlay.style.opacity = '0';
+                        setTimeout(() => { cdOverlay.style.display = 'none'; document.getElementById('main-container').style.opacity = '1'; document.getElementById('core').style.opacity = '1'; initMindfulness(); }, 600);
+                    }
+                }
+                renderCountdown();
+            }, 800); 
+        });
+
+        function initMindfulness() {
+            if(guideAnimFrame) {
+                cancelAnimationFrame(guideAnimFrame);
+                guideAnimFrame = null;
+            }
+
+            state = 'MINDFULNESS'; sessionStartTime = Date.now(); 
+            isEndingDissolve = false;
+            requestWakeLock();
+            currentPace = 5.0; document.documentElement.style.setProperty('--breath-half', `5s`);
+            targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false;
+            guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
+            
+            stopIntroAudio();
+            
+            textEl.classList.remove('glow-inhale', 'glow-exhale');
+            textEl.style.opacity = '0.9';
+            textEl.style.transform = 'translateX(-50%) translateY(0px) scale(1)';
+            
+            consecutiveHighResonance = 0; missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; totalBreaths = 0; 
+            sumResonance = 0; resonanceSamples = 0; cycleResonanceSum = 0; cycleResonanceCount = 0;
+
+            document.getElementById('interaction-layer').style.display = 'block';
+            const btnStop = document.getElementById('btn-stop'); btnStop.style.display = 'block'; setTimeout(() => { btnStop.style.opacity = '1'; }, 50);
+            
+            updateHintState();
+            triggerBreathTextChange(true);
+            
+            guideAnimFrame = requestAnimationFrame(animateGuide);
+        }
+
+        document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation());
+        document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation());
+        document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation());
+        
+        document.getElementById('btn-stop').addEventListener('click', (e) => {
+            e.stopPropagation(); if(state !== 'MINDFULNESS') return; state = 'SUMMARY';
+            isEndingDissolve = true; 
+            releaseWakeLock();
+            document.getElementById('interaction-layer').style.display = 'none'; 
+            document.getElementById('btn-stop').style.pointerEvents = 'none'; document.getElementById('btn-stop').style.opacity = '0';
+            
+            isPressing = false;
+            stopAllBreathAudio();
+            stopIntroAudio();
+
+            playEndingBowl();
+
+            let totalSecs = sessionStartTime === 0 ? 0 : Math.max(0, Math.floor((Date.now() - sessionStartTime) / 1000));
+            let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
+            document.getElementById('summary-time').innerText = `${mins}:${secs}`;
+            document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
+
+            document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
+            document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
+            document.getElementById('summary-overlay').style.display = 'flex'; setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
+            setTimeout(() => { document.getElementById('btn-end').style.pointerEvents = 'auto'; document.getElementById('btn-end').style.opacity = '1'; }, 7000); 
+        });
+
+        document.getElementById('btn-end').addEventListener('click', (e) => {
+            e.stopPropagation(); if(state !== 'SUMMARY') return; state = 'TRANSITION';
+            const blackScreen = document.getElementById('black-transition'); 
+            blackScreen.style.pointerEvents = 'auto';
+            blackScreen.style.opacity = '1';
+            
+            killAllOldNodes(); // 確保離開時 Audio 完全清空
+            fadeMasterOutAndSuspend();
+
+            setTimeout(() => {
+                if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); } 
+                else if (document.webkitFullscreenElement) { document.webkitExitFullscreen().catch(e=>{}); }
+                
+                bowlMasterGain = null;
+                isEndingDissolve = false;
+                
+                const summaryOverlay = document.getElementById('summary-overlay');
+                summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
+                
+                const btnEnd = document.getElementById('btn-end');
+                btnEnd.style.opacity = '0'; btnEnd.style.pointerEvents = 'none';
+
+                document.getElementById('main-container').style.opacity = '0';
+                document.getElementById('sky-bg').classList.remove('active'); document.getElementById('sky-bg').style.filter = 'blur(60px)';
+                document.getElementById('core').classList.remove('pressing'); document.getElementById('hint').style.opacity = '0'; 
+                document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
+                
+                textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0';
+
+                missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; currentPace = 5.0; breathScale = 1.0; targetBreathScale = 1.0;
+                
+                const firstClick = document.getElementById('first-click');
+                firstClick.style.display = 'flex'; 
+                firstClick.style.pointerEvents = 'auto'; 
+                firstClick.style.opacity = '1';
+                
+                document.getElementById('intro').style.display = 'none';
+                document.getElementById('intro').style.opacity = '0';
+
+                state = 'INIT'; 
+                
+                setTimeout(() => { 
+                    blackScreen.style.opacity = '0'; 
+                    blackScreen.style.pointerEvents = 'none'; 
+                }, 100);
+            }, 1000); 
+        });
+    </script>
+</body>
+</html>
