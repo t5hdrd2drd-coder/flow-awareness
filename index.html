@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=36">
+    <link rel="manifest" href="manifest.json?v=37">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v36';
+        const APP_VERSION = 'v37';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -321,7 +321,10 @@
         let guideAnimFrame = null, isCurrentPhaseInhale = true; 
         
         let currentResonance = 1.0, isPressing = false;
-        let hasInhaledInCurrentCycle = false; // 關鍵標記：紀錄當前週期是否有累積氣體
+        let pressStartTime = 0; // 按壓起始時間（用於計算最小有效吸氣時間）
+        let hasInhaledInCurrentCycle = false; // 有效吸氣標記
+        const MIN_VALID_PRESS_DURATION = 400; // 門檻：至少按住 400ms (0.4s) 才算有效吸氣
+
         let currentCoreScale = 1.0; 
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
@@ -619,19 +622,29 @@
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
         }
 
+        // 核心修復：加入 MIN_VALID_PRESS_DURATION (400ms) 門檻
         function setPressState(isPress) {
             if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (isPressing === isPress) return; isPressing = isPress;
             
+            const now = Date.now();
+
             if (isPressing) {
+                pressStartTime = now; // 記錄開始按壓的時間戳
                 playBreathSound(true); 
-                hasInhaledInCurrentCycle = true; // 標記：使用者在此週期確實有按壓吸氣
-                if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((Date.now() - sessionStartTime) / 1000); }
+                if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((now - sessionStartTime) / 1000); }
             } else { 
+                const pressDuration = now - pressStartTime;
+                
+                // 只有當按壓時間 >= 400ms，才被判定為有效吸氣
+                if (pressDuration >= MIN_VALID_PRESS_DURATION) {
+                    hasInhaledInCurrentCycle = true;
+                }
+
                 if (isCurrentPhaseInhale) {
-                    fadeOutBreathAudio(0.15); // 未吸滿中途鬆手，平滑淡出靜音
+                    fadeOutBreathAudio(0.15); // 中途放開，平滑漸隱至靜音
                 } else {
-                    // 只有在剛才確實有吸氣的情況下，放開才會播放呼氣聲
+                    // 呼氣階段：只有當按壓過滿 0.4 秒，才播放吐氣音
                     if (hasInhaledInCurrentCycle) {
                         playBreathSound(false);
                     }
@@ -675,7 +688,7 @@
                     isCurrentPhaseInhale = false; 
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(false); 
-                    // 轉入呼氣階段時，若使用者有按壓過且手已放開，播放呼氣聲；若完全沒按壓則保持靜音
+                    // 轉入呼氣階段：只有在按壓超過門檻（hasInhaledInCurrentCycle = true）時才發聲
                     if (!isPressing && hasInhaledInCurrentCycle) { 
                         playBreathSound(false); 
                     }
@@ -685,7 +698,7 @@
                 guidePhase = 0; guideDir = 1; 
                 if (!isCurrentPhaseInhale) { 
                     isCurrentPhaseInhale = true; 
-                    hasInhaledInCurrentCycle = false; // 新吸氣週期開始，重置吸氣標記
+                    hasInhaledInCurrentCycle = false; // 新週期開始，重置標記
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(true); 
                 } 
