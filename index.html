@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=31">
+    <link rel="manifest" href="manifest.json?v=32">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -65,7 +65,6 @@
             pointer-events: auto;
         }
         
-        /* 還原：上一版黃/藍經典 SVG 圖示 */
         .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; }
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
         .headphone-hint { 
@@ -163,7 +162,6 @@
     <div class="black-transition" id="black-transition"></div>
 
     <div class="first-click-overlay" id="first-click">
-        <!-- 還原：上一版經典 SVG 圖示 -->
         <svg class="brand-logo-icon" viewBox="0 0 100 100">
             <defs>
                 <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
@@ -232,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v31';
+        const APP_VERSION = 'v32';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -250,7 +248,7 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 還原：上一版經典 PWA Icon 引擎
+        // 還原：經典 PWA Icon 引擎
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
             const ictx = iconCanvas.getContext('2d'); 
@@ -264,7 +262,6 @@
             bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
             ictx.fillStyle = bgGlow; ictx.fillRect(0, 0, 512, 512);
 
-            // 金黃外環
             ictx.save();
             ictx.shadowColor = 'rgba(255, 180, 80, 0.85)';
             ictx.shadowBlur = 32;
@@ -273,7 +270,6 @@
             ictx.stroke();
             ictx.restore();
 
-            // 湛藍內環
             ictx.save();
             ictx.shadowColor = 'rgba(56, 189, 248, 0.9)';
             ictx.shadowBlur = 24;
@@ -282,7 +278,6 @@
             ictx.stroke();
             ictx.restore();
 
-            // 核心純白亮點
             ictx.save();
             ictx.shadowColor = '#ffffff'; ictx.shadowBlur = 20;
             ictx.beginPath(); ictx.arc(256, 256, 20, 0, Math.PI * 2);
@@ -295,7 +290,6 @@
             if (favEl) favEl.href = pngDataUrl;
             if (appleEl) appleEl.href = pngDataUrl;
 
-            // iOS 啟動畫面 (Splash Screen)
             const splashCanvas = document.createElement('canvas');
             splashCanvas.width = 1280; splashCanvas.height = 2778;
             const sctx = splashCanvas.getContext('2d');
@@ -493,13 +487,13 @@
             return globalNoiseBuffer;
         }
 
-        // 徹底修復：點擊同步啟動說明頁底音（繞過瀏覽器 Autoplay 攔截）
-        function playIntroAudio() {
+        // 核心修復：強制非同步解鎖與 state guard，徹底解決第一次點擊無聲問題
+        async function playIntroAudio() {
             if (!audioCtx) return; 
             killAllOldNodes();
             
             if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
+                await audioCtx.resume();
             }
             
             const now = audioCtx.currentTime; 
@@ -734,13 +728,28 @@
 
         const firstClickEl = document.getElementById('first-click');
 
-        function handleFirstClick(e) {
+        async function handleFirstClick(e) {
             if (e) { e.preventDefault(); e.stopPropagation(); }
             if (state !== 'INIT') return; 
             state = 'INTRO';
 
-            // 關鍵修復：在使用者點擊的極瞬間零延遲初始化 AudioContext 並播放說明底音
+            // 1. 硬體級別同步物理解鎖，強制搶在瀏覽器 Autoplay 攔截前開通 AudioContext
             initAudio(); 
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
+                }
+                // 播放 0.01 秒的物理無聲解鎖訊號
+                try {
+                    const unlockBuf = audioCtx.createBuffer(1, 1, 22050);
+                    const unlockSrc = audioCtx.createBufferSource();
+                    unlockSrc.buffer = unlockBuf;
+                    unlockSrc.connect(audioCtx.destination);
+                    unlockSrc.start(0);
+                } catch(e){}
+            }
+
+            // 2. 解鎖成功後發出說明頁低頻音，保證第一輪就有聲音！
             playIntroAudio(); 
             initCanvas(); 
 
@@ -767,7 +776,6 @@
             e.stopPropagation(); if (state !== 'INTRO') return; state = 'COUNTDOWN';
             document.getElementById('intro').style.opacity = '0'; document.getElementById('btn-start').classList.add('disabled'); 
             
-            // 點擊「開始正念」切換階段，停止說明頁底音
             stopIntroAudio();
             
             setTimeout(() => {
@@ -793,7 +801,6 @@
             baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; 
             guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
-            // 呼吸階段保持極致純粹（只留氣流聲），無底音干擾
             stopIntroAudio();
 
             if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
