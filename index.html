@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=35">
+    <link rel="manifest" href="manifest.json?v=36">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v35';
+        const APP_VERSION = 'v36';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -321,6 +321,7 @@
         let guideAnimFrame = null, isCurrentPhaseInhale = true; 
         
         let currentResonance = 1.0, isPressing = false;
+        let hasInhaledInCurrentCycle = false; // 關鍵標記：紀錄當前週期是否有累積氣體
         let currentCoreScale = 1.0; 
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
@@ -484,7 +485,6 @@
             return globalNoiseBuffer;
         }
 
-        // 平滑停頓淡出（用於中途鬆手的自然氣流停頓）
         function fadeOutBreathAudio(fadeTime = 0.15) {
             if (!audioCtx || !currentBreathGain) return;
             const now = audioCtx.currentTime;
@@ -619,20 +619,22 @@
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
         }
 
-        // 核心修復：按壓邏輯微調（中途鬆手淡出靜音）
         function setPressState(isPress) {
             if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (isPressing === isPress) return; isPressing = isPress;
             
             if (isPressing) {
                 playBreathSound(true); 
+                hasInhaledInCurrentCycle = true; // 標記：使用者在此週期確實有按壓吸氣
                 if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((Date.now() - sessionStartTime) / 1000); }
             } else { 
-                // 未吸滿中途鬆手，氣流自然淡出至靜音；只有在系統呼氣階段，音效才會在週期切換時播放
                 if (isCurrentPhaseInhale) {
-                    fadeOutBreathAudio(0.15); 
+                    fadeOutBreathAudio(0.15); // 未吸滿中途鬆手，平滑淡出靜音
                 } else {
-                    playBreathSound(false);
+                    // 只有在剛才確實有吸氣的情況下，放開才會播放呼氣聲
+                    if (hasInhaledInCurrentCycle) {
+                        playBreathSound(false);
+                    }
                 }
             }
         }
@@ -673,14 +675,17 @@
                     isCurrentPhaseInhale = false; 
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(false); 
-                    // 轉入呼氣階段時，若使用者手已放開，自動播放呼氣聲
-                    if (!isPressing) { playBreathSound(false); }
+                    // 轉入呼氣階段時，若使用者有按壓過且手已放開，播放呼氣聲；若完全沒按壓則保持靜音
+                    if (!isPressing && hasInhaledInCurrentCycle) { 
+                        playBreathSound(false); 
+                    }
                 } 
             } 
             else if (guidePhase <= 0) { 
                 guidePhase = 0; guideDir = 1; 
                 if (!isCurrentPhaseInhale) { 
                     isCurrentPhaseInhale = true; 
+                    hasInhaledInCurrentCycle = false; // 新吸氣週期開始，重置吸氣標記
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(true); 
                 } 
@@ -780,7 +785,7 @@
         function initMindfulness() {
             if(guideAnimFrame) { cancelAnimationFrame(guideAnimFrame); guideAnimFrame = null; }
             state = 'MINDFULNESS'; sessionStartTime = Date.now(); isEndingDissolve = false; requestWakeLock();
-            baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; 
+            baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; hasInhaledInCurrentCycle = false;
             guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
 
             if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
