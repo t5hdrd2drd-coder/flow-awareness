@@ -194,12 +194,18 @@
             margin-top: 10px; perspective: 1000px; overflow: visible;
         }
 
-        /* 統一文字漸變樣式（上下文字完全同步） */
-        #breath-text-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 15; pointer-events: none; 
-            transition: opacity 2.0s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 1;
+        .guide-ring, .ripple-wave, .interactive-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 140px; height: 140px;
+            margin-top: -70px; margin-left: -70px;
+        }
+
+        .affirmation-water-drop { 
+            position: absolute; top: 50%; left: 50%;
+            width: 140px; height: 140px;
+            margin-top: -70px; margin-left: -70px;
+            transform: scale(0.7);
         }
 
         #breath-text {
@@ -207,7 +213,8 @@
             left: 50%; transform: translateX(-50%);
             font-weight: 400; letter-spacing: 10px; margin-right: -10px;
             font-size: 1.2rem;
-            will-change: transform, color; opacity: 0.9; white-space: nowrap;
+            z-index: 15; will-change: transform, color; opacity: 0.9; white-space: nowrap;
+            transition: opacity 2.0s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .interaction-hint {
@@ -396,9 +403,7 @@
         </div>
 
         <div class="breath-wrapper" id="breath-wrapper">
-            <div class="breath-text-wrapper" id="breath-text-wrapper">
-                <span id="breath-text">吸 氣</span>
-            </div>
+            <span id="breath-text">吸 氣</span>
             <div class="guide-ring" id="guide-ring"></div>
             <div class="ripple-wave" id="ripple-wave"></div>
             <div class="interactive-core" id="core">
@@ -860,7 +865,6 @@
             }
         }
 
-        /* 氣流聲音量包絡線重構：拉長飽和期，填滿 5 秒呼吸，消除急促空拍感 */
         function playBreathSound(isInhale) {
             if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
             stopAllBreathAudio();
@@ -884,7 +888,6 @@
                 filter.frequency.exponentialRampToValueAtTime(750, now + dur * 0.5);
                 filter.frequency.exponentialRampToValueAtTime(1350, now + dur);
                 
-                // 起步 0.15 秒漸亮 -> 保持飽和氣流至 85% 時間點 -> 最後 15% 平滑收尾，完全無空拍
                 gain.gain.linearRampToValueAtTime(0.28, now + 0.35); 
                 gain.gain.setValueAtTime(0.28, now + dur * 0.82); 
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.05);
@@ -1000,7 +1003,7 @@
             }
         }
 
-        /* 統一顯隱判斷：上下文字完全一致同步淡入淡出 */
+        /* 完美同步：直接控制 #breath-text 與 #hint 的 opacity */
         function updateHintState() {
             if (state !== 'MINDFULNESS') return;
             const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
@@ -1009,16 +1012,14 @@
             let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
             let shouldShow = (phaseChangeCount < 6) || (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
 
-            const textWrapper = document.getElementById('breath-text-wrapper');
-
             if (shouldShow) {
                 hintEl.style.opacity = '0.9'; 
                 hintEl.classList.add('flash-mild');
-                if(textWrapper) textWrapper.style.opacity = '1';
+                if(textEl) textEl.style.opacity = '0.9';
             } else {
                 hintEl.style.opacity = '0'; 
                 hintEl.classList.remove('flash-mild');
-                if(textWrapper) textWrapper.style.opacity = '0';
+                if(textEl) textEl.style.opacity = '0';
             }
         }
 
@@ -1267,9 +1268,7 @@
             }
             
             textEl.classList.remove('glow-inhale', 'glow-exhale');
-            
-            const textWrapper = document.getElementById('breath-text-wrapper');
-            if(textWrapper) textWrapper.style.opacity = '1';
+            if(textEl) textEl.style.opacity = '0.9';
             
             consecutiveHighResonance = 0; missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; totalBreaths = 0; 
             sumResonance = 0; resonanceSamples = 0; cycleResonanceSum = 0; cycleResonanceCount = 0;
@@ -1339,8 +1338,7 @@
                 document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); 
-                const textWrapper = document.getElementById('breath-text-wrapper');
-                if(textWrapper) textWrapper.style.opacity = '0';
+                if(textEl) textEl.style.opacity = '0';
 
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; currentPace = 5.0; breathScale = 1.0; targetBreathScale = 1.0;
                 
