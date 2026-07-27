@@ -33,6 +33,8 @@
             --c-r: 255;
             --c-g: 180;
             --c-b: 80;
+            --sat-top: env(safe-area-inset-top, 0px);
+            --sat-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         /* 全域與所有偽元素鎖死選取與 Callout 預設行為 */
@@ -92,6 +94,7 @@
             z-index: 999; background: #030105;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             cursor: pointer; transition: opacity 1s ease;
+            padding-bottom: var(--sat-bottom);
         }
         
         .brand-logo-icon {
@@ -103,7 +106,7 @@
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
         
         .headphone-hint { 
-            position: absolute; bottom: 75px; 
+            position: absolute; bottom: calc(75px + var(--sat-bottom)); 
             font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
             color: rgba(241, 245, 249, 0.85); 
             background: rgba(255, 255, 255, 0.03);
@@ -119,6 +122,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 1.5s ease;
+            padding-top: var(--sat-top); padding-bottom: var(--sat-bottom);
         }
         .intro-card { text-align: center; max-width: 90vw; width: 420px; padding: 20px; z-index: 101; pointer-events: auto; box-sizing: border-box; }
         
@@ -171,6 +175,13 @@
             z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 2s ease; pointer-events: none; 
             transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            padding-top: var(--sat-top); padding-bottom: var(--sat-bottom);
+        }
+
+        .top-header {
+            position: absolute; 
+            top: calc(clamp(25px, 6vh, 45px) + var(--sat-top)); 
+            pointer-events: none;
         }
 
         h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; }
@@ -277,13 +288,13 @@
         .flame-3 { background: radial-gradient(circle at 55% 55%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.25) 0%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.05) 50%, transparent 60%); animation-duration: 1.2s; animation-delay: -0.5s; }
 
         .interaction-hint {
-            position: absolute; bottom: clamp(100px, 18vh, 160px); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300;
+            position: absolute; bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom)); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300;
             padding: 0; background: transparent; border: none; box-shadow: none;
             pointer-events: none; opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease; white-space: nowrap;
         }
         .interaction-hint.flash-mild { animation: hintPulse 2.8s infinite ease-in-out; }
 
-        #btn-stop { position: absolute; bottom: clamp(25px, 5vh, 40px); left: 50%; transform: translateX(-50%); z-index: 9999; display: none; opacity: 0; }
+        #btn-stop { position: absolute; bottom: calc(clamp(25px, 5vh, 40px) + var(--sat-bottom)); left: 50%; transform: translateX(-50%); z-index: 9999; display: none; opacity: 0; }
         .capsule-btn { 
             background: rgba(255, 255, 255, 0.03); color: rgba(241, 245, 249, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); 
             padding: 8px 26px; border-radius: 25px; font-size: 0.8rem; letter-spacing: 2px; margin-right: -2px; font-weight: 300; 
@@ -295,6 +306,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; 
             background: rgba(3, 1, 5, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); opacity: 0; transition: opacity 7.5s ease-in-out; pointer-events: none; 
             user-select: none !important; -webkit-user-select: none !important; -webkit-touch-callout: none !important;
+            padding-top: var(--sat-top); padding-bottom: var(--sat-bottom);
         }
         .summary-title { font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 200; letter-spacing: clamp(6px, 2vw, 12px); margin-right: calc(-1 * clamp(6px, 2vw, 12px)); color: #ffffff; margin-bottom: 16px; white-space: nowrap; }
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
@@ -383,7 +395,7 @@
     <div id="interaction-layer"></div>
 
     <div class="container" id="main-container">
-        <div style="position: absolute; top: clamp(25px, 6vh, 45px); pointer-events: none;">
+        <div class="top-header">
             <h1 style="font-weight: 300;">流 動 覺 察</h1>
             <p class="subtitle">將注意力錨定於當下</p>
         </div>
@@ -546,8 +558,14 @@
         let currentBreathSource = null;
         let currentBreathGain = null;
         let currentBreathResonanceFilter = null; 
+        let currentBreathBandpass = null;
         let bowlMasterGain = null; 
         let activeEndingOscillators = [];
+
+        // 雙耳節律 (Binaural Beats) 音效節點
+        let binauralLeftOsc = null;
+        let binauralRightOsc = null;
+        let binauralGain = null;
 
         let currentPace = 5.0; 
         let consecutiveHighResonance = 0;
@@ -575,6 +593,7 @@
 
         let currR = 255, currG = 180, currB = 80; 
         let currHue = 0; let currY = 0; let currTextScale = 1.0;
+        let cachedColorStr = "255, 180, 80";
 
         const canvas = document.getElementById('intro-canvas');
         const ctx = canvas.getContext('2d');
@@ -608,6 +627,7 @@
         function killAllOldNodes() {
             if (introOscillator) { try { introOscillator.stop(); introOscillator.disconnect(); } catch(e){} introOscillator = null; }
             if (currentBreathSource) { try { currentBreathSource.stop(); currentBreathSource.disconnect(); } catch(e){} currentBreathSource = null; }
+            stopBinauralBeats();
             if (activeEndingOscillators.length > 0) {
                 activeEndingOscillators.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch(e){} });
                 activeEndingOscillators = [];
@@ -647,6 +667,7 @@
 
             if (state === 'MINDFULNESS') {
                 requestWakeLock();
+                startBinauralBeats();
             } else if (state === 'INTRO') {
                 playIntroAudio();
             }
@@ -692,7 +713,12 @@
             breathScale += (targetBreathScale - breathScale) * 0.015;
             
             let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY');
-            let zFlowSpeed = isCurrentPhaseInhale ? -1.2 : 1.0;
+            
+            // 使用 Ease-In-Out 平滑內插計算 Z 軸速度，消除切換時的頓挫感
+            let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
+            let targetZSpeed = isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor);
+            
+            let zFlowSpeed = targetZSpeed;
             if (isEndingDissolve) zFlowSpeed = -8.5; 
             else if (!isMindful) zFlowSpeed = 0.8;
 
@@ -721,7 +747,7 @@
 
                 ctx.beginPath(); 
                 ctx.arc(px, py, star.baseRadius * baseScale * (isFG ? 2.8 : 1.0), 0, Math.PI * 2); 
-                if (isMindful && isFG) { ctx.fillStyle = `rgb(${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)})`; } 
+                if (isMindful && isFG) { ctx.fillStyle = `rgb(${cachedColorStr})`; } 
                 else { ctx.fillStyle = 'white'; }
                 ctx.fill();
             }
@@ -746,7 +772,6 @@
             }
         }
 
-        /* 【修復處 1】修改 initAudio 以確保重複進入時音量與音訊狀態完全恢復 */
         function initAudio() {
             if (!audioCtx) { 
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
@@ -781,6 +806,62 @@
                 for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
             }
             return globalNoiseBuffer;
+        }
+
+        /* 啟動 Theta 雙耳節律 (左耳 100Hz / 右耳 104Hz => 4Hz 腦波共振) */
+        function startBinauralBeats() {
+            if (!audioCtx || state !== 'MINDFULNESS') return;
+            stopBinauralBeats();
+
+            const now = audioCtx.currentTime;
+            binauralGain = audioCtx.createGain();
+            binauralGain.gain.setValueAtTime(0.0001, now);
+            binauralGain.gain.exponentialRampToValueAtTime(0.05, now + 3.0); // 低沉包覆底音
+
+            binauralLeftOsc = audioCtx.createOscillator();
+            binauralRightOsc = audioCtx.createOscillator();
+
+            binauralLeftOsc.type = 'sine';
+            binauralRightOsc.type = 'sine';
+
+            binauralLeftOsc.frequency.setValueAtTime(100.0, now); // 左耳 100Hz
+            binauralRightOsc.frequency.setValueAtTime(104.0, now); // 右耳 104Hz (4Hz 差頻)
+
+            if (audioCtx.createStereoPanner) {
+                const pannerL = audioCtx.createStereoPanner();
+                const pannerR = audioCtx.createStereoPanner();
+                pannerL.pan.value = -0.85;
+                pannerR.pan.value = 0.85;
+
+                binauralLeftOsc.connect(pannerL).connect(binauralGain);
+                binauralRightOsc.connect(pannerR).connect(binauralGain);
+            } else {
+                binauralLeftOsc.connect(binauralGain);
+                binauralRightOsc.connect(binauralGain);
+            }
+
+            binauralGain.connect(masterGain);
+            binauralLeftOsc.start(now);
+            binauralRightOsc.start(now);
+        }
+
+        function stopBinauralBeats() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            if (binauralGain) {
+                try {
+                    binauralGain.gain.cancelScheduledValues(now);
+                    binauralGain.gain.setTargetAtTime(0.0001, now, 0.05);
+                } catch(e){}
+            }
+            if (binauralLeftOsc) {
+                const l = binauralLeftOsc, r = binauralRightOsc;
+                setTimeout(() => {
+                    try { l.stop(); l.disconnect(); } catch(e){}
+                    try { r.stop(); r.disconnect(); } catch(e){}
+                }, 200);
+                binauralLeftOsc = null; binauralRightOsc = null;
+            }
         }
 
         function playIntroAudio() {
@@ -839,12 +920,13 @@
             }
         }
 
+        /* 自然氣流壓差 FM 頻率調製 */
         function playBreathSound(isInhale) {
             if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
             stopAllBreathAudio();
             
             const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
-            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.Q.value = 0.38;
+            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; currentBreathBandpass = filter;
             
             currentBreathResonanceFilter = audioCtx.createBiquadFilter(); 
             currentBreathResonanceFilter.type = 'lowpass'; 
@@ -855,17 +937,22 @@
             const dur = currentPace;
 
             if (isInhale) {
-                currentBreathResonanceFilter.frequency.value = 2600;
-                filter.frequency.setValueAtTime(180, audioCtx.currentTime); 
-                filter.frequency.exponentialRampToValueAtTime(1250, audioCtx.currentTime + dur);
-                gain.gain.linearRampToValueAtTime(0.28, audioCtx.currentTime + dur / 2); 
+                filter.Q.value = 0.42;
+                currentBreathResonanceFilter.frequency.value = 2800;
+                filter.frequency.setValueAtTime(160, audioCtx.currentTime); 
+                // 兩階段非線性拉升：模擬肺部氣流進出的自然漸強
+                filter.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + dur * 0.6);
+                filter.frequency.exponentialRampToValueAtTime(1350, audioCtx.currentTime + dur);
+                
+                gain.gain.linearRampToValueAtTime(0.28, audioCtx.currentTime + dur * 0.55); 
                 gain.gain.linearRampToValueAtTime(0.025, audioCtx.currentTime + dur + 0.8);
             } else {
-                currentBreathResonanceFilter.frequency.value = 1800; 
-                filter.frequency.setValueAtTime(780, audioCtx.currentTime); 
-                filter.frequency.exponentialRampToValueAtTime(240, audioCtx.currentTime + dur);
-                gain.gain.linearRampToValueAtTime(0.36, audioCtx.currentTime + dur * 0.35); 
-                gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime + dur, 0.1); 
+                filter.Q.value = 0.32;
+                currentBreathResonanceFilter.frequency.value = 1600; 
+                filter.frequency.setValueAtTime(820, audioCtx.currentTime); 
+                filter.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + dur);
+                gain.gain.linearRampToValueAtTime(0.34, audioCtx.currentTime + dur * 0.30); 
+                gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime + dur, 0.12); 
             }
             noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); 
             noiseSource.start(audioCtx.currentTime);
@@ -933,6 +1020,15 @@
                     osc.connect(g).connect(bowlMasterGain);
                 }
                 
+                /* AudioNode 自動斷開與記憶體顯式回收 */
+                osc.onended = () => {
+                    try {
+                        osc.disconnect();
+                        g.disconnect();
+                        if (panner) panner.disconnect();
+                    } catch(e){}
+                };
+
                 osc.start(now);
                 osc.stop(now + 14.5);
                 activeEndingOscillators.push(osc);
@@ -1122,6 +1218,12 @@
             let targetRes = isAligned ? 1.0 : 0.0;
             currentResonance += (targetRes - currentResonance) * 0.08;
 
+            // 雙耳節律音量隨共振度微調（提供無意識平靜獎勵）
+            if (binauralGain && audioCtx) {
+                let resGain = 0.04 + currentResonance * 0.035;
+                binauralGain.gain.setTargetAtTime(resGain, audioCtx.currentTime, 0.1);
+            }
+
             updateHintState();
 
             cycleResonanceSum += currentResonance; cycleResonanceCount++;
@@ -1139,27 +1241,28 @@
             let gInt = Math.floor(currG);
             let bInt = Math.floor(currB);
 
+            // 緩存 RGB 字串，避免高頻字串垃圾（GC 優化）
+            cachedColorStr = `${rInt}, ${gInt}, ${bInt}`;
+
             document.documentElement.style.setProperty('--c-r', rInt);
             document.documentElement.style.setProperty('--c-g', gInt);
             document.documentElement.style.setProperty('--c-b', bInt);
 
-            let baseColorStr = `${rInt}, ${gInt}, ${bInt}`;
-
             if(coreEl) {
-                coreEl.style.background = `radial-gradient(circle at 35% 35%, rgba(${baseColorStr}, 0.18) 0%, rgba(${baseColorStr}, 0.06) 60%, transparent 100%)`;
+                coreEl.style.background = `radial-gradient(circle at 35% 35%, rgba(${cachedColorStr}, 0.18) 0%, rgba(${cachedColorStr}, 0.06) 60%, transparent 100%)`;
             }
 
             if(flame1) { 
                 flame1.style.opacity = (0.15 + currentResonance * 0.85).toString(); 
-                flame1.style.background = `radial-gradient(circle at 50% 50%, rgba(${baseColorStr}, 0.45) 0%, rgba(${baseColorStr}, 0.1) 50%, transparent 70%)`;
+                flame1.style.background = `radial-gradient(circle at 50% 50%, rgba(${cachedColorStr}, 0.45) 0%, rgba(${cachedColorStr}, 0.1) 50%, transparent 70%)`;
             }
             if(flame2) { 
                 flame2.style.opacity = (0.10 + currentResonance * 0.90).toString(); 
-                flame2.style.background = `radial-gradient(circle at 45% 45%, rgba(${baseColorStr}, 0.35) 0%, rgba(${baseColorStr}, 0.08) 55%, transparent 65%)`;
+                flame2.style.background = `radial-gradient(circle at 45% 45%, rgba(${cachedColorStr}, 0.35) 0%, rgba(${cachedColorStr}, 0.08) 55%, transparent 65%)`;
             }
             if(flame3) { 
                 flame3.style.opacity = currentResonance.toString(); 
-                flame3.style.background = `radial-gradient(circle at 55% 55%, rgba(${baseColorStr}, 0.25) 0%, rgba(${baseColorStr}, 0.05) 50%, transparent 60%)`;
+                flame3.style.background = `radial-gradient(circle at 55% 55%, rgba(${cachedColorStr}, 0.25) 0%, rgba(${cachedColorStr}, 0.05) 50%, transparent 60%)`;
             }
 
             let targetY = isCurrentPhaseInhale ? -4 : 4; let targetTextScale = isCurrentPhaseInhale ? 1.06 : 0.96;
@@ -1167,8 +1270,8 @@
 
             if (textEl.style.opacity === '0') textEl.style.opacity = '0.9';
 
-            guideRingEl.style.borderColor = `rgba(${baseColorStr}, 0.75)`; 
-            guideRingEl.style.boxShadow = `0 0 12px rgba(${baseColorStr}, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
+            guideRingEl.style.borderColor = `rgba(${cachedColorStr}, 0.75)`; 
+            guideRingEl.style.boxShadow = `0 0 12px rgba(${cachedColorStr}, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
 
             if (isPressing) { targetBreathScale = 0.7 - currentResonance * 0.1; } else { targetBreathScale = 1.1 + currentResonance * 0.2; }
             
@@ -1207,7 +1310,6 @@
             }, 800); 
         });
 
-        /* 【修復處 2】在 initMindfulness 加入 masterGain 音量強制解鎖機制 */
         function initMindfulness() {
             if(guideAnimFrame) {
                 cancelAnimationFrame(guideAnimFrame);
@@ -1222,6 +1324,7 @@
             guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
             stopIntroAudio();
+            startBinauralBeats();
 
             if (masterGain && audioCtx) {
                 masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
@@ -1258,6 +1361,7 @@
             isPressing = false;
             stopAllBreathAudio();
             stopIntroAudio();
+            stopBinauralBeats();
 
             playEndingBowl();
 
@@ -1283,7 +1387,7 @@
 
             setTimeout(() => {
                 if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); } 
-                else if (document.webkitFullscreenElement) { document.webkitExitFullscreen().catch(e=>{}); }
+                else if (document.webkitRequestFullscreen) { document.webkitExitFullscreen().catch(e=>{}); }
                 
                 bowlMasterGain = null;
                 isEndingDissolve = false;
