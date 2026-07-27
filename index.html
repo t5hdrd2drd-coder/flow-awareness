@@ -29,7 +29,7 @@
         html { background-color: #030105 !important; background: #030105 !important; }
 
         :root {
-            --breath-half: 2.5s; 
+            --breath-half: 3.2s; 
             --c-r: 255;
             --c-g: 180;
             --c-b: 80;
@@ -221,7 +221,7 @@
             font-weight: 400; letter-spacing: 10px; margin-right: -10px;
             font-size: 1.2rem;
             z-index: 15; will-change: transform, color; opacity: 0.9; white-space: nowrap;
-            transition: opacity 2s ease;
+            transition: opacity 2s ease, visibility 2s ease;
         }
 
         @media (max-width: 480px) {
@@ -569,8 +569,8 @@
         let bowlMasterGain = null; 
         let activeEndingOscillators = [];
 
-        // 呼吸節律：起步 2.5s，最自然上限 3.6s，非對稱呼氣比 1.18x
-        let baseInhalePace = 2.5; 
+        // 呼吸節律：起步 3.2s（舒服平緩接軌），最自然上限 3.6s，非對稱呼氣比 1.18x
+        let baseInhalePace = 3.2; 
         const EXHALE_RATIO = 1.18; 
 
         let consecutiveHighResonance = 0;
@@ -1028,24 +1028,34 @@
                 hintEl.classList.remove('flash-mild');
             }
 
-            // 前 6 次呼吸過後，吸呼文字與大標題淡出，副標題降低透明度
+            // 前 6 次呼吸後精準隱藏/調淡 UI，徹底修復文字無法隱藏的問題
             if (phaseChangeCount >= 6) {
-                if (textEl.style.opacity !== '0') textEl.style.opacity = '0';
-                if (mainTitleEl && mainTitleEl.style.opacity !== '0') mainTitleEl.style.opacity = '0';
-                if (subTitleEl && subTitleEl.style.opacity !== '0.2') subTitleEl.style.opacity = '0.2';
+                if (textEl.style.visibility !== 'hidden') {
+                    textEl.style.opacity = '0';
+                    textEl.style.visibility = 'hidden'; // 斬斷 CSS keyframe 動畫 override
+                }
+                if (mainTitleEl && mainTitleEl.style.opacity !== '0') {
+                    mainTitleEl.style.opacity = '0';
+                }
+                if (subTitleEl && subTitleEl.style.opacity !== '0.45') {
+                    subTitleEl.style.opacity = '0.45'; // 適中舒適的淡出不偏太暗
+                }
             } else {
+                textEl.style.visibility = 'visible';
                 if (mainTitleEl && mainTitleEl.style.opacity !== '1') mainTitleEl.style.opacity = '1';
-                if (subTitleEl && subTitleEl.style.opacity !== '0.8') subTitleEl.style.opacity = '0.8';
+                if (subTitleEl && subTitleEl.style.opacity !== '0.85') subTitleEl.style.opacity = '0.85';
             }
         }
 
         function triggerBreathTextChange(isInhale) {
-            textEl.innerText = isInhale ? "吸 氣" : "呼 氣";
-            textEl.classList.remove('glow-inhale', 'glow-exhale');
-            void textEl.offsetWidth; 
-            
-            if (isInhale) { textEl.classList.add('glow-inhale'); } 
-            else { textEl.classList.add('glow-exhale'); }
+            if (phaseChangeCount < 6) {
+                textEl.innerText = isInhale ? "吸 氣" : "呼 氣";
+                textEl.classList.remove('glow-inhale', 'glow-exhale');
+                void textEl.offsetWidth; 
+                
+                if (isInhale) { textEl.classList.add('glow-inhale'); } 
+                else { textEl.classList.add('glow-exhale'); }
+            }
 
             if (rippleEl) {
                 rippleEl.classList.remove('active'); void rippleEl.offsetWidth;
@@ -1125,14 +1135,14 @@
             if (state !== 'MINDFULNESS') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
-            // S 型對數平滑漸進：從 2.5s 隱形過渡至最自然的 3.6s（歷時約 2.5 分鐘）
+            // S 型平滑漸進：起步 3.2s 柔和過渡至自然放鬆上限 3.6s（歷時約 2 分鐘）
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
             if (elapsedSecs > 30) {
-                let progress = Math.min(1.0, (elapsedSecs - 30) / 120); // 30s ~ 150s 過渡期
+                let progress = Math.min(1.0, (elapsedSecs - 30) / 120); 
                 let smoothedProgress = progress * progress * (3 - 2 * progress); // Smoothstep 內插
-                baseInhalePace = 2.5 + smoothedProgress * 1.1; // 2.5s -> 3.6s
+                baseInhalePace = 3.2 + smoothedProgress * 0.4; // 3.2s -> 3.6s
             } else {
-                baseInhalePace = 2.5;
+                baseInhalePace = 3.2;
             }
 
             let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
@@ -1280,7 +1290,7 @@
             isEndingDissolve = false;
             requestWakeLock();
             
-            baseInhalePace = 2.5; 
+            baseInhalePace = 3.2; 
             targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false;
             guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
@@ -1293,10 +1303,11 @@
             
             textEl.classList.remove('glow-inhale', 'glow-exhale');
             textEl.style.opacity = '0.9';
+            textEl.style.visibility = 'visible';
             textEl.style.transform = 'translateX(-50%) translateY(0px) scale(1)';
 
             if (mainTitleEl) mainTitleEl.style.opacity = '1';
-            if (subTitleEl) subTitleEl.style.opacity = '0.8';
+            if (subTitleEl) subTitleEl.style.opacity = '0.85';
             
             consecutiveHighResonance = 0; missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; totalBreaths = 0; 
             sumResonance = 0; resonanceSamples = 0; cycleResonanceSum = 0; cycleResonanceCount = 0;
@@ -1365,9 +1376,9 @@
                 document.getElementById('core').classList.remove('pressing'); document.getElementById('hint').style.opacity = '0'; 
                 document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 
-                textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0';
+                textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
 
-                missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 2.5; breathScale = 1.0; targetBreathScale = 1.0;
+                missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
                 
                 const firstClick = document.getElementById('first-click');
                 firstClick.style.display = 'flex'; 
