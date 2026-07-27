@@ -162,7 +162,6 @@
         }
         .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
-        /* 互動層加入手勢鎖死屬性 */
         #interaction-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 15; display: none; cursor: pointer; 
@@ -209,12 +208,18 @@
             transform: scale(0.7);
         }
 
+        #breath-text-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 15; pointer-events: none; transition: opacity 2.5s ease-in-out;
+            opacity: 1;
+        }
+
         #breath-text {
             position: absolute; top: -32px; 
             left: 50%; transform: translateX(-50%);
             font-weight: 400; letter-spacing: 10px; margin-right: -10px;
             font-size: 1.2rem;
-            z-index: 15; will-change: transform, color; opacity: 0.9; white-space: nowrap;
+            will-change: transform, color; opacity: 0.9; white-space: nowrap;
         }
 
         @media (max-width: 480px) {
@@ -290,7 +295,7 @@
         .interaction-hint {
             position: absolute; bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom)); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300;
             padding: 0; background: transparent; border: none; box-shadow: none;
-            pointer-events: none; opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease; white-space: nowrap;
+            pointer-events: none; opacity: 0; transition: opacity 2.5s ease, transform 0.8s ease; white-space: nowrap;
         }
         .interaction-hint.flash-mild { animation: hintPulse 2.8s infinite ease-in-out; }
 
@@ -401,7 +406,9 @@
         </div>
 
         <div class="breath-wrapper" id="breath-wrapper">
-            <span id="breath-text">吸 氣</span>
+            <div class="breath-text-wrapper" id="breath-text-wrapper">
+                <span id="breath-text">吸 氣</span>
+            </div>
             <div class="guide-ring" id="guide-ring"></div>
             <div class="ripple-wave" id="ripple-wave"></div>
             <div class="interactive-core" id="core">
@@ -718,7 +725,6 @@
                 let star = stars[i];
                 if (isMindful && star.layer === 'background' && !isEndingDissolve) continue;
                 
-                // 動態星空收攏：結算時粒子向中心聚集
                 if (isEndingDissolve) {
                     star.x *= 0.985;
                     star.y *= 0.985;
@@ -796,12 +802,15 @@
             silentAudioAnchor.play().catch(e => {});
         }
         
+        /* 升級雙聲道 Noise Buffer，賦予聲音天然立體空間感 */
         function getNoiseBuffer() {
             if (!globalNoiseBuffer && audioCtx) {
                 const bufferSize = audioCtx.sampleRate * 2;
-                globalNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const output = globalNoiseBuffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                globalNoiseBuffer = audioCtx.createBuffer(2, bufferSize, audioCtx.sampleRate);
+                for(let channel = 0; channel < 2; channel++){
+                    const output = globalNoiseBuffer.getChannelData(channel);
+                    for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                }
             }
             return globalNoiseBuffer;
         }
@@ -885,7 +894,6 @@
                 filter.frequency.exponentialRampToValueAtTime(750, now + dur * 0.6);
                 filter.frequency.exponentialRampToValueAtTime(1350, now + dur);
                 
-                // 氣息停頓微縫（Micro-Pause）處理：起步 0.2 秒平滑，結尾提早平滑收尾
                 gain.gain.linearRampToValueAtTime(0.0001, now + 0.2); 
                 gain.gain.linearRampToValueAtTime(0.28, now + dur * 0.55); 
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1);
@@ -937,16 +945,18 @@
             bowlLP.connect(delay);
             delayFilter.connect(compressor);
 
+            /* 優化 Exponential 尾韻衰減 */
             bowlMasterGain.gain.setValueAtTime(0.0001, now); 
-            bowlMasterGain.gain.exponentialRampToValueAtTime(0.88, now + 0.40); 
-            bowlMasterGain.gain.exponentialRampToValueAtTime(0.0001, now + 14.0); 
+            bowlMasterGain.gain.exponentialRampToValueAtTime(0.95, now + 0.05); 
+            bowlMasterGain.gain.setTargetAtTime(0.0001, now + 0.1, 3.5); 
 
+            /* 諧波立體聲交錯設定 (Harmonic Spatialization) */
             const oscs = [
                 { freq: 108.0, gain: 0.16, pan: 0.0 },   
-                { freq: 216.0, gain: 0.32, pan: -0.25 }, 
-                { freq: 216.7, gain: 0.28, pan: 0.25 },  
-                { freq: 432.0, gain: 0.22, pan: -0.5 },  
-                { freq: 648.0, gain: 0.09, pan: 0.5 }    
+                { freq: 216.0, gain: 0.32, pan: -0.2 }, 
+                { freq: 216.7, gain: 0.28, pan: 0.2 },  
+                { freq: 432.0, gain: 0.22, pan: -0.4 },  
+                { freq: 648.0, gain: 0.09, pan: 0.4 }    
             ];
 
             oscs.forEach(o => {
@@ -1009,12 +1019,16 @@
             let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
             let shouldShow = (phaseChangeCount < 6) || (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
 
+            const textWrapper = document.getElementById('breath-text-wrapper');
+
             if (shouldShow) {
                 hintEl.style.opacity = '0.9'; 
                 hintEl.classList.add('flash-mild');
+                if(textWrapper) textWrapper.style.opacity = '1';
             } else {
                 hintEl.style.opacity = '0'; 
                 hintEl.classList.remove('flash-mild');
+                if(textWrapper) textWrapper.style.opacity = '0';
             }
         }
 
@@ -1201,10 +1215,7 @@
             let targetY = isCurrentPhaseInhale ? -4 : 4; let targetTextScale = isCurrentPhaseInhale ? 1.06 : 0.96;
             currY += (targetY - currY) * 0.05; currTextScale += (targetTextScale - currTextScale) * 0.05;
 
-            if (textEl.style.opacity === '0') textEl.style.opacity = '0.9';
-
-            // 微光暈擴散（Soft Ambient Bloom）計算與套用
-            let bloom = Math.sin(guidePhase * (Math.PI / 2)); // 在吸氣達到頂峰時最強
+            let bloom = Math.sin(guidePhase * (Math.PI / 2)); 
             guideRingEl.style.borderColor = `rgba(${cachedColorStr}, 0.75)`; 
             guideRingEl.style.boxShadow = `0 0 ${12 + bloom * 24}px rgba(${cachedColorStr}, ${0.35 + bloom * 0.45}), inset 0 0 ${6 + bloom * 8}px rgba(255,255,255,${0.18 + bloom * 0.2})`;
 
@@ -1266,8 +1277,9 @@
             }
             
             textEl.classList.remove('glow-inhale', 'glow-exhale');
-            textEl.style.opacity = '0.9';
-            textEl.style.transform = 'translateX(-50%) translateY(0px) scale(1)';
+            
+            const textWrapper = document.getElementById('breath-text-wrapper');
+            if(textWrapper) textWrapper.style.opacity = '1';
             
             consecutiveHighResonance = 0; missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; totalBreaths = 0; 
             sumResonance = 0; resonanceSamples = 0; cycleResonanceSum = 0; cycleResonanceCount = 0;
@@ -1336,7 +1348,9 @@
                 document.getElementById('core').classList.remove('pressing'); document.getElementById('hint').style.opacity = '0'; 
                 document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 
-                textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0';
+                textEl.classList.remove('glow-inhale', 'glow-exhale'); 
+                const textWrapper = document.getElementById('breath-text-wrapper');
+                if(textWrapper) textWrapper.style.opacity = '0';
 
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; currentPace = 5.0; breathScale = 1.0; targetBreathScale = 1.0;
                 
