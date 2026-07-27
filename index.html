@@ -248,8 +248,8 @@
             border-radius: 50%;
             border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; 
             will-change: transform, opacity, border-color, box-shadow;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2), inset 0 0 6px rgba(255, 255, 255, 0.15);
             transform: translateZ(0); -webkit-backface-visibility: hidden;
+            transition: box-shadow 0.1s ease-out;
         }
 
         .ripple-wave {
@@ -562,11 +562,6 @@
         let bowlMasterGain = null; 
         let activeEndingOscillators = [];
 
-        // 雙耳節律 (Binaural Beats) 音效節點
-        let binauralLeftOsc = null;
-        let binauralRightOsc = null;
-        let binauralGain = null;
-
         let currentPace = 5.0; 
         let consecutiveHighResonance = 0;
         let missedInhaleCount = 0; 
@@ -627,7 +622,6 @@
         function killAllOldNodes() {
             if (introOscillator) { try { introOscillator.stop(); introOscillator.disconnect(); } catch(e){} introOscillator = null; }
             if (currentBreathSource) { try { currentBreathSource.stop(); currentBreathSource.disconnect(); } catch(e){} currentBreathSource = null; }
-            stopBinauralBeats();
             if (activeEndingOscillators.length > 0) {
                 activeEndingOscillators.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch(e){} });
                 activeEndingOscillators = [];
@@ -667,7 +661,6 @@
 
             if (state === 'MINDFULNESS') {
                 requestWakeLock();
-                startBinauralBeats();
             } else if (state === 'INTRO') {
                 playIntroAudio();
             }
@@ -714,7 +707,6 @@
             
             let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY');
             
-            // 使用 Ease-In-Out 平滑內插計算 Z 軸速度，消除切換時的頓挫感
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let targetZSpeed = isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor);
             
@@ -726,6 +718,12 @@
                 let star = stars[i];
                 if (isMindful && star.layer === 'background' && !isEndingDissolve) continue;
                 
+                // 動態星空收攏：結算時粒子向中心聚集
+                if (isEndingDissolve) {
+                    star.x *= 0.985;
+                    star.y *= 0.985;
+                }
+
                 star.z -= zFlowSpeed; 
                 if(star.z <= 25) { star.z = 2000; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
                 if(star.z >= 2000) { star.z = 25; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
@@ -808,62 +806,6 @@
             return globalNoiseBuffer;
         }
 
-        /* 啟動 Theta 雙耳節律 (左耳 100Hz / 右耳 104Hz => 4Hz 腦波共振) */
-        function startBinauralBeats() {
-            if (!audioCtx || state !== 'MINDFULNESS') return;
-            stopBinauralBeats();
-
-            const now = audioCtx.currentTime;
-            binauralGain = audioCtx.createGain();
-            binauralGain.gain.setValueAtTime(0.0001, now);
-            binauralGain.gain.exponentialRampToValueAtTime(0.05, now + 3.0); // 低沉包覆底音
-
-            binauralLeftOsc = audioCtx.createOscillator();
-            binauralRightOsc = audioCtx.createOscillator();
-
-            binauralLeftOsc.type = 'sine';
-            binauralRightOsc.type = 'sine';
-
-            binauralLeftOsc.frequency.setValueAtTime(100.0, now); // 左耳 100Hz
-            binauralRightOsc.frequency.setValueAtTime(104.0, now); // 右耳 104Hz (4Hz 差頻)
-
-            if (audioCtx.createStereoPanner) {
-                const pannerL = audioCtx.createStereoPanner();
-                const pannerR = audioCtx.createStereoPanner();
-                pannerL.pan.value = -0.85;
-                pannerR.pan.value = 0.85;
-
-                binauralLeftOsc.connect(pannerL).connect(binauralGain);
-                binauralRightOsc.connect(pannerR).connect(binauralGain);
-            } else {
-                binauralLeftOsc.connect(binauralGain);
-                binauralRightOsc.connect(binauralGain);
-            }
-
-            binauralGain.connect(masterGain);
-            binauralLeftOsc.start(now);
-            binauralRightOsc.start(now);
-        }
-
-        function stopBinauralBeats() {
-            if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            if (binauralGain) {
-                try {
-                    binauralGain.gain.cancelScheduledValues(now);
-                    binauralGain.gain.setTargetAtTime(0.0001, now, 0.05);
-                } catch(e){}
-            }
-            if (binauralLeftOsc) {
-                const l = binauralLeftOsc, r = binauralRightOsc;
-                setTimeout(() => {
-                    try { l.stop(); l.disconnect(); } catch(e){}
-                    try { r.stop(); r.disconnect(); } catch(e){}
-                }, 200);
-                binauralLeftOsc = null; binauralRightOsc = null;
-            }
-        }
-
         function playIntroAudio() {
             if (!audioCtx || state === 'MINDFULNESS') return; 
             killAllOldNodes();
@@ -920,7 +862,6 @@
             }
         }
 
-        /* 自然氣流壓差 FM 頻率調製 */
         function playBreathSound(isInhale) {
             if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
             stopAllBreathAudio();
@@ -932,30 +873,34 @@
             currentBreathResonanceFilter.type = 'lowpass'; 
             
             const gain = audioCtx.createGain(); 
-            gain.gain.setValueAtTime(0.0001, audioCtx.currentTime); 
+            const now = audioCtx.currentTime;
+            gain.gain.setValueAtTime(0.0001, now); 
             currentBreathGain = gain;
             const dur = currentPace;
 
             if (isInhale) {
                 filter.Q.value = 0.42;
                 currentBreathResonanceFilter.frequency.value = 2800;
-                filter.frequency.setValueAtTime(160, audioCtx.currentTime); 
-                // 兩階段非線性拉升：模擬肺部氣流進出的自然漸強
-                filter.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + dur * 0.6);
-                filter.frequency.exponentialRampToValueAtTime(1350, audioCtx.currentTime + dur);
+                filter.frequency.setValueAtTime(160, now); 
+                filter.frequency.exponentialRampToValueAtTime(750, now + dur * 0.6);
+                filter.frequency.exponentialRampToValueAtTime(1350, now + dur);
                 
-                gain.gain.linearRampToValueAtTime(0.28, audioCtx.currentTime + dur * 0.55); 
-                gain.gain.linearRampToValueAtTime(0.025, audioCtx.currentTime + dur + 0.8);
+                // 氣息停頓微縫（Micro-Pause）處理：起步 0.2 秒平滑，結尾提早平滑收尾
+                gain.gain.linearRampToValueAtTime(0.0001, now + 0.2); 
+                gain.gain.linearRampToValueAtTime(0.28, now + dur * 0.55); 
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1);
             } else {
                 filter.Q.value = 0.32;
                 currentBreathResonanceFilter.frequency.value = 1600; 
-                filter.frequency.setValueAtTime(820, audioCtx.currentTime); 
-                filter.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + dur);
-                gain.gain.linearRampToValueAtTime(0.34, audioCtx.currentTime + dur * 0.30); 
-                gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime + dur, 0.12); 
+                filter.frequency.setValueAtTime(820, now); 
+                filter.frequency.exponentialRampToValueAtTime(220, now + dur);
+                
+                gain.gain.linearRampToValueAtTime(0.0001, now + 0.2); 
+                gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); 
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
             }
             noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); 
-            noiseSource.start(audioCtx.currentTime);
+            noiseSource.start(now);
         }
 
         function playEndingBowl() {
@@ -1020,7 +965,6 @@
                     osc.connect(g).connect(bowlMasterGain);
                 }
                 
-                /* AudioNode 自動斷開與記憶體顯式回收 */
                 osc.onended = () => {
                     try {
                         osc.disconnect();
@@ -1085,10 +1029,6 @@
             if (rippleEl) {
                 rippleEl.classList.remove('active'); void rippleEl.offsetWidth;
                 rippleEl.classList.add('active');
-            }
-            
-            if (navigator.vibrate && phaseChangeCount < 10) { 
-                try { navigator.vibrate(5); } catch(e){} 
             }
             
             updateHintState();
@@ -1218,12 +1158,6 @@
             let targetRes = isAligned ? 1.0 : 0.0;
             currentResonance += (targetRes - currentResonance) * 0.08;
 
-            // 雙耳節律音量隨共振度微調（提供無意識平靜獎勵）
-            if (binauralGain && audioCtx) {
-                let resGain = 0.04 + currentResonance * 0.035;
-                binauralGain.gain.setTargetAtTime(resGain, audioCtx.currentTime, 0.1);
-            }
-
             updateHintState();
 
             cycleResonanceSum += currentResonance; cycleResonanceCount++;
@@ -1241,7 +1175,6 @@
             let gInt = Math.floor(currG);
             let bInt = Math.floor(currB);
 
-            // 緩存 RGB 字串，避免高頻字串垃圾（GC 優化）
             cachedColorStr = `${rInt}, ${gInt}, ${bInt}`;
 
             document.documentElement.style.setProperty('--c-r', rInt);
@@ -1270,8 +1203,10 @@
 
             if (textEl.style.opacity === '0') textEl.style.opacity = '0.9';
 
+            // 微光暈擴散（Soft Ambient Bloom）計算與套用
+            let bloom = Math.sin(guidePhase * (Math.PI / 2)); // 在吸氣達到頂峰時最強
             guideRingEl.style.borderColor = `rgba(${cachedColorStr}, 0.75)`; 
-            guideRingEl.style.boxShadow = `0 0 12px rgba(${cachedColorStr}, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
+            guideRingEl.style.boxShadow = `0 0 ${12 + bloom * 24}px rgba(${cachedColorStr}, ${0.35 + bloom * 0.45}), inset 0 0 ${6 + bloom * 8}px rgba(255,255,255,${0.18 + bloom * 0.2})`;
 
             if (isPressing) { targetBreathScale = 0.7 - currentResonance * 0.1; } else { targetBreathScale = 1.1 + currentResonance * 0.2; }
             
@@ -1324,7 +1259,6 @@
             guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
             stopIntroAudio();
-            startBinauralBeats();
 
             if (masterGain && audioCtx) {
                 masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
@@ -1361,7 +1295,6 @@
             isPressing = false;
             stopAllBreathAudio();
             stopIntroAudio();
-            stopBinauralBeats();
 
             playEndingBowl();
 
