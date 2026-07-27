@@ -35,7 +35,7 @@
             --c-b: 80;
         }
 
-        /* 【重點修復】全域與所有偽元素鎖死選取與 Callout 預設行為 */
+        /* 全域與所有偽元素鎖死選取與 Callout 預設行為 */
         *, *::before, *::after {
             box-sizing: border-box;
             user-select: none !important;
@@ -158,7 +158,7 @@
         }
         .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
-        /* 【重點修復】互動層加入手勢鎖死屬性 */
+        /* 互動層加入手勢鎖死屬性 */
         #interaction-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 15; display: none; cursor: pointer; 
@@ -414,7 +414,6 @@
     <script>
         const APP_VERSION = 'v26';
 
-        // 【重點修復】頁面載入後立即註冊 SW，不再延遲 3.5 秒
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
@@ -509,7 +508,6 @@
             if (startupElem) startupElem.href = splashCanvas.toDataURL('image/png');
         })();
 
-        // 【重點修復】防止全域手勢干擾
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length > 1) e.preventDefault(); 
         }, { passive: false });
@@ -748,14 +746,21 @@
             }
         }
 
+        /* 【修復處 1】修改 initAudio 以確保重複進入時音量與音訊狀態完全恢復 */
         function initAudio() {
             if (!audioCtx) { 
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
                 masterGain = audioCtx.createGain();
                 masterGain.gain.value = 1.0;
                 masterGain.connect(audioCtx.destination);
-            } else if (audioCtx.state === 'suspended') { 
-                audioCtx.resume(); 
+            } else {
+                if (audioCtx.state === 'suspended') { 
+                    audioCtx.resume(); 
+                }
+                if (masterGain) {
+                    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                    masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+                }
             }
 
             if (!silentAudioAnchor) {
@@ -1010,7 +1015,6 @@
             }
         }
 
-        // 【重點修復】互動層加入 preventDefault 徹底封死 iOS 預設手勢
         const interactLayer = document.getElementById('interaction-layer');
         const handlePress = (e) => { e.preventDefault(); setPressState(true); };
         const handleRelease = (e) => { e.preventDefault(); setPressState(false); };
@@ -1203,6 +1207,7 @@
             }, 800); 
         });
 
+        /* 【修復處 2】在 initMindfulness 加入 masterGain 音量強制解鎖機制 */
         function initMindfulness() {
             if(guideAnimFrame) {
                 cancelAnimationFrame(guideAnimFrame);
@@ -1217,6 +1222,11 @@
             guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
             stopIntroAudio();
+
+            if (masterGain && audioCtx) {
+                masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+            }
             
             textEl.classList.remove('glow-inhale', 'glow-exhale');
             textEl.style.opacity = '0.9';
