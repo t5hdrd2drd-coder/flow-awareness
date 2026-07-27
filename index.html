@@ -16,28 +16,16 @@
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="流動覺察 Flow Awareness">
-    <meta property="og:description" content="一場讓你活在當下的正念體驗。An Audio-Visual Mindfulness Ritual.">
-    
-    <link rel="icon" id="dynamic-favicon" type="image/png">
-    <link rel="apple-touch-icon" id="dynamic-apple-icon">
-    <link rel="apple-touch-startup-image" id="dynamic-startup-image">
-
     <title>流動覺察 Flow Awareness</title>
     <style>
         html { background-color: #030105 !important; background: #030105 !important; }
 
         :root {
-            --breath-half: 3.2s; 
-            --c-r: 255;
-            --c-g: 180;
-            --c-b: 80;
+            --c-r: 255; --c-g: 180; --c-b: 80;
             --sat-top: env(safe-area-inset-top, 0px);
             --sat-bottom: env(safe-area-inset-bottom, 0px);
         }
 
-        /* 全域鎖死選取預設行為 */
         *, *::before, *::after {
             box-sizing: border-box;
             user-select: none !important;
@@ -47,55 +35,32 @@
         }
 
         html, body {
-            margin: 0; padding: 0;
-            width: 100vw; 
-            height: 100dvh; 
-            overflow: hidden; 
-            position: fixed; 
-            background-color: #030105 !important; 
-            background: #030105 !important;
+            margin: 0; padding: 0; width: 100vw; height: 100dvh; overflow: hidden; position: fixed; 
+            background-color: #030105 !important; background: #030105 !important;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            touch-action: none; 
-            -webkit-user-drag: none;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
+            touch-action: none; -webkit-user-drag: none;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;
         }
 
         .sky-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; z-index: 0; opacity: 0; 
-            transition: opacity 4s ease-in-out, filter 5s ease;
-            filter: blur(60px); animation: hueShift 75s infinite linear; 
-            will-change: opacity, transform;
-            backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(0);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; opacity: 0; 
+            transition: opacity 4s ease-in-out, filter 5s ease; filter: blur(60px); animation: hueShift 75s infinite linear; 
+            will-change: opacity, transform; backface-visibility: hidden; transform: translateZ(0);
         }
         .sky-container.active { opacity: 0.45; }
-
-        .sky-cloud {
-            position: absolute; mix-blend-mode: screen;
-            animation: cloudFlow 23s infinite alternate ease-in-out; 
-            will-change: transform;
-            backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translateZ(0);
-        }
+        .sky-cloud { position: absolute; mix-blend-mode: screen; animation: cloudFlow 23s infinite alternate ease-in-out; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
         #cloud1 { width: 140vw; height: 140vh; background: radial-gradient(circle, rgba(255, 94, 98, 0.8) 0%, rgba(255, 153, 102, 0.4) 45%, transparent 70%); top: -50vh; left: -20vw; border-radius: 50%; }
         #cloud2 { width: 150vw; height: 110vh; background: radial-gradient(circle, rgba(56, 189, 248, 0.8) 0%, rgba(75, 0, 130, 0.4) 50%, transparent 70%); bottom: -30vh; right: -30vw; border-radius: 50%; animation-duration: 30s; animation-delay: -5s; }
         #cloud3 { width: 110vw; height: 130vh; background: radial-gradient(circle, rgba(255, 0, 127, 0.7) 0%, rgba(255, 140, 0, 0.3) 50%, transparent 70%); top: 10vh; left: -10vw; border-radius: 50%; animation-duration: 26s; animation-delay: -12s; }
 
-        #intro-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; pointer-events: none; transition: opacity 2s ease;
-        }
+        #intro-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; transition: opacity 2s ease; }
 
         .first-click-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 999; background: #030105;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; transition: opacity 1s ease; padding-bottom: var(--sat-bottom);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: #030105;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: opacity 1s ease; padding-bottom: var(--sat-bottom);
         }
         .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; }
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
-        
         .headphone-hint { 
             position: absolute; bottom: calc(75px + var(--sat-bottom)); font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
             color: rgba(241, 245, 249, 0.85); background: rgba(255, 255, 255, 0.03); padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08);
@@ -112,9 +77,9 @@
         .btn-start { margin-top: 28px; background: #ffffff; color: #030105; border: none; padding: 12px 42px; border-radius: 30px; font-size: 0.9rem; letter-spacing: 3px; margin-right: -3px; font-weight: 400; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 0 15px rgba(255,255,255,0.12); }
         .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
 
-        #interaction-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; display: none; cursor: pointer; touch-action: none !important; -webkit-user-select: none !important; -webkit-touch-callout: none !important; }
+        #interaction-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; display: none; cursor: pointer; touch-action: none !important; }
 
-        .container { text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; transform: translateZ(0); -webkit-backface-visibility: hidden; backface-visibility: hidden; padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
+        .container { text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; transform: translateZ(0); padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
 
         .top-header { position: absolute; top: calc(clamp(25px, 6vh, 45px) + var(--sat-top)); pointer-events: none; transition: opacity 2.5s ease; }
         h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; transition: opacity 2.5s ease; }
@@ -122,48 +87,48 @@
 
         .breath-wrapper { position: relative; width: clamp(280px, 35vw, 420px); height: clamp(280px, 35vw, 420px); display: flex; justify-content: center; align-items: center; margin-top: 10px; perspective: 1000px; overflow: visible; }
 
-        .guide-ring, .ripple-wave { position: absolute; top: 50%; left: 50%; width: 140px; height: 140px; margin-top: -70px; margin-left: -70px; }
+        /* 統一內圈與外圈的基礎半徑，達成完美重合 */
+        .guide-ring, .ripple-wave { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; }
 
         .organic-core {
-            position: absolute; top: 50%; left: 50%;
-            width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; 
-            z-index: 2; pointer-events: none; opacity: 0; 
-            transition: opacity 2s ease; transform: translateZ(0); will-change: opacity; 
+            position: absolute; top: 50%; left: 50%; width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; 
+            z-index: 2; pointer-events: none; opacity: 0; transition: opacity 2s ease; transform: translateZ(0); will-change: opacity; 
         }
 
-        .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 140px; height: 140px; margin-top: -70px; margin-left: -70px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); -webkit-backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; will-change: transform, opacity; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
+        .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
 
         #breath-text { position: absolute; top: -32px; left: 50%; transform: translateX(-50%); font-weight: 400; letter-spacing: 10px; margin-right: -10px; font-size: 1.2rem; z-index: 15; will-change: transform, color; opacity: 0.9; white-space: nowrap; transition: opacity 2s ease, visibility 2s ease; }
 
         @media (max-width: 480px) {
             .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); }
-            .guide-ring, .ripple-wave { width: 105px; height: 105px; margin-top: -52.5px; margin-left: -52.5px; }
-            .affirmation-water-drop { width: 105px; height: 105px; margin-top: -52.5px; margin-left: -52.5px; }
+            /* 手機版統一半徑為 50px */
+            .guide-ring, .ripple-wave { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
+            .affirmation-water-drop { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
             #breath-text { top: -24px; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
-            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; color: rgba(255, 255, 255, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; }
+            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
         }
 
-        .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); -webkit-backface-visibility: hidden; transition: box-shadow 0.1s ease-out; }
+        .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out; }
         .ripple-wave { border-radius: 50%; pointer-events: none; z-index: 1; opacity: 0; transform: scale(1); background: radial-gradient(circle, transparent 40%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.3) 75%, transparent 100%); will-change: transform, opacity; border: none; }
         .ripple-wave.active { animation: softRadiantExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
 
-        .interaction-hint { position: absolute; bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom)); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300; padding: 0; background: transparent; border: none; box-shadow: none; pointer-events: none; opacity: 0; transition: opacity 2s ease, transform 0.8s ease; white-space: nowrap; }
+        .interaction-hint { position: absolute; bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom)); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300; padding: 0; background: transparent; border: none; pointer-events: none; opacity: 0; transition: opacity 2s ease, transform 0.8s ease; white-space: nowrap; }
         .interaction-hint.flash-mild { animation: hintPulse 2.8s infinite ease-in-out; }
 
         #btn-stop { position: absolute; bottom: calc(clamp(25px, 5vh, 40px) + var(--sat-bottom)); left: 50%; transform: translateX(-50%); z-index: 9999; display: none; opacity: 0; }
-        .capsule-btn { background: rgba(255, 255, 255, 0.03); color: rgba(241, 245, 249, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); padding: 8px 26px; border-radius: 25px; font-size: 0.8rem; letter-spacing: 2px; margin-right: -2px; font-weight: 300; cursor: pointer; transition: all 0.4s ease; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); pointer-events: auto; }
+        .capsule-btn { background: rgba(255, 255, 255, 0.03); color: rgba(241, 245, 249, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); padding: 8px 26px; border-radius: 25px; font-size: 0.8rem; letter-spacing: 2px; margin-right: -2px; font-weight: 300; cursor: pointer; transition: all 0.4s ease; backdrop-filter: blur(4px); pointer-events: auto; }
         .capsule-btn:hover, .capsule-btn:active { background: rgba(255, 255, 255, 0.15); color: #ffffff; border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
 
-        .summary-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(3, 1, 5, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); opacity: 0; transition: opacity 7.5s ease-in-out; pointer-events: none; user-select: none !important; -webkit-user-select: none !important; -webkit-touch-callout: none !important; padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
+        .summary-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(3, 1, 5, 0.65); backdrop-filter: blur(25px); opacity: 0; transition: opacity 7.5s ease-in-out; pointer-events: none; padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
         .summary-title { font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 200; letter-spacing: clamp(6px, 2vw, 12px); margin-right: calc(-1 * clamp(6px, 2vw, 12px)); color: #ffffff; margin-bottom: 16px; white-space: nowrap; }
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
         .countdown-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; display: none; justify-content: center; align-items: center; pointer-events: none; opacity: 1; transition: opacity 0.6s ease; }
-        .countdown-text { font-size: clamp(5.5rem, 20vw, 8rem); font-weight: 100; color: #ffffff; opacity: 0; transform: scale(0.88); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform, opacity; mix-blend-mode: plus-lighter; -webkit-font-smoothing: antialiased; }
+        .countdown-text { font-size: clamp(5.5rem, 20vw, 8rem); font-weight: 100; color: #ffffff; opacity: 0; transform: scale(0.88); transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); mix-blend-mode: plus-lighter; }
         .countdown-text.active { opacity: 0.95; transform: scale(1.02); }
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
 
@@ -266,7 +231,6 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
-                    .then((reg) => { console.log('PWA Service Worker 註冊成功'); })
                     .catch((err) => { console.log('PWA 註冊失敗:', err); });
             });
         }
@@ -281,46 +245,15 @@
         })();
 
         (function generateHighResAppIcon() {
-            const iconCanvas = document.createElement('canvas');
-            iconCanvas.width = 512; iconCanvas.height = 512;
-            const ictx = iconCanvas.getContext('2d');
-            ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
-
-            const bgGlow = ictx.createRadialGradient(256, 256, 10, 256, 256, 240);
-            bgGlow.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-            bgGlow.addColorStop(0.2, 'rgba(56, 189, 248, 0.5)');
-            bgGlow.addColorStop(0.5, 'rgba(255, 180, 80, 0.35)');
-            bgGlow.addColorStop(0.85, 'rgba(120, 50, 255, 0.15)');
-            bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
-            ictx.fillStyle = bgGlow; ictx.fillRect(0, 0, 512, 512);
-
-            const goldGrad = ictx.createLinearGradient(110, 110, 402, 402);
-            goldGrad.addColorStop(0, '#ffe5a3'); goldGrad.addColorStop(0.5, '#ffb450'); goldGrad.addColorStop(1, '#ff7e1d');
-            ictx.save(); ictx.shadowColor = 'rgba(255, 180, 80, 0.85)'; ictx.shadowBlur = 32; ictx.beginPath(); ictx.arc(256, 256, 138, 0, Math.PI * 2); ictx.lineWidth = 12; ictx.strokeStyle = goldGrad; ictx.stroke(); ictx.restore();
-
-            const blueGrad = ictx.createLinearGradient(160, 160, 352, 352);
-            blueGrad.addColorStop(0, '#e0f2fe'); blueGrad.addColorStop(0.5, '#38bdf8'); blueGrad.addColorStop(1, '#0284c7');
-            ictx.save(); ictx.shadowColor = 'rgba(56, 189, 248, 0.9)'; ictx.shadowBlur = 24; ictx.beginPath(); ictx.arc(256, 256, 90, 0, Math.PI * 2); ictx.lineWidth = 9; ictx.strokeStyle = blueGrad; ictx.stroke(); ictx.restore();
-
-            ictx.save(); ictx.shadowColor = '#ffffff'; ictx.shadowBlur = 20; ictx.beginPath(); ictx.arc(256, 256, 20, 0, Math.PI * 2); ictx.fillStyle = '#ffffff'; ictx.fill(); ictx.restore();
-
+            const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
+            const ictx = iconCanvas.getContext('2d'); ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
             const pngDataUrl = iconCanvas.toDataURL('image/png');
             document.getElementById('dynamic-favicon').href = pngDataUrl;
             document.getElementById('dynamic-apple-icon').href = pngDataUrl;
-
-            const maxDimension = 1280;
-            let rawSw = window.screen.width * (window.devicePixelRatio || 1); let rawSh = window.screen.height * (window.devicePixelRatio || 1);
-            let scale = Math.min(1, maxDimension / Math.max(rawSw, rawSh));
-            let sw = Math.floor(rawSw * scale); let sh = Math.floor(rawSh * scale);
-
-            const splashCanvas = document.createElement('canvas'); splashCanvas.width = sw; splashCanvas.height = sh;
-            const sctx = splashCanvas.getContext('2d'); sctx.fillStyle = '#030105'; sctx.fillRect(0, 0, sw, sh);
-            const startupElem = document.getElementById('dynamic-startup-image'); if (startupElem) startupElem.href = splashCanvas.toDataURL('image/png');
         })();
 
         document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) { e.preventDefault(); } lastTouchEnd = now; }, { passive: false });
+        let lastTouchEnd = 0; document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) { e.preventDefault(); } lastTouchEnd = now; }, { passive: false });
         document.addEventListener('gesturestart', (e) => e.preventDefault()); document.addEventListener('gesturechange', (e) => e.preventDefault()); document.addEventListener('gestureend', (e) => e.preventDefault()); document.addEventListener('selectstart', (e) => e.preventDefault());
         window.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -334,8 +267,16 @@
         const EXHALE_RATIO = 1.18; 
         let consecutiveHighResonance = 0, missedInhaleCount = 0, userPressedInInhale = false;
         let phaseChangeCount = 0, totalBreaths = 0, sumResonance = 0, resonanceSamples = 0, cycleResonanceSum = 0, cycleResonanceCount = 0;
-        let lastTime = 0, guidePhase = 0, guideDir = 1, guideAnimFrame = null, isCurrentPhaseInhale = true; 
-        let currentResonance = 1.0, isPressing = false, currentCoreScale = 1.0, isEndingDissolve = false; 
+        
+        let lastTime = 0;
+        let guidePhase = 0; // 系統預設的光環相位
+        let userPhase = 0;  // 使用者獨立操作的相位（磁吸跟隨的核心）
+        let guideDir = 1; 
+        let guideAnimFrame = null, isCurrentPhaseInhale = true; 
+        
+        let currentResonance = 1.0, isPressing = false;
+        let currentCoreScale = 1.0; 
+        let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
 
         const bgCanvas = document.getElementById('intro-canvas');
@@ -345,14 +286,12 @@
         let stars = [], canvasAnimFrame = null, breathScale = 1.0, targetBreathScale = 1.0;
 
         function fadeMasterOutAndSuspend() {
-            if (!audioCtx || !masterGain) return;
-            const now = audioCtx.currentTime;
+            if (!audioCtx || !masterGain) return; const now = audioCtx.currentTime;
             try { masterGain.gain.cancelScheduledValues(now); masterGain.gain.setTargetAtTime(0, now, 0.015); if (audioCtx.state === 'running') { setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50); } } catch(e){}
         }
 
         function fadeMasterIn() {
-            if (!audioCtx || !masterGain) return;
-            const now = audioCtx.currentTime;
+            if (!audioCtx || !masterGain) return; const now = audioCtx.currentTime;
             try { masterGain.gain.cancelScheduledValues(now); masterGain.gain.setValueAtTime(0, now); masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3); } catch(e){}
         }
 
@@ -370,8 +309,7 @@
             if (audioCtx.state === 'suspended') { audioCtx.resume().then(() => { setTimeout(restoreAudioLogic, 150); }).catch(e => {}); } else { setTimeout(restoreAudioLogic, 150); }
         }
         function restoreAudioLogic() {
-            if (document.visibilityState !== 'visible') return;
-            killAllOldNodes(); fadeMasterIn();
+            if (document.visibilityState !== 'visible') return; killAllOldNodes(); fadeMasterIn();
             if (state === 'MINDFULNESS') { requestWakeLock(); } else if (state === 'INTRO') { playIntroAudio(); }
         }
 
@@ -424,62 +362,51 @@
                 bgCtx.fill();
             }
 
-            // --- 核心技術優化：表面張力水滴 (Surface Tension Drop) ---
             coreCtx.clearRect(0, 0, 600, 600);
             
             if (isMindful || state === 'INTRO') {
-                const nowSec = Date.now() * 0.001;
                 coreCtx.globalCompositeOperation = 'screen';
                 
-                // 動態物理參數
+                // 動態取得裝置安全半徑，確保與 CSS 中 120px / 100px 的外圈光環達到 100% 像素級完美覆蓋
+                let responsiveBaseRadius = (window.innerWidth <= 480) ? 50 : 60;
+                let baseRadius = responsiveBaseRadius * currentCoreScale; 
+                
                 let expansionFactor = Math.max(0, (currentCoreScale - 1.0) / 1.2); 
-                let baseRadius = 60 * currentCoreScale;
                 let resAlpha = 0.4 + 0.6 * currentResonance; 
                 const coreCx = 300, coreCy = 300;
 
-                // 1. 底層環境柔光 (Ambient Glow)，讓水滴融入夜空
-                const ambientRadius = baseRadius * 1.6;
+                // 1. 底層環境柔光，範圍收縮避免溢出邊界太遠
+                const ambientRadius = baseRadius * 1.4;
                 const ambientGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, ambientRadius);
-                ambientGrad.addColorStop(0.3, `rgba(${currR}, ${currG}, ${currB}, ${0.1 * resAlpha})`);
+                ambientGrad.addColorStop(0.2, `rgba(${currR}, ${currG}, ${currB}, ${0.12 * resAlpha})`);
                 ambientGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
                 coreCtx.beginPath(); coreCtx.arc(coreCx, coreCy, ambientRadius, 0, Math.PI * 2);
                 coreCtx.fillStyle = ambientGrad; coreCtx.fill();
 
-                // 2. 主體液態水滴 (Liquid Drop Body)
-                const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius + 4);
-                // 核心透亮
+                // 2. 主體露珠：捨棄所有蠕動，畫出極致純粹的「完美正圓形」
+                const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius);
                 dropGrad.addColorStop(0, `rgba(${currR}, ${currG}, ${currB}, ${0.08 * resAlpha})`);
                 dropGrad.addColorStop(0.7, `rgba(${currR}, ${currG}, ${currB}, ${0.15 * resAlpha})`);
-                // 邊緣透光 (Fresnel) - 吸氣越膨脹，邊界表面張力越強、透光越明顯
                 let edgeDensity = (0.35 + 0.25 * expansionFactor) * resAlpha; 
-                dropGrad.addColorStop(0.92, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
-                // 水滴的抗鋸齒銳利邊界 (陡降至 0)
-                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
+                dropGrad.addColorStop(0.94, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
+                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`); // 完美的抗鋸齒邊緣
 
                 coreCtx.beginPath();
-                const segments = 60; // 低運算負擔
-                for(let i=0; i<=segments; i++){
-                    let angle = (i / segments) * Math.PI * 2;
-                    // 表面張力邏輯：未按壓時微微蠕動(2.5px)，按壓膨脹時張力拉滿化為正圓(極小變形)
-                    let wobbleAmp = 2.5 * (1.0 - expansionFactor * 0.85); 
-                    let wobble = Math.sin(angle * 3 + nowSec * 1.5) * wobbleAmp + Math.cos(angle * 2 - nowSec * 1.1) * wobbleAmp;
-                    let r = baseRadius + wobble;
-                    let px = coreCx + Math.cos(angle) * r;
-                    let py = coreCy + Math.sin(angle) * r;
-                    if(i===0) coreCtx.moveTo(px, py); else coreCtx.lineTo(px, py);
-                }
-                coreCtx.closePath();
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2); // 零形變，絕對正圓
                 coreCtx.fillStyle = dropGrad;
                 coreCtx.fill();
 
-                // 3. 微弱的表面高光 (Specular Highlight)，確認物理液態感
+                // 3. 露珠表面微高光 (增加液態立體感)
                 let hx = coreCx - baseRadius * 0.35; let hy = coreCy - baseRadius * 0.35; let hr = baseRadius * 0.65;
                 const highGrad = coreCtx.createRadialGradient(hx, hy, 0, hx, hy, hr);
-                let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha; // 極度低調不刺眼
+                let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha;
                 highGrad.addColorStop(0, `rgba(255, 255, 255, ${highlightAlpha})`);
                 highGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+                
+                coreCtx.beginPath();
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2); // 遮罩範圍
                 coreCtx.fillStyle = highGrad;
-                coreCtx.fill(); // 直接再次 fill()，高光會被完美限制在剛才畫的水滴輪廓內！
+                coreCtx.fill();
             }
 
             canvasAnimFrame = requestAnimationFrame(drawCanvas);
@@ -517,8 +444,7 @@
         }
 
         function playIntroAudio() {
-            if (!audioCtx || state === 'MINDFULNESS') return; 
-            killAllOldNodes();
+            if (!audioCtx || state === 'MINDFULNESS') return; killAllOldNodes();
             const now = audioCtx.currentTime; 
             introGain = audioCtx.createGain(); introGain.gain.setValueAtTime(0.0001, now); introGain.gain.setTargetAtTime(0.48, now, 0.5); introGain.connect(masterGain); 
             introOscillator = audioCtx.createOscillator(); introOscillator.type = 'sine'; introOscillator.frequency.value = 108.0; 
@@ -684,6 +610,7 @@
                 baseInhalePace = 3.2 + smoothedProgress * 0.4; 
             } else { baseInhalePace = 3.2; }
 
+            // 1. 系統邊線相位 (Guide Phase)
             let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
             guidePhase += guideDir * (dt / currentPhaseDur);
             
@@ -692,13 +619,30 @@
 
             let p = guidePhase; let eased = p * p * p * (p * (p * 6 - 15) + 10);
             
+            // 2. 使用者獨立相位，並套用「溫柔磁吸機制 (Magnetic Catch-up)」
+            let userPhaseDur = isPressing ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
+            let catchUpFactor = 1.35; // 趕上系統的寬容速率
+            
+            if (isPressing) {
+                userPhase += (dt / userPhaseDur) * catchUpFactor;
+                if (userPhase > 1) userPhase = 1;
+                // 磁吸：只要系統在吸氣，且使用者趕上了光環，就立刻完美融合鎖定
+                if (isCurrentPhaseInhale && userPhase > guidePhase) { userPhase = guidePhase; }
+            } else {
+                userPhase -= (dt / userPhaseDur) * catchUpFactor;
+                if (userPhase < 0) userPhase = 0;
+                // 磁吸：只要系統在呼氣，且使用者趕上了光環，就立刻完美融合鎖定
+                if (!isCurrentPhaseInhale && userPhase < guidePhase) { userPhase = guidePhase; }
+            }
+
+            let uP = userPhase; let userEased = uP * uP * uP * (uP * (uP * 6 - 15) + 10);
+            
+            // 因為基礎半徑統一，所以這裡套用相同的 ease 公式，會達成 100% 完美的視覺覆蓋
             let scale = 1 + eased * 1.2; let opacity = 0.25 + eased * 0.55; 
             if (guideRingEl) { guideRingEl.style.transform = `scale(${scale})`; guideRingEl.style.opacity = opacity; }
             
-            let targetCoreScale = 1.0;
-            if (isPressing) { targetCoreScale = 1.0 + eased * 1.2; } else { if (!isCurrentPhaseInhale) { targetCoreScale = 1.0 + eased * 1.2; } else { targetCoreScale = 1.0; } }
+            currentCoreScale = 1.0 + userEased * 1.2;
             
-            currentCoreScale += (targetCoreScale - currentCoreScale) * 0.12;
             let targetRes = (isCurrentPhaseInhale === isPressing) ? 1.0 : 0.0;
             currentResonance += (targetRes - currentResonance) * 0.08;
             updateUIStateForMindfulness(elapsedSecs);
@@ -748,7 +692,8 @@
         function initMindfulness() {
             if(guideAnimFrame) { cancelAnimationFrame(guideAnimFrame); guideAnimFrame = null; }
             state = 'MINDFULNESS'; sessionStartTime = Date.now(); isEndingDissolve = false; requestWakeLock();
-            baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; guidePhase = 0; guideDir = 1; currentCoreScale = 1.0;
+            baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; 
+            guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
             stopIntroAudio();
             if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
             
