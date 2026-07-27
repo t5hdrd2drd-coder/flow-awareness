@@ -58,6 +58,7 @@
         .first-click-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: #030105;
             display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: opacity 1s ease; padding-bottom: var(--sat-bottom);
+            pointer-events: auto;
         }
         .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; }
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
@@ -87,7 +88,6 @@
 
         .breath-wrapper { position: relative; width: clamp(280px, 35vw, 420px); height: clamp(280px, 35vw, 420px); display: flex; justify-content: center; align-items: center; margin-top: 10px; perspective: 1000px; overflow: visible; }
 
-        /* 統一內圈與外圈的基礎半徑，達成完美重合 */
         .guide-ring, .ripple-wave { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; }
 
         .organic-core {
@@ -101,7 +101,6 @@
 
         @media (max-width: 480px) {
             .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); }
-            /* 手機版統一半徑為 50px */
             .guide-ring, .ripple-wave { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
             .affirmation-water-drop { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
             #breath-text { top: -24px; }
@@ -244,19 +243,6 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        (function generateHighResAppIcon() {
-            const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
-            const ictx = iconCanvas.getContext('2d'); ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
-            const pngDataUrl = iconCanvas.toDataURL('image/png');
-            document.getElementById('dynamic-favicon').href = pngDataUrl;
-            document.getElementById('dynamic-apple-icon').href = pngDataUrl;
-        })();
-
-        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
-        let lastTouchEnd = 0; document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) { e.preventDefault(); } lastTouchEnd = now; }, { passive: false });
-        document.addEventListener('gesturestart', (e) => e.preventDefault()); document.addEventListener('gesturechange', (e) => e.preventDefault()); document.addEventListener('gestureend', (e) => e.preventDefault()); document.addEventListener('selectstart', (e) => e.preventDefault());
-        window.addEventListener('contextmenu', (e) => e.preventDefault());
-
         let state = 'INIT'; 
         let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
         let masterGain = null, silentAudioAnchor = null;
@@ -269,8 +255,8 @@
         let phaseChangeCount = 0, totalBreaths = 0, sumResonance = 0, resonanceSamples = 0, cycleResonanceSum = 0, cycleResonanceCount = 0;
         
         let lastTime = 0;
-        let guidePhase = 0; // 系統預設的光環相位
-        let userPhase = 0;  // 使用者獨立操作的相位（磁吸跟隨的核心）
+        let guidePhase = 0; 
+        let userPhase = 0;  
         let guideDir = 1; 
         let guideAnimFrame = null, isCurrentPhaseInhale = true; 
         
@@ -367,7 +353,6 @@
             if (isMindful || state === 'INTRO') {
                 coreCtx.globalCompositeOperation = 'screen';
                 
-                // 動態取得裝置安全半徑，確保與 CSS 中 120px / 100px 的外圈光環達到 100% 像素級完美覆蓋
                 let responsiveBaseRadius = (window.innerWidth <= 480) ? 50 : 60;
                 let baseRadius = responsiveBaseRadius * currentCoreScale; 
                 
@@ -375,7 +360,6 @@
                 let resAlpha = 0.4 + 0.6 * currentResonance; 
                 const coreCx = 300, coreCy = 300;
 
-                // 1. 底層環境柔光，範圍收縮避免溢出邊界太遠
                 const ambientRadius = baseRadius * 1.4;
                 const ambientGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, ambientRadius);
                 ambientGrad.addColorStop(0.2, `rgba(${currR}, ${currG}, ${currB}, ${0.12 * resAlpha})`);
@@ -383,20 +367,18 @@
                 coreCtx.beginPath(); coreCtx.arc(coreCx, coreCy, ambientRadius, 0, Math.PI * 2);
                 coreCtx.fillStyle = ambientGrad; coreCtx.fill();
 
-                // 2. 主體露珠：捨棄所有蠕動，畫出極致純粹的「完美正圓形」
                 const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius);
                 dropGrad.addColorStop(0, `rgba(${currR}, ${currG}, ${currB}, ${0.08 * resAlpha})`);
                 dropGrad.addColorStop(0.7, `rgba(${currR}, ${currG}, ${currB}, ${0.15 * resAlpha})`);
                 let edgeDensity = (0.35 + 0.25 * expansionFactor) * resAlpha; 
                 dropGrad.addColorStop(0.94, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
-                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`); // 完美的抗鋸齒邊緣
+                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
 
                 coreCtx.beginPath();
-                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2); // 零形變，絕對正圓
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
                 coreCtx.fillStyle = dropGrad;
                 coreCtx.fill();
 
-                // 3. 露珠表面微高光 (增加液態立體感)
                 let hx = coreCx - baseRadius * 0.35; let hy = coreCy - baseRadius * 0.35; let hr = baseRadius * 0.65;
                 const highGrad = coreCtx.createRadialGradient(hx, hy, 0, hx, hy, hr);
                 let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha;
@@ -404,7 +386,7 @@
                 highGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
                 
                 coreCtx.beginPath();
-                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2); // 遮罩範圍
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
                 coreCtx.fillStyle = highGrad;
                 coreCtx.fill();
             }
@@ -610,7 +592,6 @@
                 baseInhalePace = 3.2 + smoothedProgress * 0.4; 
             } else { baseInhalePace = 3.2; }
 
-            // 1. 系統邊線相位 (Guide Phase)
             let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
             guidePhase += guideDir * (dt / currentPhaseDur);
             
@@ -619,25 +600,21 @@
 
             let p = guidePhase; let eased = p * p * p * (p * (p * 6 - 15) + 10);
             
-            // 2. 使用者獨立相位，並套用「溫柔磁吸機制 (Magnetic Catch-up)」
             let userPhaseDur = isPressing ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
-            let catchUpFactor = 1.35; // 趕上系統的寬容速率
+            let catchUpFactor = 1.35;
             
             if (isPressing) {
                 userPhase += (dt / userPhaseDur) * catchUpFactor;
                 if (userPhase > 1) userPhase = 1;
-                // 磁吸：只要系統在吸氣，且使用者趕上了光環，就立刻完美融合鎖定
                 if (isCurrentPhaseInhale && userPhase > guidePhase) { userPhase = guidePhase; }
             } else {
                 userPhase -= (dt / userPhaseDur) * catchUpFactor;
                 if (userPhase < 0) userPhase = 0;
-                // 磁吸：只要系統在呼氣，且使用者趕上了光環，就立刻完美融合鎖定
                 if (!isCurrentPhaseInhale && userPhase < guidePhase) { userPhase = guidePhase; }
             }
 
             let uP = userPhase; let userEased = uP * uP * uP * (uP * (uP * 6 - 15) + 10);
             
-            // 因為基礎半徑統一，所以這裡套用相同的 ease 公式，會達成 100% 完美的視覺覆蓋
             let scale = 1 + eased * 1.2; let opacity = 0.25 + eased * 0.55; 
             if (guideRingEl) { guideRingEl.style.transform = `scale(${scale})`; guideRingEl.style.opacity = opacity; }
             
@@ -661,13 +638,36 @@
             guideAnimFrame = requestAnimationFrame(animateGuide);
         }
 
-        document.getElementById('first-click').addEventListener('click', () => {
-            if (state !== 'INIT') return; state = 'INTRO';
-            if(document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(err=>{}); } else if (document.webkitRequestFullscreen) { document.webkitExitFullscreen().catch(err=>{}); }
-            initAudio(); playIntroAudio(); initCanvas(); 
-            document.getElementById('first-click').style.pointerEvents = 'none'; document.getElementById('first-click').style.opacity = '0';
-            setTimeout(() => { document.getElementById('first-click').style.display = 'none'; document.getElementById('intro').style.display = 'flex'; setTimeout(()=> { document.getElementById('intro').style.opacity = '1'; }, 50); }, 1000);
-        });
+        // --- 核心修復：徹底解鎖首頁點擊跳轉 Bug ---
+        const firstClickEl = document.getElementById('first-click');
+
+        function handleFirstClick(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            if (state !== 'INIT') return; 
+            state = 'INTRO';
+
+            if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+
+            initAudio(); 
+            playIntroAudio(); 
+            initCanvas(); 
+
+            firstClickEl.style.pointerEvents = 'none'; 
+            firstClickEl.style.opacity = '0';
+
+            setTimeout(() => { 
+                firstClickEl.style.display = 'none'; 
+                const introEl = document.getElementById('intro');
+                introEl.style.display = 'flex'; 
+                setTimeout(() => { introEl.style.opacity = '1'; }, 50); 
+            }, 800);
+        }
+
+        firstClickEl.addEventListener('pointerdown', handleFirstClick);
+        firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
+        firstClickEl.addEventListener('click', handleFirstClick);
 
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); if (state !== 'INTRO') return; state = 'COUNTDOWN';
@@ -726,7 +726,7 @@
             const blackScreen = document.getElementById('black-transition'); blackScreen.style.pointerEvents = 'auto'; blackScreen.style.opacity = '1';
             killAllOldNodes(); fadeMasterOutAndSuspend();
             setTimeout(() => {
-                if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); } else if (document.webkitRequestFullscreen) { document.webkitExitFullscreen().catch(e=>{}); }
+                if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
                 bowlMasterGain = null; isEndingDissolve = false;
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
                 const btnEnd = document.getElementById('btn-end'); btnEnd.style.opacity = '0'; btnEnd.style.pointerEvents = 'none';
@@ -735,7 +735,7 @@
                 document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
-                const firstClick = document.getElementById('first-click'); firstClick.style.display = 'flex'; firstClick.style.pointerEvents = 'auto'; firstClick.style.opacity = '1';
+                firstClickEl.style.display = 'flex'; firstClickEl.style.pointerEvents = 'auto'; firstClickEl.style.opacity = '1';
                 document.getElementById('intro').style.display = 'none'; document.getElementById('intro').style.opacity = '0';
                 state = 'INIT'; setTimeout(() => { blackScreen.style.opacity = '0'; blackScreen.style.pointerEvents = 'none'; }, 100);
             }, 1000); 
