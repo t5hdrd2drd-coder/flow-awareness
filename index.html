@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=33">
+    <link rel="manifest" href="manifest.json?v=34">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v33';
+        const APP_VERSION = 'v34';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -248,6 +248,7 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
+        // 經典 PWA Icon 引擎
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
             const ictx = iconCanvas.getContext('2d'); 
@@ -306,7 +307,6 @@
         let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
         let masterGain = null, silentAudioAnchor = null;
         
-        let introGain = null, introOscillator = null;
         let currentBreathSource = null, currentBreathGain = null, currentBreathResonanceFilter = null;
         let bowlMasterGain = null, activeEndingOscillators = [];
 
@@ -343,7 +343,6 @@
         }
 
         function killAllOldNodes() {
-            if (introOscillator) { try { introOscillator.stop(); introOscillator.disconnect(); } catch(e){} introOscillator = null; }
             if (currentBreathSource) { try { currentBreathSource.stop(); currentBreathSource.disconnect(); } catch(e){} currentBreathSource = null; }
             if (activeEndingOscillators.length > 0) { activeEndingOscillators.forEach(osc => { try { osc.stop(); osc.disconnect(); } catch(e){} }); activeEndingOscillators = []; }
         }
@@ -357,7 +356,7 @@
         }
         function restoreAudioLogic() {
             if (document.visibilityState !== 'visible') return; killAllOldNodes(); fadeMasterIn();
-            if (state === 'MINDFULNESS') { requestWakeLock(); } else if (state === 'INTRO') { playIntroAudio(); }
+            if (state === 'MINDFULNESS') { requestWakeLock(); }
         }
 
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') handleAppVisibilityLoss(); else if (document.visibilityState === 'visible') handleAppVisibilityRestore(); });
@@ -484,39 +483,6 @@
                 for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
             }
             return globalNoiseBuffer;
-        }
-
-        // 說明頁低頻音（非阻塞同步啟動，確保零卡頓且 100% 發聲）
-        function playIntroAudio() {
-            if (!audioCtx) return; 
-            killAllOldNodes();
-            
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            
-            const now = audioCtx.currentTime; 
-            introGain = audioCtx.createGain(); 
-            introGain.gain.setValueAtTime(0.0001, now); 
-            introGain.gain.setTargetAtTime(0.48, now, 0.2); 
-            introGain.connect(masterGain); 
-            
-            introOscillator = audioCtx.createOscillator(); 
-            introOscillator.type = 'sine'; 
-            introOscillator.frequency.value = 108.0; 
-            
-            const filter = audioCtx.createBiquadFilter(); 
-            filter.type = 'lowpass'; 
-            filter.frequency.value = 180; 
-            
-            introOscillator.connect(filter).connect(introGain); 
-            introOscillator.start(now);
-        }
-
-        function stopIntroAudio() {
-            if (!audioCtx) return; const now = audioCtx.currentTime;
-            if (introGain) { try { introGain.gain.cancelScheduledValues(now); introGain.gain.setValueAtTime(introGain.gain.value, now); introGain.gain.setTargetAtTime(0.0001, now, 0.015); } catch(e){} }
-            if (introOscillator) { const osc = introOscillator; setTimeout(() => { try { osc.stop(); osc.disconnect(); } catch(e){} }, 100); introOscillator = null; }
         }
 
         function stopAllBreathAudio() {
@@ -727,22 +693,19 @@
 
         const firstClickEl = document.getElementById('first-click');
 
-        // 純粹同步處理 UI 轉換，確保絕對不卡死！
+        // 首頁點擊：極簡零阻礙淡出，解鎖音訊並進入說明頁（無音效）
         function handleFirstClick(e) {
             if (e) { e.preventDefault(); e.stopPropagation(); }
             if (state !== 'INIT') return; 
             state = 'INTRO';
 
-            // 1. 同步啟動音訊解鎖與播放（背景異步進行）
             initAudio(); 
-            playIntroAudio(); 
             initCanvas(); 
 
             if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(() => {});
             }
 
-            // 2. 立即淡出首頁，100% 確保畫面順暢進入說明頁
             firstClickEl.style.pointerEvents = 'none'; 
             firstClickEl.style.opacity = '0';
 
@@ -761,8 +724,6 @@
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); if (state !== 'INTRO') return; state = 'COUNTDOWN';
             document.getElementById('intro').style.opacity = '0'; document.getElementById('btn-start').classList.add('disabled'); 
-            
-            stopIntroAudio();
             
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; document.getElementById('sky-bg').classList.add('active');
@@ -786,8 +747,6 @@
             state = 'MINDFULNESS'; sessionStartTime = Date.now(); isEndingDissolve = false; requestWakeLock();
             baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; 
             guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
-            
-            stopIntroAudio();
 
             if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
             
@@ -805,7 +764,7 @@
             e.stopPropagation(); if(state !== 'MINDFULNESS') return; state = 'SUMMARY';
             isEndingDissolve = true; releaseWakeLock();
             document.getElementById('interaction-layer').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'none'; document.getElementById('btn-stop').style.opacity = '0';
-            isPressing = false; stopAllBreathAudio(); stopIntroAudio(); playEndingBowl();
+            isPressing = false; stopAllBreathAudio(); playEndingBowl();
             let totalSecs = sessionStartTime === 0 ? 0 : Math.max(0, Math.floor((Date.now() - sessionStartTime) / 1000));
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
