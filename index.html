@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=32">
+    <link rel="manifest" href="manifest.json?v=33">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v32';
+        const APP_VERSION = 'v33';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -248,7 +248,6 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 還原：經典 PWA Icon 引擎
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
             const ictx = iconCanvas.getContext('2d'); 
@@ -487,13 +486,13 @@
             return globalNoiseBuffer;
         }
 
-        // 核心修復：強制非同步解鎖與 state guard，徹底解決第一次點擊無聲問題
-        async function playIntroAudio() {
+        // 說明頁低頻音（非阻塞同步啟動，確保零卡頓且 100% 發聲）
+        function playIntroAudio() {
             if (!audioCtx) return; 
             killAllOldNodes();
             
             if (audioCtx.state === 'suspended') {
-                await audioCtx.resume();
+                audioCtx.resume();
             }
             
             const now = audioCtx.currentTime; 
@@ -728,28 +727,14 @@
 
         const firstClickEl = document.getElementById('first-click');
 
-        async function handleFirstClick(e) {
+        // 純粹同步處理 UI 轉換，確保絕對不卡死！
+        function handleFirstClick(e) {
             if (e) { e.preventDefault(); e.stopPropagation(); }
             if (state !== 'INIT') return; 
             state = 'INTRO';
 
-            // 1. 硬體級別同步物理解鎖，強制搶在瀏覽器 Autoplay 攔截前開通 AudioContext
+            // 1. 同步啟動音訊解鎖與播放（背景異步進行）
             initAudio(); 
-            if (audioCtx) {
-                if (audioCtx.state === 'suspended') {
-                    await audioCtx.resume();
-                }
-                // 播放 0.01 秒的物理無聲解鎖訊號
-                try {
-                    const unlockBuf = audioCtx.createBuffer(1, 1, 22050);
-                    const unlockSrc = audioCtx.createBufferSource();
-                    unlockSrc.buffer = unlockBuf;
-                    unlockSrc.connect(audioCtx.destination);
-                    unlockSrc.start(0);
-                } catch(e){}
-            }
-
-            // 2. 解鎖成功後發出說明頁低頻音，保證第一輪就有聲音！
             playIntroAudio(); 
             initCanvas(); 
 
@@ -757,6 +742,7 @@
                 document.documentElement.requestFullscreen().catch(() => {});
             }
 
+            // 2. 立即淡出首頁，100% 確保畫面順暢進入說明頁
             firstClickEl.style.pointerEvents = 'none'; 
             firstClickEl.style.opacity = '0';
 
