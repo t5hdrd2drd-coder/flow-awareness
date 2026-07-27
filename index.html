@@ -569,7 +569,7 @@
         let bowlMasterGain = null; 
         let activeEndingOscillators = [];
 
-        // 呼吸節律：起步 3.2s（舒服平緩接軌），最自然上限 3.6s，非對稱呼氣比 1.18x
+        // 呼吸節律：起步 3.2s，最自然放鬆上限 3.6s，非對稱呼氣比 1.18x
         let baseInhalePace = 3.2; 
         const EXHALE_RATIO = 1.18; 
 
@@ -1012,38 +1012,56 @@
             }
         }
 
-        function updateUIStateForMindfulness() {
+        function updateUIStateForMindfulness(elapsedSecs) {
             if (state !== 'MINDFULNESS') return;
-            const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
-            if (hintEl.innerText !== hintStr) hintEl.innerText = hintStr;
 
             let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
-            let shouldShowHint = (phaseChangeCount < 6) || (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
+            let isWandering = (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
 
-            if (shouldShowHint) {
-                hintEl.style.opacity = '0.9'; 
+            // 1. 前 6 次呼吸：顯示初次操作指引；過後走神：統一溫柔引導「回到呼吸」
+            if (phaseChangeCount < 6) {
+                const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
+                if (hintEl.innerText !== hintStr) hintEl.innerText = hintStr;
+                hintEl.style.opacity = '0.9';
                 hintEl.classList.add('flash-mild');
             } else {
-                hintEl.style.opacity = '0'; 
-                hintEl.classList.remove('flash-mild');
+                if (isWandering) {
+                    if (hintEl.innerText !== "回 到 呼 吸") hintEl.innerText = "回 到 呼 吸";
+                    hintEl.style.opacity = '0.6'; // 溫柔低彩度，不突兀
+                    hintEl.classList.remove('flash-mild');
+                } else {
+                    hintEl.style.opacity = '0';
+                    hintEl.classList.remove('flash-mild');
+                }
             }
 
-            // 前 6 次呼吸後精準隱藏/調淡 UI，徹底修復文字無法隱藏的問題
+            // 2. 前 6 次呼吸後，主標題與吸呼文字完全隱沒
             if (phaseChangeCount >= 6) {
                 if (textEl.style.visibility !== 'hidden') {
                     textEl.style.opacity = '0';
-                    textEl.style.visibility = 'hidden'; // 斬斷 CSS keyframe 動畫 override
+                    textEl.style.visibility = 'hidden'; 
                 }
                 if (mainTitleEl && mainTitleEl.style.opacity !== '0') {
                     mainTitleEl.style.opacity = '0';
                 }
-                if (subTitleEl && subTitleEl.style.opacity !== '0.45') {
-                    subTitleEl.style.opacity = '0.45'; // 適中舒適的淡出不偏太暗
-                }
             } else {
                 textEl.style.visibility = 'visible';
                 if (mainTitleEl && mainTitleEl.style.opacity !== '1') mainTitleEl.style.opacity = '1';
-                if (subTitleEl && subTitleEl.style.opacity !== '0.85') subTitleEl.style.opacity = '0.85';
+            }
+
+            // 3. 每 5 分鐘（300s, 600s...）副標題極為緩慢的微光脈衝，其餘時間保持 0.45
+            if (phaseChangeCount >= 6 && subTitleEl) {
+                let fiveMinRemainder = elapsedSecs % 300;
+                if (elapsedSecs >= 295 && fiveMinRemainder < 6.0) {
+                    // 5 秒平滑正弦微光升降 (0.45 -> 0.75 -> 0.45)
+                    let pulseFactor = Math.sin((fiveMinRemainder / 6.0) * Math.PI);
+                    let targetOpacity = 0.45 + pulseFactor * 0.30;
+                    subTitleEl.style.opacity = targetOpacity.toFixed(2);
+                } else {
+                    if (subTitleEl.style.opacity !== '0.45') subTitleEl.style.opacity = '0.45';
+                }
+            } else if (subTitleEl && phaseChangeCount < 6) {
+                subTitleEl.style.opacity = '0.85';
             }
         }
 
@@ -1062,7 +1080,8 @@
                 rippleEl.classList.add('active');
             }
             
-            updateUIStateForMindfulness();
+            let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
+            updateUIStateForMindfulness(elapsedSecs);
         }
 
         function setPressState(isPress) {
@@ -1075,7 +1094,8 @@
                 if (isCurrentPhaseInhale) {
                     userPressedInInhale = true;
                     missedInhaleCount = 0;
-                    updateUIStateForMindfulness();
+                    let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
+                    updateUIStateForMindfulness(elapsedSecs);
                 }
             } else {
                 playBreathSound(false); 
@@ -1135,11 +1155,12 @@
             if (state !== 'MINDFULNESS') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
-            // S 型平滑漸進：起步 3.2s 柔和過渡至自然放鬆上限 3.6s（歷時約 2 分鐘）
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
+
+            // S 型平滑漸進：起步 3.2s 柔和過渡至自然放鬆上限 3.6s（歷時約 2 分鐘）
             if (elapsedSecs > 30) {
                 let progress = Math.min(1.0, (elapsedSecs - 30) / 120); 
-                let smoothedProgress = progress * progress * (3 - 2 * progress); // Smoothstep 內插
+                let smoothedProgress = progress * progress * (3 - 2 * progress); 
                 baseInhalePace = 3.2 + smoothedProgress * 0.4; // 3.2s -> 3.6s
             } else {
                 baseInhalePace = 3.2;
@@ -1196,7 +1217,7 @@
             let targetRes = isAligned ? 1.0 : 0.0;
             currentResonance += (targetRes - currentResonance) * 0.08;
 
-            updateUIStateForMindfulness();
+            updateUIStateForMindfulness(elapsedSecs);
 
             cycleResonanceSum += currentResonance; cycleResonanceCount++;
             sumResonance += currentResonance; resonanceSamples++;
@@ -1315,7 +1336,7 @@
             document.getElementById('interaction-layer').style.display = 'block';
             const btnStop = document.getElementById('btn-stop'); btnStop.style.display = 'block'; setTimeout(() => { btnStop.style.opacity = '1'; }, 50);
             
-            updateUIStateForMindfulness();
+            updateUIStateForMindfulness(0);
             triggerBreathTextChange(true);
             
             guideAnimFrame = requestAnimationFrame(animateGuide);
