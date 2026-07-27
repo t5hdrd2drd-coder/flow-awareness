@@ -124,14 +124,11 @@
 
         .guide-ring, .ripple-wave { position: absolute; top: 50%; left: 50%; width: 140px; height: 140px; margin-top: -70px; margin-left: -70px; }
 
-        /* 關鍵優化：巨大且冰涼順暢的有機光球畫布，永不裁切邊緣 */
         .organic-core {
             position: absolute; top: 50%; left: 50%;
-            width: 600px; height: 600px; /* 超大安全範圍 */
-            margin-top: -300px; margin-left: -300px; /* 完美置中 */
+            width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; 
             z-index: 2; pointer-events: none; opacity: 0; 
-            transition: opacity 2s ease; transform: translateZ(0); 
-            will-change: opacity; /* 不縮放 canvas 本體，只做內容重繪，效能極佳 */
+            transition: opacity 2s ease; transform: translateZ(0); will-change: opacity; 
         }
 
         .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 140px; height: 140px; margin-top: -70px; margin-left: -70px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); -webkit-backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; will-change: transform, opacity; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
@@ -248,7 +245,6 @@
             <span id="breath-text">吸 氣</span>
             <div class="guide-ring" id="guide-ring"></div>
             <div class="ripple-wave" id="ripple-wave"></div>
-            <!-- 有機純粹、無邊界的光球畫布 -->
             <canvas class="organic-core" id="core-canvas"></canvas>
         </div>
 
@@ -342,7 +338,6 @@
         let currentResonance = 1.0, isPressing = false, currentCoreScale = 1.0, isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
 
-        // 背景星空與前台有機光球的畫布宣告
         const bgCanvas = document.getElementById('intro-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         const coreCanvas = document.getElementById('core-canvas');
@@ -386,9 +381,7 @@
 
         function initCanvas() {
             const dpr = Math.max(window.devicePixelRatio || 1, 2);
-            // 初始化全螢幕背景星空
             bgCanvas.width = window.innerWidth * dpr; bgCanvas.height = window.innerHeight * dpr; bgCtx.scale(dpr, dpr);
-            // 初始化有機核心光球畫布（600x600 超大不裁切範圍，高 DPI 支援）
             coreCanvas.width = 600 * dpr; coreCanvas.height = 600 * dpr; coreCtx.scale(dpr, dpr);
             
             stars = [];
@@ -400,7 +393,6 @@
             if(canvasAnimFrame) cancelAnimationFrame(canvasAnimFrame); drawCanvas();
         }
 
-        // 核心渲染迴圈：處理背景星空與有機光球
         function drawCanvas() {
             const dW = window.innerWidth, dH = window.innerHeight;
             bgCtx.clearRect(0, 0, dW, dH);
@@ -408,7 +400,6 @@
             breathScale += (targetBreathScale - breathScale) * 0.015;
             let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY');
             
-            // 1. 繪製背景星空流動
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
             if (isEndingDissolve) zFlowSpeed = -8.5; 
@@ -433,48 +424,59 @@
                 bgCtx.fill();
             }
 
-            // 2. 繪製中央無邊界的「大自然有機光球 (Bioluminescence/Dew)」
             coreCtx.clearRect(0, 0, 600, 600);
             if (isMindful || state === 'INTRO') {
                 const nowSec = Date.now() * 0.001;
                 coreCtx.globalCompositeOperation = 'screen';
                 
-                // 動態基礎透明度與大小
-                let resAlpha = 0.15 + 0.85 * currentResonance; 
-                let bRadius = 70 * currentCoreScale; // 由外部主動畫函數計算出的物理比例，極致平滑
+                // 1. 防刺眼控制：基礎光暈 Alpha 壓低，最高不超過一定閾值
+                let resAlpha = 0.3 + 0.5 * currentResonance; 
+                let bRadius = 65 * currentCoreScale; 
+                
+                // 2. 實體積推擠效應（Volumetric Expansion）：
+                // 將 currentCoreScale（約1.0~2.2）映射為漸層節點的外推係數
+                // 隨著吸氣，顏色的實體面積會實質性向外擴大，產生「充盈肺部」的張力
+                let expansionFactor = Math.max(0, (currentCoreScale - 1.0) / 1.2); 
+                let coreStop = 0.02 + 0.28 * expansionFactor; // 核心實體面積往外撐開
+                let midStop = 0.25 + 0.35 * expansionFactor;  // 柔光過渡帶往外擴展
+
                 const coreCx = 300, coreCy = 300;
 
-                // 建立平滑羽化發光球體的 Helper
-                const drawOrb = (offsetX, offsetY, radius, alpha) => {
+                const drawOrb = (offsetX, offsetY, radiusMulti, alphaMulti, isMainCore = false) => {
+                    let radius = bRadius * radiusMulti;
                     if(radius <= 0) return;
                     const grad = coreCtx.createRadialGradient(coreCx + offsetX, coreCy + offsetY, 0, coreCx + offsetX, coreCy + offsetY, radius);
-                    // 模擬次表面散射：核心純白高亮、中段飽和擴散、外圍平滑隱沒至全透明
-                    grad.addColorStop(0, `rgba(255, 255, 255, ${0.35 * alpha})`);
-                    grad.addColorStop(0.2, `rgba(${currR}, ${currG}, ${currB}, ${0.35 * alpha})`);
-                    grad.addColorStop(0.6, `rgba(${currR}, ${currG}, ${currB}, ${0.10 * alpha})`);
+                    
+                    // 防刺眼鎖定：主核心的純白色最高只到 20%，絕不刺眼
+                    let whiteAlpha = isMainCore ? (0.15 + 0.05 * expansionFactor) * alphaMulti : 0; 
+                    // 擴張時，色彩飽和度稍微提升，用色彩支撐「實體感」而不是用死白光
+                    let colorAlpha1 = (0.25 + 0.1 * expansionFactor) * alphaMulti; 
+                    let colorAlpha2 = 0.08 * alphaMulti; 
+
+                    grad.addColorStop(0, `rgba(255, 255, 255, ${whiteAlpha})`);
+                    grad.addColorStop(coreStop, `rgba(${currR}, ${currG}, ${currB}, ${colorAlpha1})`);
+                    grad.addColorStop(midStop, `rgba(${currR}, ${currG}, ${currB}, ${colorAlpha2})`);
                     grad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
                     
                     coreCtx.fillStyle = grad;
-                    coreCtx.fillRect(0, 0, 600, 600); // 在畫布安全範圍內塗滿，絕不會出現方形切割
+                    coreCtx.fillRect(0, 0, 600, 600); 
                 };
 
-                // 層次 1：穩定明亮的核心
-                drawOrb(0, 0, bRadius * 0.95, 1.0 * resAlpha);
+                // 主實體核心（帶微弱白光，實體膨脹感來源）
+                drawOrb(0, 0, 1.0, 1.0 * resAlpha, true);
                 
-                // 層次 2：使用質數三角函數模擬水滴的自然微動與不規則感
+                // 以下 3 層是純色彩的有機蠕動外暈，創造生命感與無邊界感
                 const a1x = Math.sin(nowSec * 1.3) * 12 * currentCoreScale;
                 const a1y = Math.cos(nowSec * 1.1) * 12 * currentCoreScale;
-                drawOrb(a1x, a1y, bRadius * 1.3, 0.65 * resAlpha);
+                drawOrb(a1x, a1y, 1.25, 0.7 * resAlpha);
                 
-                // 層次 3：反向游離的生命感外暈
                 const a2x = Math.sin(nowSec * 1.7 + 2) * 15 * currentCoreScale;
                 const a2y = Math.cos(nowSec * 1.4 + 1) * 15 * currentCoreScale;
-                drawOrb(a2x, a2y, bRadius * 1.25, 0.55 * resAlpha);
+                drawOrb(a2x, a2y, 1.15, 0.6 * resAlpha);
                 
-                // 層次 4：增加深度的極輕微薄霧
                 const a3x = Math.cos(nowSec * 0.8 + 4) * 20 * currentCoreScale;
                 const a3y = Math.sin(nowSec * 1.1 + 3) * 20 * currentCoreScale;
-                drawOrb(a3x, a3y, bRadius * 1.4, 0.35 * resAlpha);
+                drawOrb(a3x, a3y, 1.4, 0.4 * resAlpha);
             }
 
             canvasAnimFrame = requestAnimationFrame(drawCanvas);
