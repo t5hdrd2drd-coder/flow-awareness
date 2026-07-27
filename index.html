@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=34">
+    <link rel="manifest" href="manifest.json?v=35">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v34';
+        const APP_VERSION = 'v35';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -248,7 +248,6 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 經典 PWA Icon 引擎
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
             const ictx = iconCanvas.getContext('2d'); 
@@ -485,10 +484,22 @@
             return globalNoiseBuffer;
         }
 
+        // 平滑停頓淡出（用於中途鬆手的自然氣流停頓）
+        function fadeOutBreathAudio(fadeTime = 0.15) {
+            if (!audioCtx || !currentBreathGain) return;
+            const now = audioCtx.currentTime;
+            try {
+                currentBreathGain.gain.cancelScheduledValues(now);
+                currentBreathGain.gain.setValueAtTime(currentBreathGain.gain.value, now);
+                currentBreathGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                const src = currentBreathSource;
+                setTimeout(() => { try { if (src) { src.stop(); src.disconnect(); } } catch(e){} }, fadeTime * 1000 + 50);
+                currentBreathSource = null;
+            } catch(e){}
+        }
+
         function stopAllBreathAudio() {
-            if (!audioCtx) return; const now = audioCtx.currentTime;
-            if (currentBreathGain) { try { currentBreathGain.gain.cancelScheduledValues(now); currentBreathGain.gain.setValueAtTime(currentBreathGain.gain.value, now); currentBreathGain.gain.setTargetAtTime(0.0001, now, 0.015); } catch(e){} }
-            if (currentBreathSource) { const src = currentBreathSource; setTimeout(() => { try { src.stop(); src.disconnect(); } catch(e){} }, 100); currentBreathSource = null; }
+            fadeOutBreathAudio(0.02);
         }
 
         function playBreathSound(isInhale) {
@@ -608,13 +619,22 @@
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
         }
 
+        // 核心修復：按壓邏輯微調（中途鬆手淡出靜音）
         function setPressState(isPress) {
             if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (isPressing === isPress) return; isPressing = isPress;
+            
             if (isPressing) {
                 playBreathSound(true); 
                 if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((Date.now() - sessionStartTime) / 1000); }
-            } else { playBreathSound(false); }
+            } else { 
+                // 未吸滿中途鬆手，氣流自然淡出至靜音；只有在系統呼氣階段，音效才會在週期切換時播放
+                if (isCurrentPhaseInhale) {
+                    fadeOutBreathAudio(0.15); 
+                } else {
+                    playBreathSound(false);
+                }
+            }
         }
 
         const interactLayer = document.getElementById('interaction-layer');
@@ -647,8 +667,24 @@
             let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
             guidePhase += guideDir * (dt / currentPhaseDur);
             
-            if (guidePhase >= 1) { guidePhase = 1; guideDir = -1; if (isCurrentPhaseInhale) { isCurrentPhaseInhale = false; checkPaceAdaptation(); triggerBreathTextChange(false); } } 
-            else if (guidePhase <= 0) { guidePhase = 0; guideDir = 1; if (!isCurrentPhaseInhale) { isCurrentPhaseInhale = true; checkPaceAdaptation(); triggerBreathTextChange(true); } }
+            if (guidePhase >= 1) { 
+                guidePhase = 1; guideDir = -1; 
+                if (isCurrentPhaseInhale) { 
+                    isCurrentPhaseInhale = false; 
+                    checkPaceAdaptation(); 
+                    triggerBreathTextChange(false); 
+                    // 轉入呼氣階段時，若使用者手已放開，自動播放呼氣聲
+                    if (!isPressing) { playBreathSound(false); }
+                } 
+            } 
+            else if (guidePhase <= 0) { 
+                guidePhase = 0; guideDir = 1; 
+                if (!isCurrentPhaseInhale) { 
+                    isCurrentPhaseInhale = true; 
+                    checkPaceAdaptation(); 
+                    triggerBreathTextChange(true); 
+                } 
+            }
 
             let p = guidePhase; let eased = p * p * p * (p * (p * 6 - 15) + 10);
             
@@ -693,7 +729,6 @@
 
         const firstClickEl = document.getElementById('first-click');
 
-        // 首頁點擊：極簡零阻礙淡出，解鎖音訊並進入說明頁（無音效）
         function handleFirstClick(e) {
             if (e) { e.preventDefault(); e.stopPropagation(); }
             if (state !== 'INIT') return; 
