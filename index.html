@@ -12,9 +12,13 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=26">
+    <link rel="manifest" href="manifest.json?v=27">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
+
+    <link rel="icon" id="dynamic-favicon" type="image/png">
+    <link rel="apple-touch-icon" id="dynamic-apple-icon">
+    <link rel="apple-touch-startup-image" id="dynamic-startup-image">
 
     <title>流動覺察 Flow Awareness</title>
     <style>
@@ -225,7 +229,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v26';
+        const APP_VERSION = 'v27';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -243,9 +247,62 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
+        // 修復 Bug 1：產生精緻的雙層同心圓 PWA Icon (外黃內藍露珠感)
+        (function generateHighResAppIcon() {
+            const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
+            const ictx = iconCanvas.getContext('2d'); 
+            
+            // 背景深邃夜空
+            ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
+
+            // 背景微光
+            const bgGlow = ictx.createRadialGradient(256, 256, 20, 256, 256, 240);
+            bgGlow.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+            bgGlow.addColorStop(0.5, 'rgba(255, 180, 80, 0.15)');
+            bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
+            ictx.fillStyle = bgGlow; ictx.fillRect(0, 0, 512, 512);
+
+            // 外層：金黃色表面張力光暈水滴環
+            const outerGrad = ictx.createRadialGradient(256, 256, 110, 256, 256, 160);
+            outerGrad.addColorStop(0, 'rgba(255, 180, 80, 0.1)');
+            outerGrad.addColorStop(0.85, 'rgba(255, 180, 80, 0.85)');
+            outerGrad.addColorStop(1, 'rgba(255, 180, 80, 0)');
+            ictx.beginPath(); ictx.arc(256, 256, 160, 0, Math.PI * 2);
+            ictx.fillStyle = outerGrad; ictx.fill();
+
+            // 內層：湛藍色液態水滴核心
+            const innerGrad = ictx.createRadialGradient(256, 256, 0, 256, 256, 100);
+            innerGrad.addColorStop(0, 'rgba(56, 189, 248, 0.2)');
+            innerGrad.addColorStop(0.7, 'rgba(56, 189, 248, 0.5)');
+            innerGrad.addColorStop(0.92, 'rgba(56, 189, 248, 0.95)');
+            innerGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            ictx.beginPath(); ictx.arc(256, 256, 100, 0, Math.PI * 2);
+            ictx.fillStyle = innerGrad; ictx.fill();
+
+            // 露珠表面高光 (微光感)
+            const highGrad = ictx.createRadialGradient(220, 220, 0, 220, 220, 60);
+            highGrad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+            highGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ictx.beginPath(); ictx.arc(256, 256, 100, 0, Math.PI * 2);
+            ictx.fillStyle = highGrad; ictx.fill();
+
+            const pngDataUrl = iconCanvas.toDataURL('image/png');
+            const favEl = document.getElementById('dynamic-favicon');
+            const appleEl = document.getElementById('dynamic-apple-icon');
+            if (favEl) favEl.href = pngDataUrl;
+            if (appleEl) appleEl.href = pngDataUrl;
+        })();
+
+        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        let lastTouchEnd = 0; document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) { e.preventDefault(); } lastTouchEnd = now; }, { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault()); document.addEventListener('gesturechange', (e) => e.preventDefault()); document.addEventListener('gestureend', (e) => e.preventDefault()); document.addEventListener('selectstart', (e) => e.preventDefault());
+        window.addEventListener('contextmenu', (e) => e.preventDefault());
+
         let state = 'INIT'; 
         let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
         let masterGain = null, silentAudioAnchor = null;
+        
+        // 修復 Bug 2：將聲音節點全域持久保存，防止 GC 誤殺斷音
         let introGain = null, introOscillator = null, currentBreathSource = null, currentBreathGain = null;
         let currentBreathResonanceFilter = null, bowlMasterGain = null, activeEndingOscillators = [];
 
@@ -446,8 +503,13 @@
             if (currentBreathSource) { const src = currentBreathSource; setTimeout(() => { try { src.stop(); src.disconnect(); } catch(e){} }, 100); currentBreathSource = null; }
         }
 
+        // 修復 Bug 2：音效播放 guard，強制確保 Context 為 active
         function playBreathSound(isInhale) {
-            if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; stopAllBreathAudio();
+            if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            
+            stopAllBreathAudio();
+            
             const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
             const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; 
             currentBreathResonanceFilter = audioCtx.createBiquadFilter(); currentBreathResonanceFilter.type = 'lowpass'; 
@@ -469,7 +531,10 @@
         }
 
         function playEndingBowl() {
-            if(!audioCtx || document.visibilityState !== 'visible') return; const now = audioCtx.currentTime;
+            if(!audioCtx || document.visibilityState !== 'visible') return; 
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const now = audioCtx.currentTime;
             activeEndingOscillators = [];
             const compressor = audioCtx.createDynamicsCompressor(); compressor.threshold.value = -10; compressor.knee.value = 10; compressor.ratio.value = 12; compressor.attack.value = 0.003; compressor.release.value = 0.25;
             const delay = audioCtx.createDelay(); delay.delayTime.value = 0.38; 
@@ -592,6 +657,7 @@
                 baseInhalePace = 3.2 + smoothedProgress * 0.4; 
             } else { baseInhalePace = 3.2; }
 
+            // 1. 系統邊線相位 (Guide Phase)
             let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
             guidePhase += guideDir * (dt / currentPhaseDur);
             
@@ -600,18 +666,18 @@
 
             let p = guidePhase; let eased = p * p * p * (p * (p * 6 - 15) + 10);
             
-            let userPhaseDur = isPressing ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
-            let catchUpFactor = 1.35;
-            
-            if (isPressing) {
-                userPhase += (dt / userPhaseDur) * catchUpFactor;
-                if (userPhase > 1) userPhase = 1;
-                if (isCurrentPhaseInhale && userPhase > guidePhase) { userPhase = guidePhase; }
-            } else {
-                userPhase -= (dt / userPhaseDur) * catchUpFactor;
-                if (userPhase < 0) userPhase = 0;
-                if (!isCurrentPhaseInhale && userPhase < guidePhase) { userPhase = guidePhase; }
-            }
+            // --- 核心演算法升級：彈性比例減速跟隨（越遠越快，越近越溫柔） ---
+            let targetUserPhase = isPressing ? 1.0 : 0.0;
+            // 如果系統方向一致，目標改為精準對齊 guidePhase
+            if (isPressing && isCurrentPhaseInhale) targetUserPhase = guidePhase;
+            if (!isPressing && !isCurrentPhaseInhale) targetUserPhase = guidePhase;
+
+            let phaseDiff = targetUserPhase - userPhase;
+            let k = isPressing ? 4.5 : 3.8; // 彈性追趕增益係數
+            userPhase += phaseDiff * (1.0 - Math.exp(-k * dt));
+
+            if (userPhase > 1) userPhase = 1;
+            if (userPhase < 0) userPhase = 0;
 
             let uP = userPhase; let userEased = uP * uP * uP * (uP * (uP * 6 - 15) + 10);
             
@@ -638,7 +704,6 @@
             guideAnimFrame = requestAnimationFrame(animateGuide);
         }
 
-        // --- 核心修復：徹底解鎖首頁點擊跳轉 Bug ---
         const firstClickEl = document.getElementById('first-click');
 
         function handleFirstClick(e) {
