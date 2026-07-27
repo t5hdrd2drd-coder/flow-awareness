@@ -424,59 +424,62 @@
                 bgCtx.fill();
             }
 
+            // --- 核心技術優化：表面張力水滴 (Surface Tension Drop) ---
             coreCtx.clearRect(0, 0, 600, 600);
+            
             if (isMindful || state === 'INTRO') {
                 const nowSec = Date.now() * 0.001;
                 coreCtx.globalCompositeOperation = 'screen';
                 
-                // 1. 防刺眼控制：基礎光暈 Alpha 壓低，最高不超過一定閾值
-                let resAlpha = 0.3 + 0.5 * currentResonance; 
-                let bRadius = 65 * currentCoreScale; 
-                
-                // 2. 實體積推擠效應（Volumetric Expansion）：
-                // 將 currentCoreScale（約1.0~2.2）映射為漸層節點的外推係數
-                // 隨著吸氣，顏色的實體面積會實質性向外擴大，產生「充盈肺部」的張力
+                // 動態物理參數
                 let expansionFactor = Math.max(0, (currentCoreScale - 1.0) / 1.2); 
-                let coreStop = 0.02 + 0.28 * expansionFactor; // 核心實體面積往外撐開
-                let midStop = 0.25 + 0.35 * expansionFactor;  // 柔光過渡帶往外擴展
-
+                let baseRadius = 60 * currentCoreScale;
+                let resAlpha = 0.4 + 0.6 * currentResonance; 
                 const coreCx = 300, coreCy = 300;
 
-                const drawOrb = (offsetX, offsetY, radiusMulti, alphaMulti, isMainCore = false) => {
-                    let radius = bRadius * radiusMulti;
-                    if(radius <= 0) return;
-                    const grad = coreCtx.createRadialGradient(coreCx + offsetX, coreCy + offsetY, 0, coreCx + offsetX, coreCy + offsetY, radius);
-                    
-                    // 防刺眼鎖定：主核心的純白色最高只到 20%，絕不刺眼
-                    let whiteAlpha = isMainCore ? (0.15 + 0.05 * expansionFactor) * alphaMulti : 0; 
-                    // 擴張時，色彩飽和度稍微提升，用色彩支撐「實體感」而不是用死白光
-                    let colorAlpha1 = (0.25 + 0.1 * expansionFactor) * alphaMulti; 
-                    let colorAlpha2 = 0.08 * alphaMulti; 
+                // 1. 底層環境柔光 (Ambient Glow)，讓水滴融入夜空
+                const ambientRadius = baseRadius * 1.6;
+                const ambientGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, ambientRadius);
+                ambientGrad.addColorStop(0.3, `rgba(${currR}, ${currG}, ${currB}, ${0.1 * resAlpha})`);
+                ambientGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
+                coreCtx.beginPath(); coreCtx.arc(coreCx, coreCy, ambientRadius, 0, Math.PI * 2);
+                coreCtx.fillStyle = ambientGrad; coreCtx.fill();
 
-                    grad.addColorStop(0, `rgba(255, 255, 255, ${whiteAlpha})`);
-                    grad.addColorStop(coreStop, `rgba(${currR}, ${currG}, ${currB}, ${colorAlpha1})`);
-                    grad.addColorStop(midStop, `rgba(${currR}, ${currG}, ${currB}, ${colorAlpha2})`);
-                    grad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
-                    
-                    coreCtx.fillStyle = grad;
-                    coreCtx.fillRect(0, 0, 600, 600); 
-                };
+                // 2. 主體液態水滴 (Liquid Drop Body)
+                const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius + 4);
+                // 核心透亮
+                dropGrad.addColorStop(0, `rgba(${currR}, ${currG}, ${currB}, ${0.08 * resAlpha})`);
+                dropGrad.addColorStop(0.7, `rgba(${currR}, ${currG}, ${currB}, ${0.15 * resAlpha})`);
+                // 邊緣透光 (Fresnel) - 吸氣越膨脹，邊界表面張力越強、透光越明顯
+                let edgeDensity = (0.35 + 0.25 * expansionFactor) * resAlpha; 
+                dropGrad.addColorStop(0.92, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
+                // 水滴的抗鋸齒銳利邊界 (陡降至 0)
+                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
 
-                // 主實體核心（帶微弱白光，實體膨脹感來源）
-                drawOrb(0, 0, 1.0, 1.0 * resAlpha, true);
-                
-                // 以下 3 層是純色彩的有機蠕動外暈，創造生命感與無邊界感
-                const a1x = Math.sin(nowSec * 1.3) * 12 * currentCoreScale;
-                const a1y = Math.cos(nowSec * 1.1) * 12 * currentCoreScale;
-                drawOrb(a1x, a1y, 1.25, 0.7 * resAlpha);
-                
-                const a2x = Math.sin(nowSec * 1.7 + 2) * 15 * currentCoreScale;
-                const a2y = Math.cos(nowSec * 1.4 + 1) * 15 * currentCoreScale;
-                drawOrb(a2x, a2y, 1.15, 0.6 * resAlpha);
-                
-                const a3x = Math.cos(nowSec * 0.8 + 4) * 20 * currentCoreScale;
-                const a3y = Math.sin(nowSec * 1.1 + 3) * 20 * currentCoreScale;
-                drawOrb(a3x, a3y, 1.4, 0.4 * resAlpha);
+                coreCtx.beginPath();
+                const segments = 60; // 低運算負擔
+                for(let i=0; i<=segments; i++){
+                    let angle = (i / segments) * Math.PI * 2;
+                    // 表面張力邏輯：未按壓時微微蠕動(2.5px)，按壓膨脹時張力拉滿化為正圓(極小變形)
+                    let wobbleAmp = 2.5 * (1.0 - expansionFactor * 0.85); 
+                    let wobble = Math.sin(angle * 3 + nowSec * 1.5) * wobbleAmp + Math.cos(angle * 2 - nowSec * 1.1) * wobbleAmp;
+                    let r = baseRadius + wobble;
+                    let px = coreCx + Math.cos(angle) * r;
+                    let py = coreCy + Math.sin(angle) * r;
+                    if(i===0) coreCtx.moveTo(px, py); else coreCtx.lineTo(px, py);
+                }
+                coreCtx.closePath();
+                coreCtx.fillStyle = dropGrad;
+                coreCtx.fill();
+
+                // 3. 微弱的表面高光 (Specular Highlight)，確認物理液態感
+                let hx = coreCx - baseRadius * 0.35; let hy = coreCy - baseRadius * 0.35; let hr = baseRadius * 0.65;
+                const highGrad = coreCtx.createRadialGradient(hx, hy, 0, hx, hy, hr);
+                let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha; // 極度低調不刺眼
+                highGrad.addColorStop(0, `rgba(255, 255, 255, ${highlightAlpha})`);
+                highGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+                coreCtx.fillStyle = highGrad;
+                coreCtx.fill(); // 直接再次 fill()，高光會被完美限制在剛才畫的水滴輪廓內！
             }
 
             canvasAnimFrame = requestAnimationFrame(drawCanvas);
