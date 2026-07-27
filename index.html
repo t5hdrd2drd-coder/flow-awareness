@@ -12,7 +12,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=30">
+    <link rel="manifest" href="manifest.json?v=31">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -65,8 +65,8 @@
             pointer-events: auto;
         }
         
-        /* 1:1 複製帶有紫光層次的 Brand Logo SVG */
-        .brand-logo-icon { width: 76px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 16px rgba(120, 50, 255, 0.45)); animation: logoPulse 4s infinite ease-in-out; }
+        /* 還原：上一版黃/藍經典 SVG 圖示 */
+        .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; }
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
         .headphone-hint { 
             position: absolute; bottom: calc(75px + var(--sat-bottom)); font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
@@ -137,7 +137,7 @@
         .countdown-text.active { opacity: 0.95; transform: scale(1.02); }
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
 
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 20px rgba(120, 50, 255, 0.6)); } }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.4)); } }
         @keyframes hueShift { 0% { filter: blur(60px) hue-rotate(0deg); } 100% { filter: blur(60px) hue-rotate(360deg); } }
         @keyframes cloudFlow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(8deg) scale(1.05); } 100% { transform: rotate(-5deg) scale(0.98); } }
         @keyframes softRadiantExpand { 0% { transform: scale(0.9); opacity: 0.85; } 100% { transform: scale(2.4); opacity: 0; } }
@@ -163,19 +163,18 @@
     <div class="black-transition" id="black-transition"></div>
 
     <div class="first-click-overlay" id="first-click">
-        <!-- 融入淡紫色暈染層次的 SVG Logo -->
+        <!-- 還原：上一版經典 SVG 圖示 -->
         <svg class="brand-logo-icon" viewBox="0 0 100 100">
             <defs>
-                <radialGradient id="purpleGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8" />
-                    <stop offset="45%" stop-color="#ffb450" stop-opacity="0.6" />
-                    <stop offset="75%" stop-color="#7832ff" stop-opacity="0.45" />
+                <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="65%" stop-color="#ffb450" />
                     <stop offset="100%" stop-color="#030105" stop-opacity="0" />
                 </radialGradient>
             </defs>
-            <circle cx="50" cy="50" r="48" fill="url(#purpleGlow)" opacity="0.85" />
-            <circle cx="50" cy="50" r="42" fill="none" stroke="#ffb450" stroke-width="3.5" opacity="0.95" />
-            <circle cx="50" cy="50" r="26" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.95" />
+            <circle cx="50" cy="50" r="46" fill="url(#logoGlow)" opacity="0.65" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#ffb450" stroke-width="3.5" opacity="0.9" />
+            <circle cx="50" cy="50" r="26" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.9" />
             <circle cx="50" cy="50" r="6" fill="#ffffff" />
         </svg>
         <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
@@ -233,7 +232,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v30';
+        const APP_VERSION = 'v31';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -251,43 +250,42 @@
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
         })();
 
-        // 加入淡紫暈染層次的 PWA Icon 引擎
+        // 還原：上一版經典 PWA Icon 引擎
         (function generateHighResAppIcon() {
             const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
             const ictx = iconCanvas.getContext('2d'); 
             
             ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
 
-            // 1. 底層淡紫色星雲光暈 (對應截圖中的關鍵紫色層次)
-            const purpleGlow = ictx.createRadialGradient(256, 256, 10, 256, 256, 230);
-            purpleGlow.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
-            purpleGlow.addColorStop(0.4, 'rgba(255, 180, 80, 0.25)');
-            purpleGlow.addColorStop(0.72, 'rgba(120, 50, 255, 0.32)'); // 淡紫暈染核心
-            purpleGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
-            ictx.fillStyle = purpleGlow; ictx.fillRect(0, 0, 512, 512);
+            const bgGlow = ictx.createRadialGradient(256, 256, 10, 256, 256, 240);
+            bgGlow.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+            bgGlow.addColorStop(0.2, 'rgba(56, 189, 248, 0.5)');
+            bgGlow.addColorStop(0.5, 'rgba(255, 180, 80, 0.35)');
+            bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
+            ictx.fillStyle = bgGlow; ictx.fillRect(0, 0, 512, 512);
 
-            // 2. 外層金黃同心圓環
+            // 金黃外環
             ictx.save();
             ictx.shadowColor = 'rgba(255, 180, 80, 0.85)';
-            ictx.shadowBlur = 28;
-            ictx.beginPath(); ictx.arc(256, 256, 175, 0, Math.PI * 2);
-            ictx.lineWidth = 14; ictx.strokeStyle = '#ffb450';
+            ictx.shadowBlur = 32;
+            ictx.beginPath(); ictx.arc(256, 256, 138, 0, Math.PI * 2);
+            ictx.lineWidth = 12; ictx.strokeStyle = '#ffb450';
             ictx.stroke();
             ictx.restore();
 
-            // 3. 內層湛藍同心圓環
+            // 湛藍內環
             ictx.save();
             ictx.shadowColor = 'rgba(56, 189, 248, 0.9)';
-            ictx.shadowBlur = 22;
-            ictx.beginPath(); ictx.arc(256, 256, 110, 0, Math.PI * 2);
-            ictx.lineWidth = 12; ictx.strokeStyle = '#38bdf8';
+            ictx.shadowBlur = 24;
+            ictx.beginPath(); ictx.arc(256, 256, 90, 0, Math.PI * 2);
+            ictx.lineWidth = 9; ictx.strokeStyle = '#38bdf8';
             ictx.stroke();
             ictx.restore();
 
-            // 4. 核心純白聚光點
+            // 核心純白亮點
             ictx.save();
-            ictx.shadowColor = '#ffffff'; ictx.shadowBlur = 18;
-            ictx.beginPath(); ictx.arc(256, 256, 22, 0, Math.PI * 2);
+            ictx.shadowColor = '#ffffff'; ictx.shadowBlur = 20;
+            ictx.beginPath(); ictx.arc(256, 256, 20, 0, Math.PI * 2);
             ictx.fillStyle = '#ffffff'; ictx.fill();
             ictx.restore();
 
@@ -495,16 +493,19 @@
             return globalNoiseBuffer;
         }
 
-        // 說明的低頻背景音：強化 AudioContext 喚醒，徹底解決第一次無聲問題
+        // 徹底修復：點擊同步啟動說明頁底音（繞過瀏覽器 Autoplay 攔截）
         function playIntroAudio() {
             if (!audioCtx) return; 
             killAllOldNodes();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
             
             const now = audioCtx.currentTime; 
             introGain = audioCtx.createGain(); 
             introGain.gain.setValueAtTime(0.0001, now); 
-            introGain.gain.setTargetAtTime(0.48, now, 0.4); 
+            introGain.gain.setTargetAtTime(0.48, now, 0.2); 
             introGain.connect(masterGain); 
             
             introOscillator = audioCtx.createOscillator(); 
@@ -738,13 +739,14 @@
             if (state !== 'INIT') return; 
             state = 'INTRO';
 
+            // 關鍵修復：在使用者點擊的極瞬間零延遲初始化 AudioContext 並播放說明底音
+            initAudio(); 
+            playIntroAudio(); 
+            initCanvas(); 
+
             if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(() => {});
             }
-
-            initAudio(); 
-            playIntroAudio(); // 啟動說明頁底音
-            initCanvas(); 
 
             firstClickEl.style.pointerEvents = 'none'; 
             firstClickEl.style.opacity = '0';
@@ -765,7 +767,7 @@
             e.stopPropagation(); if (state !== 'INTRO') return; state = 'COUNTDOWN';
             document.getElementById('intro').style.opacity = '0'; document.getElementById('btn-start').classList.add('disabled'); 
             
-            // 進入正式呼吸時，停止說明頁的低頻底音
+            // 點擊「開始正念」切換階段，停止說明頁底音
             stopIntroAudio();
             
             setTimeout(() => {
@@ -791,7 +793,7 @@
             baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; 
             guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
             
-            // 呼吸階段只保留氣流聲，關閉背景低音
+            // 呼吸階段保持極致純粹（只留氣流聲），無底音干擾
             stopIntroAudio();
 
             if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
