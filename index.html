@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=43">
+    <link rel="manifest" href="manifest.json?v=44">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -239,7 +239,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v43';
+        const APP_VERSION = 'v44';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -334,9 +334,11 @@
         let hasInhaledInCurrentCycle = false; 
         const MIN_VALID_PRESS_DURATION = 400; 
 
+        /* 預備儀式變數重構 */
         let currentCoreScale = 0.25; 
         let prepStartTime = 0; 
-        const PREP_DURATION = 2000; 
+        let hasTriggeredRipple = false;
+        const PREP_DURATION = 2300; 
 
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
@@ -723,41 +725,74 @@
             if (state !== 'MINDFULNESS' && state !== 'PREPARATION') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
-            /* 【無字·純淨沉降儀式 Core Loop】 */
+            /* =========================================
+               【全新三段式：無字微光 -> 漣漪字體浮現 -> 正式吸氣】
+               ========================================= */
             if (state === 'PREPARATION') {
                 let pElapsed = now - prepStartTime;
-                let progress = Math.min(1.0, pElapsed / PREP_DURATION);
-                let easedProg = progress * progress * (3 - 2 * progress); 
+                
+                // 階段一：0 ~ 1.5秒，絕對無字，水滴聚攏到 1.0
+                if (pElapsed < 1500) {
+                    let progress = pElapsed / 1500;
+                    let easedProg = progress * progress * (3 - 2 * progress); 
+                    currentCoreScale = 0.25 + easedProg * 0.75; 
+                    
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
+                } 
+                // 階段二：1.5秒 ~ 2.3秒，水滴不再長大，觸發漣漪並優雅浮現字體
+                else if (pElapsed >= 1500 && pElapsed < 2300) {
+                    currentCoreScale = 1.0; 
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
 
-                currentCoreScale = 0.25 + easedProg * 0.75; // 水滴從微光擴散至標準點 scale: 1.0
-
-                // 預備期色彩鎖定為琥珀金 (Inhale 色彩)，避免藍色硬切斷
-                currR += (255 - currR) * 0.1;
-                currG += (180 - currG) * 0.1;
-                currB += (80 - currB) * 0.1;
-                cachedColorStr = `${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)}`;
-
-                if (progress >= 1.0) {
-                    /* 沉降完全完畢：精準鎖定從第一個「吸氣」點（Phase 0）平滑開啟 */
+                    if (!hasTriggeredRipple) {
+                        hasTriggeredRipple = true;
+                        triggerAffirmativeGlow(); // 觸發第一個水滴漣漪
+                        
+                        // 漣漪出現的同時，將所有先前隱藏的文字開啟漸變並浮現
+                        if (topHeaderEl) { 
+                            topHeaderEl.style.transition = 'opacity 2s ease'; 
+                            topHeaderEl.style.opacity = '1'; 
+                        }
+                        if (guideRingEl) { 
+                            guideRingEl.style.transition = 'box-shadow 0.1s ease-out, opacity 2s ease'; 
+                            guideRingEl.style.opacity = '0.5'; 
+                        }
+                        if (textEl) { 
+                            textEl.innerText = "吸 氣";
+                            textEl.style.transition = 'opacity 1.5s ease'; 
+                            textEl.style.opacity = '0.9'; 
+                            textEl.style.visibility = 'visible';
+                        }
+                        if (hintEl) { 
+                            hintEl.innerText = "按住 空白鍵 / 螢幕 以吸氣";
+                            hintEl.style.transition = 'opacity 1.5s ease'; 
+                            hintEl.style.opacity = '0.9'; 
+                            hintEl.classList.add('flash-mild');
+                        }
+                    }
+                } 
+                // 階段三：2.3秒，字體已清楚浮現，動畫平滑切入真正的「第一個吸氣」
+                else if (pElapsed >= 2300) {
                     state = 'MINDFULNESS';
                     sessionStartTime = Date.now();
                     
+                    // 重置動畫狀態到「剛開始吸氣」的最起點
                     guidePhase = 0;
                     userPhase = 0;
                     guideDir = 1;
                     isCurrentPhaseInhale = true;
 
-                    if (topHeaderEl) topHeaderEl.style.opacity = '1';
-                    if (guideRingEl) guideRingEl.style.opacity = '0.5';
-                    if (textEl) textEl.style.opacity = '0.9';
-                    
+                    // 開啟互動層與停止按鈕
                     document.getElementById('interaction-layer').style.display = 'block';
                     const btnStop = document.getElementById('btn-stop');
                     btnStop.style.display = 'block';
                     setTimeout(() => { btnStop.style.opacity = '1'; }, 50);
 
+                    // 不呼叫 triggerBreathTextChange 以免打斷淡入，讓 MINDFULNESS 自然接管
                     updateUIStateForMindfulness(0);
-                    triggerBreathTextChange(true);
+                    if (textEl) textEl.classList.add('glow-inhale'); // 補上吸氣字樣的微光脈動
                 }
 
                 guideAnimFrame = requestAnimationFrame(animateGuide);
@@ -866,7 +901,7 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【無字·靜水微瀾】零卡頓、絕對純淨轉場 */
+        /* 【點擊開始正念】：徹底截斷 CSS 動畫殘影 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -875,8 +910,8 @@
             prepStartTime = performance.now();
             currentCoreScale = 0.25; 
             isEndingDissolve = false;
+            hasTriggeredRipple = false; 
             
-            // 預備色彩強制設為琥珀金 (Inhale 色彩)
             currR = 255; currG = 180; currB = 80;
             cachedColorStr = "255, 180, 80";
 
@@ -892,14 +927,14 @@
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
 
-            // 強制隱藏所有文字與 UI 元素，確保預備期 100% 畫面純淨無字
-            if (topHeaderEl) topHeaderEl.style.opacity = '0';
-            if (guideRingEl) guideRingEl.style.opacity = '0';
-            if (textEl) textEl.style.opacity = '0';
-            if (hintEl) hintEl.style.opacity = '0';
-
-            // 觸發一波極具詩意的微光漣漪
-            triggerAffirmativeGlow();
+            // 最關鍵的一步：拔掉 transition 並歸零 opacity，消滅上一次迴圈殘留的「鬼影字體」
+            const elementsToHide = [topHeaderEl, guideRingEl, textEl, hintEl];
+            elementsToHide.forEach(el => {
+                if (el) {
+                    el.style.transition = 'none';
+                    el.style.opacity = '0';
+                }
+            });
 
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
@@ -938,7 +973,14 @@
                 document.getElementById('sky-bg').classList.remove('active'); document.getElementById('sky-bg').style.filter = 'blur(60px)';
                 document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
+                
+                // 重置前一次的參數與樣式，保證下一次循環乾淨無瑕
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
+                const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
+                elementsToReset.forEach(el => {
+                    if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
+                });
+
                 firstClickEl.style.display = 'flex'; firstClickEl.style.pointerEvents = 'auto'; firstClickEl.style.opacity = '1';
                 document.getElementById('intro').style.display = 'none'; document.getElementById('intro').style.opacity = '0';
                 state = 'INIT'; setTimeout(() => { blackScreen.style.opacity = '0'; blackScreen.style.pointerEvents = 'none'; }, 100);
