@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=50">
+    <link rel="manifest" href="manifest.json?v=51">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -148,22 +148,22 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 完美極簡置中提示卡片 (v50) */
+        /* 緊密貼合極簡置中卡片 (v51) */
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
-            margin-top: 24px; padding: 12px 36px 12px 18px; border-radius: 20px;
+            margin-top: 24px; padding: 8px 32px 8px 16px; border-radius: 20px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            color: rgba(241, 245, 249, 0.85); font-size: clamp(0.75rem, 2.3vw, 0.82rem);
+            color: rgba(241, 245, 249, 0.85); font-size: clamp(0.72rem, 2.2vw, 0.78rem);
             font-weight: 300; letter-spacing: 1.2px; text-align: center;
-            max-width: 88vw; width: 340px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 88vw; width: fit-content; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             pointer-events: auto; position: relative; cursor: pointer;
         }
         .pwa-prompt-header { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
-        .pwa-prompt-title { width: 100%; text-align: center; font-weight: 300; letter-spacing: 1.2px; }
-        .pwa-close-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.35); font-size: 0.95rem; padding: 4px; transition: color 0.3s; }
+        .pwa-prompt-title { width: 100%; text-align: center; font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; }
+        .pwa-close-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 4px; transition: color 0.3s; }
         .pwa-close-btn:hover { color: #ffffff; }
-        .pwa-instruction { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.72rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
+        .pwa-instruction { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
 
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
@@ -267,7 +267,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v50';
+        const APP_VERSION = 'v51';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -999,7 +999,6 @@
                     pwaPromptEl.style.opacity = '0';
                     setTimeout(() => { pwaPromptEl.style.display = 'none'; }, 500);
                 }
-                // 設定 7 天 (7 * 24 * 3600 * 1000 ms) 沉睡冷卻期
                 const coolDownUntil = Date.now() + 7 * 24 * 60 * 60 * 1000;
                 try { localStorage.setItem('flow_pwa_cooldown', coolDownUntil.toString()); } catch(err){}
             });
