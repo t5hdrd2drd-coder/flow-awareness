@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=51">
+    <link rel="manifest" href="manifest.json?v=52">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -148,10 +148,10 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 緊密貼合極簡置中卡片 (v51) */
+        /* 鎖定右上角固定位置之提示卡片 (v52) */
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
-            margin-top: 24px; padding: 8px 32px 8px 16px; border-radius: 20px;
+            margin-top: 24px; padding: 10px 32px 10px 16px; border-radius: 20px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             color: rgba(241, 245, 249, 0.85); font-size: clamp(0.72rem, 2.2vw, 0.78rem);
@@ -161,7 +161,8 @@
         }
         .pwa-prompt-header { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
         .pwa-prompt-title { width: 100%; text-align: center; font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; }
-        .pwa-close-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 4px; transition: color 0.3s; }
+        /* ✕ 鎖定於整體卡片之右上角 */
+        .pwa-close-btn { position: absolute; right: 12px; top: 8px; color: rgba(255, 255, 255, 0.35); font-size: 0.8rem; padding: 2px 4px; transition: color 0.3s; }
         .pwa-close-btn:hover { color: #ffffff; }
         .pwa-instruction { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
 
@@ -256,9 +257,9 @@
         <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
         
         <div class="pwa-prompt-card" id="pwa-prompt">
+            <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
             <div class="pwa-prompt-header">
                 <span class="pwa-prompt-title">加至手機主畫面，隨時開啟正念空間。</span>
-                <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
             </div>
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
@@ -267,7 +268,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v51';
+        const APP_VERSION = 'v52';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
