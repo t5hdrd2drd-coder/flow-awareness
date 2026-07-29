@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=40">
+    <link rel="manifest" href="manifest.json?v=41">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -90,7 +90,7 @@
 
         .container { text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; transform: translateZ(0); padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
 
-        .top-header { position: absolute; top: calc(clamp(20px, 5vh, 40px) + var(--sat-top)); pointer-events: none; transition: opacity 2.5s ease; }
+        .top-header { position: absolute; top: calc(clamp(20px, 5vh, 40px) + var(--sat-top)); pointer-events: none; opacity: 0; transition: opacity 2.5s ease; }
         h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; transition: opacity 2.5s ease; }
         p.subtitle { font-size: 0.8rem; font-weight: 300; color: #cbd5e1; letter-spacing: 2px; margin-right: -2px; white-space: nowrap; transition: opacity 2.5s ease; }
 
@@ -100,12 +100,11 @@
 
         .organic-core {
             position: absolute; top: 50%; left: 50%; width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; 
-            z-index: 2; pointer-events: none; opacity: 0; transition: opacity 2s ease; transform: translateZ(0); will-change: opacity; 
+            z-index: 2; pointer-events: none; opacity: 0; transition: opacity 2.5s ease; transform: translateZ(0); will-change: opacity; 
         }
 
         .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
 
-        /* 文字貼合於 Central Guide Ring 正上方，保持視覺平衡與不碰觸球體 */
         #breath-text { 
             position: absolute; 
             top: clamp(0px, 2%, 15px); 
@@ -117,7 +116,7 @@
             font-size: clamp(1rem, 2.5vw, 1.25rem); 
             z-index: 15; 
             will-change: transform, color; 
-            opacity: 0.9; 
+            opacity: 0; 
             white-space: nowrap; 
             transition: opacity 2s ease, visibility 2s ease; 
         }
@@ -126,14 +125,13 @@
             .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); margin-top: 10px; }
             .guide-ring, .ripple-wave { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
             .affirmation-water-drop { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
-            /* 手機版優化：向上提升文字位置，確保正中間且不接觸水滴 */
             #breath-text { top: -20px; font-size: 1.05rem; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
             #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
         }
 
-        .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out; }
+        .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; opacity: 0; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out, opacity 2s ease; }
         .ripple-wave { border-radius: 50%; pointer-events: none; z-index: 1; opacity: 0; transform: scale(1); background: radial-gradient(circle, transparent 40%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.3) 75%, transparent 100%); will-change: transform, opacity; border: none; }
         .ripple-wave.active { animation: softRadiantExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
 
@@ -241,7 +239,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v40';
+        const APP_VERSION = 'v41';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -336,7 +334,10 @@
         let hasInhaledInCurrentCycle = false; 
         const MIN_VALID_PRESS_DURATION = 400; 
 
-        let currentCoreScale = 1.0; 
+        let currentCoreScale = 0.25; // 轉場起始：從極小水滴微光出發
+        let prepStartTime = 0; 
+        const PREP_DURATION = 2000; // 2.0s 無縫極致平滑沉降儀式
+
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
 
@@ -392,7 +393,7 @@
             if (document.visibilityState !== 'visible') return; 
             killAllOldNodes(); 
             fadeMasterIn();
-            if (state === 'MINDFULNESS') { requestWakeLock(); }
+            if (state === 'MINDFULNESS' || state === 'PREPARATION') { requestWakeLock(); }
         }
 
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') handleAppVisibilityLoss(); else if (document.visibilityState === 'visible') handleAppVisibilityRestore(); });
@@ -422,6 +423,7 @@
             
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
+            if (state === 'PREPARATION') zFlowSpeed = 0.2; // 預備階段星空降至極慢
             if (isEndingDissolve) zFlowSpeed = -8.5; 
 
             for(let i=0; i<stars.length; i++) {
@@ -618,6 +620,7 @@
         const mainContainerEl = document.getElementById('main-container');
         const mainTitleEl = document.getElementById('main-title');
         const subTitleEl = document.getElementById('sub-title');
+        const topHeaderEl = document.getElementById('top-header');
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -717,8 +720,39 @@
         }
 
         function animateGuide(now) {
-            if (state !== 'MINDFULNESS') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
+            if (state !== 'MINDFULNESS' && state !== 'PREPARATION') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
+
+            /* 【無縫沉降儀式 Core Loop】 */
+            if (state === 'PREPARATION') {
+                let pElapsed = now - prepStartTime;
+                let progress = Math.min(1.0, pElapsed / PREP_DURATION);
+                let easedProg = progress * progress * (3 - 2 * progress); // 順滑 Ease-Out 曲線
+
+                currentCoreScale = 0.25 + easedProg * 0.75; // 水滴從 0.25 極低亮點綻放擴散至 1.0 標準大小
+
+                if (progress >= 1.0) {
+                    // 自然滑入正念階段，不呼叫任何 reset，保持動態迴圈連續
+                    state = 'MINDFULNESS';
+                    sessionStartTime = Date.now();
+                    
+                    if (topHeaderEl) topHeaderEl.style.opacity = '1';
+                    if (guideRingEl) guideRingEl.style.opacity = '0.5';
+                    if (textEl) textEl.style.opacity = '0.9';
+                    
+                    document.getElementById('interaction-layer').style.display = 'block';
+                    const btnStop = document.getElementById('btn-stop');
+                    btnStop.style.display = 'block';
+                    setTimeout(() => { btnStop.style.opacity = '1'; }, 50);
+
+                    updateUIStateForMindfulness(0);
+                    triggerBreathTextChange(true);
+                }
+
+                guideAnimFrame = requestAnimationFrame(animateGuide);
+                return;
+            }
+
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
 
             if (elapsedSecs > 30) {
@@ -821,47 +855,41 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【靜水微瀾】轉場儀式修復：淡出 Intro 時立即展開 Canvas 沉降，徹底消除停頓感 */
+        /* 【無字·靜水微瀾】零卡頓轉場：不呼叫 reset，由 60FPS 動畫迴圈接管綻放 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
+            
             state = 'PREPARATION';
+            prepStartTime = performance.now();
+            currentCoreScale = 0.25; 
+            isEndingDissolve = false;
+            requestWakeLock();
 
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
             
-            // 立即啟用背景星空與主畫布沉降
             document.getElementById('sky-bg').classList.add('active');
             const mainContainer = document.getElementById('main-container');
             const coreCanvasEl = document.getElementById('core-canvas');
             
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
-            
-            // 釋放一波柔和的水滴擴散漣漪，作為進入正念的心理預示
+
+            if (topHeaderEl) topHeaderEl.style.opacity = '0';
+            if (guideRingEl) guideRingEl.style.opacity = '0';
+            if (textEl) textEl.style.opacity = '0';
+
+            // 觸發一波極具詩意的微光漣漪
             triggerAffirmativeGlow();
 
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
-                initMindfulness(); 
-            }, 1800); 
+            }, 1200);
+
+            if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
+            guideAnimFrame = requestAnimationFrame(animateGuide);
         });
-
-        function initMindfulness() {
-            if(guideAnimFrame) { cancelAnimationFrame(guideAnimFrame); guideAnimFrame = null; }
-            state = 'MINDFULNESS'; sessionStartTime = Date.now(); isEndingDissolve = false; requestWakeLock();
-            baseInhalePace = 3.2; targetBreathScale = 0.8; currentResonance = 1.0; isCurrentPhaseInhale = true; isPressing = false; hasInhaledInCurrentCycle = false;
-            guidePhase = 0; userPhase = 0; guideDir = 1; currentCoreScale = 1.0;
-
-            if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
-            
-            textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0.9'; textEl.style.visibility = 'visible'; textEl.style.transform = 'translateX(-50%) translateY(0px) scale(1)';
-            if (mainTitleEl) mainTitleEl.style.opacity = '1'; if (subTitleEl) subTitleEl.style.opacity = '0.85';
-            
-            consecutiveHighResonance = 0; missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; totalBreaths = 0; sumResonance = 0; resonanceSamples = 0; cycleResonanceSum = 0; cycleResonanceCount = 0;
-            document.getElementById('interaction-layer').style.display = 'block'; const btnStop = document.getElementById('btn-stop'); btnStop.style.display = 'block'; setTimeout(() => { btnStop.style.opacity = '1'; }, 50);
-            updateUIStateForMindfulness(0); triggerBreathTextChange(true); guideAnimFrame = requestAnimationFrame(animateGuide);
-        }
 
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
