@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=55">
+    <link rel="manifest" href="manifest.json?v=56">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -148,10 +148,10 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 絕對右上角角落對齊提示卡片 (v55) */
+        /* 極致右上角壓角 ✕ 提示卡片 (v56) */
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
-            margin-top: 24px; padding: 12px 24px; border-radius: 20px;
+            margin-top: 24px; padding: 14px 20px 12px 20px; border-radius: 20px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             color: rgba(241, 245, 249, 0.85); font-size: clamp(0.72rem, 2.2vw, 0.78rem);
@@ -165,11 +165,11 @@
         .pwa-prompt-title { 
             font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; text-align: center;
         }
-        /* ✕ 絕對固定於卡片頂層角落 (top: 10px; right: 12px;) 精準對齊紅點 */
+        /* ✕ 極致貼緊卡片右上角角落 (top: 4px; right: 6px;) */
         .pwa-close-btn { 
-            position: absolute; right: 12px; top: 10px;
-            color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 4px;
-            transition: color 0.3s; line-height: 1; cursor: pointer; z-index: 10;
+            position: absolute; top: 4px; right: 6px;
+            color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 6px 8px;
+            transition: color 0.3s; line-height: 1; cursor: pointer; z-index: 20;
         }
         .pwa-close-btn:hover { color: #ffffff; }
         .pwa-instruction { 
@@ -280,7 +280,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v55';
+        const APP_VERSION = 'v56';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -947,8 +947,7 @@
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
-            currR = 255; currG = 180; currB = 80;
-            cachedColorStr = "255, 180, 80";
+            currR = 255; currG = 180; cachedColorStr = "255, 180, 80";
             currentResonance = 0.0;
             document.documentElement.style.setProperty('--c-r', 255); 
             document.documentElement.style.setProperty('--c-g', 180); 
@@ -1042,7 +1041,7 @@
                 }
                 
                 pwaPromptEl.style.display = 'block';
-                pwaInstructionEl.style.display = 'block'; // 預設直接展開
+                pwaInstructionEl.style.display = 'block';
                 setTimeout(() => { pwaPromptEl.style.opacity = '1'; }, 2000);
             } else if (pwaPromptEl) {
                 pwaPromptEl.style.display = 'none';
