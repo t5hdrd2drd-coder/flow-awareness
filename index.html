@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=39">
+    <link rel="manifest" href="manifest.json?v=40">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -105,9 +105,10 @@
 
         .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
 
+        /* 文字貼合於 Central Guide Ring 正上方，保持視覺平衡與不碰觸球體 */
         #breath-text { 
             position: absolute; 
-            top: clamp(8px, 4%, 20px); 
+            top: clamp(0px, 2%, 15px); 
             left: 50%; 
             transform: translateX(-50%); 
             font-weight: 400; 
@@ -122,10 +123,11 @@
         }
 
         @media (max-width: 480px) {
-            .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); }
+            .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); margin-top: 10px; }
             .guide-ring, .ripple-wave { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
             .affirmation-water-drop { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
-            #breath-text { top: 4px; font-size: 1.05rem; }
+            /* 手機版優化：向上提升文字位置，確保正中間且不接觸水滴 */
+            #breath-text { top: -20px; font-size: 1.05rem; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
             #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
@@ -239,7 +241,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v39';
+        const APP_VERSION = 'v40';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -416,7 +418,7 @@
             bgCtx.clearRect(0, 0, dW, dH);
             const cx = dW * 0.5, cy = dH * 0.5;
             breathScale += (targetBreathScale - breathScale) * 0.015;
-            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY');
+            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION');
             
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
@@ -819,7 +821,7 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【無字·靜水微瀾】2.8 秒視覺沉降預備儀式 */
+        /* 【靜水微瀾】轉場儀式修復：淡出 Intro 時立即展開 Canvas 沉降，徹底消除停頓感 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -828,24 +830,21 @@
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
             
+            // 立即啟用背景星空與主畫布沉降
+            document.getElementById('sky-bg').classList.add('active');
+            const mainContainer = document.getElementById('main-container');
+            const coreCanvasEl = document.getElementById('core-canvas');
+            
+            mainContainer.style.opacity = '1'; 
+            coreCanvasEl.style.opacity = '1';
+            
+            // 釋放一波柔和的水滴擴散漣漪，作為進入正念的心理預示
+            triggerAffirmativeGlow();
+
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
-                document.getElementById('sky-bg').classList.add('active');
-                
-                const mainContainer = document.getElementById('main-container');
-                const coreCanvasEl = document.getElementById('core-canvas');
-                
-                mainContainer.style.opacity = '1'; 
-                coreCanvasEl.style.opacity = '1';
-                
-                // 擴散預備漣漪 (Ripple Wave) 提示即將開始呼吸
-                triggerAffirmativeGlow();
-
-                setTimeout(() => {
-                    initMindfulness(); 
-                }, 2200);
-
-            }, 600); 
+                initMindfulness(); 
+            }, 1800); 
         });
 
         function initMindfulness() {
