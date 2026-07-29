@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=49">
+    <link rel="manifest" href="manifest.json?v=50">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -148,22 +148,22 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 網頁版獨立可折疊式手把手提示卡片 */
+        /* 完美極簡置中提示卡片 (v50) */
         .pwa-prompt-card {
-            display: none; opacity: 0; transition: opacity 2s ease, max-height 0.5s ease, padding 0.5s ease;
-            margin-top: 24px; padding: 12px 18px; border-radius: 20px;
+            display: none; opacity: 0; transition: opacity 2s ease;
+            margin-top: 24px; padding: 12px 36px 12px 18px; border-radius: 20px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             color: rgba(241, 245, 249, 0.85); font-size: clamp(0.75rem, 2.3vw, 0.82rem);
-            font-weight: 300; letter-spacing: 1.2px; text-align: left;
+            font-weight: 300; letter-spacing: 1.2px; text-align: center;
             max-width: 88vw; width: 340px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             pointer-events: auto; position: relative; cursor: pointer;
         }
-        .pwa-prompt-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .pwa-prompt-title { flex: 1; padding-right: 8px; font-weight: 300; }
-        .pwa-close-btn { color: rgba(255, 255, 255, 0.35); font-size: 1rem; padding: 0 4px; transition: color 0.3s; }
+        .pwa-prompt-header { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
+        .pwa-prompt-title { width: 100%; text-align: center; font-weight: 300; letter-spacing: 1.2px; }
+        .pwa-close-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.35); font-size: 0.95rem; padding: 4px; transition: color 0.3s; }
         .pwa-close-btn:hover { color: #ffffff; }
-        .pwa-instruction { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.72rem; line-height: 1.6; color: #cbd5e1; }
+        .pwa-instruction { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.72rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
 
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
@@ -257,7 +257,7 @@
         
         <div class="pwa-prompt-card" id="pwa-prompt">
             <div class="pwa-prompt-header">
-                <span class="pwa-prompt-title">📱 加至手機主畫面，隨時開啟正念空間。</span>
+                <span class="pwa-prompt-title">加至手機主畫面，隨時開啟正念空間。</span>
                 <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
             </div>
             <div class="pwa-instruction" id="pwa-instruction"></div>
@@ -267,7 +267,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v49';
+        const APP_VERSION = 'v50';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -1032,13 +1032,13 @@
             if (isMobileDevice && !isStandalone && !isCoolingDown && pwaPromptEl) {
                 const isiOS = /iPhone|iPad|iPod/i.test(ua);
                 if (isiOS) {
-                    pwaInstructionEl.innerHTML = "點擊下方選單欄的 <b>「分享 ⎋」</b> 按鈕<br>向上滑動選擇 <b>「加入主畫面 ⊕」</b> 即可完成。";
+                    pwaInstructionEl.innerHTML = "點擊下方選單欄的 <b>「分享 ⎋」</b> 按鈕<br>向上滑動選擇 <b>「加到主畫面 ⊕」</b> 即可完成。";
                 } else {
                     pwaInstructionEl.innerHTML = "點擊右上角 <b>「三個點 ⋮」</b> 選單按鈕<br>選擇 <b>「安裝應用程式」</b> 或 <b>「加到主畫面」</b>。";
                 }
                 
                 pwaPromptEl.style.display = 'block';
-                pwaInstructionEl.style.display = 'none'; // 預設收合圖解
+                pwaInstructionEl.style.display = 'none'; 
                 setTimeout(() => { pwaPromptEl.style.opacity = '1'; }, 2000);
             } else if (pwaPromptEl) {
                 pwaPromptEl.style.display = 'none';
