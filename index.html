@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=42">
+    <link rel="manifest" href="manifest.json?v=43">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -239,7 +239,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v42';
+        const APP_VERSION = 'v43';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -336,7 +336,7 @@
 
         let currentCoreScale = 0.25; 
         let prepStartTime = 0; 
-        const PREP_DURATION = 2200; // 2.2 秒無字靜水微瀾純淨沉降儀式
+        const PREP_DURATION = 2000; 
 
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
@@ -729,10 +729,16 @@
                 let progress = Math.min(1.0, pElapsed / PREP_DURATION);
                 let easedProg = progress * progress * (3 - 2 * progress); 
 
-                currentCoreScale = 0.25 + easedProg * 0.75; 
+                currentCoreScale = 0.25 + easedProg * 0.75; // 水滴從微光擴散至標準點 scale: 1.0
+
+                // 預備期色彩鎖定為琥珀金 (Inhale 色彩)，避免藍色硬切斷
+                currR += (255 - currR) * 0.1;
+                currG += (180 - currG) * 0.1;
+                currB += (80 - currB) * 0.1;
+                cachedColorStr = `${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)}`;
 
                 if (progress >= 1.0) {
-                    /* 沉降完全完畢：精準鎖定從第一個「吸氣」點（Phase 0）零頓挫出發 */
+                    /* 沉降完全完畢：精準鎖定從第一個「吸氣」點（Phase 0）平滑開啟 */
                     state = 'MINDFULNESS';
                     sessionStartTime = Date.now();
                     
@@ -869,6 +875,11 @@
             prepStartTime = performance.now();
             currentCoreScale = 0.25; 
             isEndingDissolve = false;
+            
+            // 預備色彩強制設為琥珀金 (Inhale 色彩)
+            currR = 255; currG = 180; currB = 80;
+            cachedColorStr = "255, 180, 80";
+
             requestWakeLock();
 
             document.getElementById('intro').style.opacity = '0'; 
@@ -881,7 +892,7 @@
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
 
-            // 強制隱藏所有文字與元件，確保預備期 100% 畫面無字
+            // 強制隱藏所有文字與 UI 元素，確保預備期 100% 畫面純淨無字
             if (topHeaderEl) topHeaderEl.style.opacity = '0';
             if (guideRingEl) guideRingEl.style.opacity = '0';
             if (textEl) textEl.style.opacity = '0';
