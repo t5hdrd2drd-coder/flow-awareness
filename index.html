@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=41">
+    <link rel="manifest" href="manifest.json?v=42">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -90,9 +90,9 @@
 
         .container { text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; transform: translateZ(0); padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
 
-        .top-header { position: absolute; top: calc(clamp(20px, 5vh, 40px) + var(--sat-top)); pointer-events: none; opacity: 0; transition: opacity 2.5s ease; }
-        h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; transition: opacity 2.5s ease; }
-        p.subtitle { font-size: 0.8rem; font-weight: 300; color: #cbd5e1; letter-spacing: 2px; margin-right: -2px; white-space: nowrap; transition: opacity 2.5s ease; }
+        .top-header { position: absolute; top: calc(clamp(20px, 5vh, 40px) + var(--sat-top)); pointer-events: none; opacity: 0; transition: opacity 2s ease; }
+        h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; transition: opacity 2s ease; }
+        p.subtitle { font-size: 0.8rem; font-weight: 300; color: #cbd5e1; letter-spacing: 2px; margin-right: -2px; white-space: nowrap; transition: opacity 2s ease; }
 
         .breath-wrapper { position: relative; width: clamp(280px, 35vw, 420px); height: clamp(280px, 35vw, 420px); display: flex; justify-content: center; align-items: center; margin-top: 20px; perspective: 1000px; overflow: visible; }
 
@@ -239,7 +239,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v41';
+        const APP_VERSION = 'v42';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -334,9 +334,9 @@
         let hasInhaledInCurrentCycle = false; 
         const MIN_VALID_PRESS_DURATION = 400; 
 
-        let currentCoreScale = 0.25; // 轉場起始：從極小水滴微光出發
+        let currentCoreScale = 0.25; 
         let prepStartTime = 0; 
-        const PREP_DURATION = 2000; // 2.0s 無縫極致平滑沉降儀式
+        const PREP_DURATION = 2200; // 2.2 秒無字靜水微瀾純淨沉降儀式
 
         let isEndingDissolve = false; 
         let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
@@ -423,7 +423,7 @@
             
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
-            if (state === 'PREPARATION') zFlowSpeed = 0.2; // 預備階段星空降至極慢
+            if (state === 'PREPARATION') zFlowSpeed = 0.2; 
             if (isEndingDissolve) zFlowSpeed = -8.5; 
 
             for(let i=0; i<stars.length; i++) {
@@ -723,19 +723,24 @@
             if (state !== 'MINDFULNESS' && state !== 'PREPARATION') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
-            /* 【無縫沉降儀式 Core Loop】 */
+            /* 【無字·純淨沉降儀式 Core Loop】 */
             if (state === 'PREPARATION') {
                 let pElapsed = now - prepStartTime;
                 let progress = Math.min(1.0, pElapsed / PREP_DURATION);
-                let easedProg = progress * progress * (3 - 2 * progress); // 順滑 Ease-Out 曲線
+                let easedProg = progress * progress * (3 - 2 * progress); 
 
-                currentCoreScale = 0.25 + easedProg * 0.75; // 水滴從 0.25 極低亮點綻放擴散至 1.0 標準大小
+                currentCoreScale = 0.25 + easedProg * 0.75; 
 
                 if (progress >= 1.0) {
-                    // 自然滑入正念階段，不呼叫任何 reset，保持動態迴圈連續
+                    /* 沉降完全完畢：精準鎖定從第一個「吸氣」點（Phase 0）零頓挫出發 */
                     state = 'MINDFULNESS';
                     sessionStartTime = Date.now();
                     
+                    guidePhase = 0;
+                    userPhase = 0;
+                    guideDir = 1;
+                    isCurrentPhaseInhale = true;
+
                     if (topHeaderEl) topHeaderEl.style.opacity = '1';
                     if (guideRingEl) guideRingEl.style.opacity = '0.5';
                     if (textEl) textEl.style.opacity = '0.9';
@@ -855,7 +860,7 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【無字·靜水微瀾】零卡頓轉場：不呼叫 reset，由 60FPS 動畫迴圈接管綻放 */
+        /* 【無字·靜水微瀾】零卡頓、絕對純淨轉場 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -876,9 +881,11 @@
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
 
+            // 強制隱藏所有文字與元件，確保預備期 100% 畫面無字
             if (topHeaderEl) topHeaderEl.style.opacity = '0';
             if (guideRingEl) guideRingEl.style.opacity = '0';
             if (textEl) textEl.style.opacity = '0';
+            if (hintEl) hintEl.style.opacity = '0';
 
             // 觸發一波極具詩意的微光漣漪
             triggerAffirmativeGlow();
