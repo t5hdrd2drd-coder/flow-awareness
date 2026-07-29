@@ -2,25 +2,7 @@
 <html lang="zh-TW" style="background-color: #030105; background: #030105;">
 <head>
     <script defer src="/_vercel/insights/script.js"></script>
-    <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- 1. 搜尋引擎（Google）顯示的標題與簡介 -->
-  <title>流動覺察 Flow Awareness｜找回內在的平靜與專注</title>
-  <meta name="description" content="在嘈雜的世界裡，提供一個沉浸的空間。在這裡透過覺察，重獲清明與喜悅。">
-
-  <!-- 2. 社群平台卡片 (Facebook, LINE, Messenger, Threads) -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://flow-awareness.vercel.app/">
-  <meta property="og:title" content="流動覺察 Flow Awareness｜找回內在的平靜與專注">
-  <meta property="og:description" content="在嘈雜的世界裡，提供一個沉浸的空間。在這裡透過覺察，重獲清明與喜悅。">
-  <meta property="og:image" content="https://flow-awareness.vercel.app/og-image.png">
-
-  <!-- 3. Twitter / X 卡片 -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="流動覺察 Flow Awareness｜找回內在的平靜與專注">
-  <meta name="twitter:description" content="在嘈雜的世界裡，提供一個沉浸的空間。在這裡透過覺察，重獲清明與喜悅。">
-  <meta name="twitter:image" content="https://flow-awareness.vercel.app/og-image.png">
+    
     <meta name="google-site-verification" content="UsTj0UzmF2QUCPFgCfiZP52NbcYWO5I9oy08Iod8WZs" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -33,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=47">
+    <link rel="manifest" href="manifest.json?v=49">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -123,7 +105,6 @@
 
         .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
 
-        /* 修正偏左問題：補上 margin-right: -10px 精準抵銷 letter-spacing 帶來的右側空白 */
         #breath-text { 
             position: absolute; 
             top: clamp(0px, 2%, 15px); 
@@ -166,6 +147,24 @@
         .summary-title { font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 200; letter-spacing: clamp(6px, 2vw, 12px); margin-right: calc(-1 * clamp(6px, 2vw, 12px)); color: #ffffff; margin-bottom: 16px; white-space: nowrap; }
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
+        
+        /* 網頁版獨立可折疊式手把手提示卡片 */
+        .pwa-prompt-card {
+            display: none; opacity: 0; transition: opacity 2s ease, max-height 0.5s ease, padding 0.5s ease;
+            margin-top: 24px; padding: 12px 18px; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: rgba(241, 245, 249, 0.85); font-size: clamp(0.75rem, 2.3vw, 0.82rem);
+            font-weight: 300; letter-spacing: 1.2px; text-align: left;
+            max-width: 88vw; width: 340px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            pointer-events: auto; position: relative; cursor: pointer;
+        }
+        .pwa-prompt-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .pwa-prompt-title { flex: 1; padding-right: 8px; font-weight: 300; }
+        .pwa-close-btn { color: rgba(255, 255, 255, 0.35); font-size: 1rem; padding: 0 4px; transition: color 0.3s; }
+        .pwa-close-btn:hover { color: #ffffff; }
+        .pwa-instruction { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.72rem; line-height: 1.6; color: #cbd5e1; }
+
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
@@ -255,11 +254,20 @@
         <h2 class="summary-title">活 在 當 下</h2>
         <div class="summary-time" id="summary-time">00:00</div>
         <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
-        <button id="btn-end" class="capsule-btn" style="margin-top: 40px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+        
+        <div class="pwa-prompt-card" id="pwa-prompt">
+            <div class="pwa-prompt-header">
+                <span class="pwa-prompt-title">📱 加至手機主畫面，隨時開啟正念空間。</span>
+                <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
+            </div>
+            <div class="pwa-instruction" id="pwa-instruction"></div>
+        </div>
+
+        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
     </div>
 
     <script>
-        const APP_VERSION = 'v47';
+        const APP_VERSION = 'v49';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -642,6 +650,9 @@
         const mainTitleEl = document.getElementById('main-title');
         const subTitleEl = document.getElementById('sub-title');
         const topHeaderEl = document.getElementById('top-header');
+        const pwaPromptEl = document.getElementById('pwa-prompt');
+        const pwaCloseBtnEl = document.getElementById('pwa-close-btn');
+        const pwaInstructionEl = document.getElementById('pwa-instruction');
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -744,13 +755,9 @@
             if (state !== 'MINDFULNESS' && state !== 'PREPARATION') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
-            /* ==========================================================
-               【三段式無縫沉降】：純淨水滴生長 -> 僅吸氣字樣與光環浮現 -> 正式呼吸
-               ========================================================== */
             if (state === 'PREPARATION') {
                 let pElapsed = now - prepStartTime;
                 
-                // 【第一階段 0~1.5秒】：絕對純淨無字，且暗色水滴極慢柔和生長
                 if (pElapsed < 1500) {
                     let progress = pElapsed / 1500;
                     let easedProg = progress * progress * (3 - 2 * progress); 
@@ -758,9 +765,8 @@
                     
                     currR = 255; currG = 180; currB = 80;
                     cachedColorStr = "255, 180, 80";
-                    currentResonance = 0.0; // 保持最暗極致沉靜，等待長按才亮
+                    currentResonance = 0.0;
                 } 
-                // 【第二階段 1.5~2.3秒】：水滴生長到位，無突兀漣漪，僅讓「吸氣」字樣與光環浮現
                 else if (pElapsed >= 1500 && pElapsed < 2300) {
                     currentCoreScale = 1.0; 
                     currR = 255; currG = 180; currB = 80;
@@ -770,7 +776,6 @@
                     if (!hasTriggeredRipple) {
                         hasTriggeredRipple = true;
                         
-                        // 光環與「吸氣」字樣在 0.8 秒內優雅淡入，創造即將開始的預期
                         if (textEl) { 
                             textEl.innerText = "吸 氣";
                             textEl.style.transition = 'opacity 0.8s ease'; 
@@ -783,7 +788,6 @@
                         }
                     }
                 } 
-                // 【第三階段 2.3秒後】：視覺就位，零閃爍滑入正式呼吸，周邊 UI 才緩緩浮現
                 else if (pElapsed >= 2300) {
                     state = 'MINDFULNESS';
                     sessionStartTime = Date.now();
@@ -793,7 +797,6 @@
                     guideDir = 1;
                     isCurrentPhaseInhale = true;
 
-                    // 標題、提示與按鈕現在才姍姍來遲地浮現，確保第一眼只專注在呼吸圈
                     if (topHeaderEl) { 
                         topHeaderEl.style.transition = 'opacity 2s ease'; 
                         topHeaderEl.style.opacity = '1'; 
@@ -812,8 +815,6 @@
                         btnStop.style.transition = 'all 0.4s ease, opacity 2s ease'; 
                         btnStop.style.opacity = '1'; 
                     }, 50);
-
-                    // 已拔除 textEl 的強制發光與重繪，讓剛才淡入的字體完美定格銜接
                 }
 
                 guideAnimFrame = requestAnimationFrame(animateGuide);
@@ -922,7 +923,7 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【絕對純淨重置】：徹底清除 CSS 殘影與上一次呼吸狀態 */
+        /* 【點擊開始正念】：絕對純淨重置與狀態初始化 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -933,7 +934,6 @@
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
-            // 1. 強制色彩復位到琥珀金 (Inhale預設) 與極暗狀態 (0.0)
             currR = 255; currG = 180; currB = 80;
             cachedColorStr = "255, 180, 80";
             currentResonance = 0.0;
@@ -953,7 +953,6 @@
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
 
-            // 2. 拔除 CSS 閃爍類別並歸零所有文字元件的動畫
             if (hintEl) hintEl.classList.remove('flash-mild'); 
             
             const elementsToHide = [topHeaderEl, guideRingEl, textEl, hintEl];
@@ -974,7 +973,6 @@
                 guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
             }
 
-            // 3. 強制瀏覽器立刻重新計算排版 (Reflow)
             void document.body.offsetHeight;
 
             setTimeout(() => {
@@ -984,6 +982,28 @@
             if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
             guideAnimFrame = requestAnimationFrame(animateGuide);
         });
+
+        /* PWA 提示卡片與折疊手把手圖解邏輯 */
+        if (pwaPromptEl) {
+            pwaPromptEl.addEventListener('click', (e) => {
+                if (e.target === pwaCloseBtnEl) return; 
+                const isExpanded = pwaInstructionEl.style.display === 'block';
+                pwaInstructionEl.style.display = isExpanded ? 'none' : 'block';
+            });
+        }
+
+        if (pwaCloseBtnEl) {
+            pwaCloseBtnEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (pwaPromptEl) {
+                    pwaPromptEl.style.opacity = '0';
+                    setTimeout(() => { pwaPromptEl.style.display = 'none'; }, 500);
+                }
+                // 設定 7 天 (7 * 24 * 3600 * 1000 ms) 沉睡冷卻期
+                const coolDownUntil = Date.now() + 7 * 24 * 60 * 60 * 1000;
+                try { localStorage.setItem('flow_pwa_cooldown', coolDownUntil.toString()); } catch(err){}
+            });
+        }
 
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
@@ -995,6 +1015,35 @@
             let totalSecs = sessionStartTime === 0 ? 0 : Math.max(0, Math.floor((Date.now() - sessionStartTime) / 1000));
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
+            
+            // 裝置與 PWA 判定（手機/平板 + 非獨立APP + 未在7天冷卻期內）
+            const ua = navigator.userAgent || '';
+            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            let isCoolingDown = false;
+            try {
+                const savedCoolDown = localStorage.getItem('flow_pwa_cooldown');
+                if (savedCoolDown && Date.now() < parseInt(savedCoolDown, 10)) {
+                    isCoolingDown = true;
+                }
+            } catch(err){}
+
+            if (isMobileDevice && !isStandalone && !isCoolingDown && pwaPromptEl) {
+                const isiOS = /iPhone|iPad|iPod/i.test(ua);
+                if (isiOS) {
+                    pwaInstructionEl.innerHTML = "點擊下方選單欄的 <b>「分享 ⎋」</b> 按鈕<br>向上滑動選擇 <b>「加入主畫面 ⊕」</b> 即可完成。";
+                } else {
+                    pwaInstructionEl.innerHTML = "點擊右上角 <b>「三個點 ⋮」</b> 選單按鈕<br>選擇 <b>「安裝應用程式」</b> 或 <b>「加到主畫面」</b>。";
+                }
+                
+                pwaPromptEl.style.display = 'block';
+                pwaInstructionEl.style.display = 'none'; // 預設收合圖解
+                setTimeout(() => { pwaPromptEl.style.opacity = '1'; }, 2000);
+            } else if (pwaPromptEl) {
+                pwaPromptEl.style.display = 'none';
+            }
+
             document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
             document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
             document.getElementById('summary-overlay').style.display = 'flex'; setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
@@ -1009,13 +1058,14 @@
                 if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
                 bowlMasterGain = null; isEndingDissolve = false;
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
+                if (pwaPromptEl) { pwaPromptEl.style.display = 'none'; pwaPromptEl.style.opacity = '0'; }
+                
                 const btnEnd = document.getElementById('btn-end'); btnEnd.style.opacity = '0'; btnEnd.style.pointerEvents = 'none';
                 document.getElementById('main-container').style.opacity = '0';
                 document.getElementById('sky-bg').classList.remove('active'); document.getElementById('sky-bg').style.filter = 'blur(60px)';
                 document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
                 
-                // 重置前一次的參數與樣式，保證下一次循環乾淨無瑕
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
                 currentResonance = 0.0;
                 if (hintEl) hintEl.classList.remove('flash-mild');
