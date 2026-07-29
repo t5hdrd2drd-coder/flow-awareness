@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=45">
+    <link rel="manifest" href="manifest.json?v=46">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -105,7 +105,6 @@
 
         .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
 
-        /* 修正：加入預設顏色 color: #ffffff 確保不會在過渡期呈現黑色 */
         #breath-text { 
             position: absolute; 
             top: clamp(0px, 2%, 15px); 
@@ -241,7 +240,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v45';
+        const APP_VERSION = 'v46';
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -331,7 +330,7 @@
         let guideDir = 1; 
         let guideAnimFrame = null, isCurrentPhaseInhale = true; 
         
-        let currentResonance = 1.0, isPressing = false;
+        let currentResonance = 0.0, isPressing = false;
         let pressStartTime = 0; 
         let hasInhaledInCurrentCycle = false; 
         const MIN_VALID_PRESS_DURATION = 400; 
@@ -727,26 +726,32 @@
             if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
 
             /* ==========================================================
-               【三段式無縫沉降】：純淨水滴生長 -> 漣漪與吸氣浮現 -> 正式呼吸
+               【三段式無縫沉降】：純淨水滴生長 -> 僅吸氣字樣與光環浮現 -> 正式呼吸
                ========================================================== */
             if (state === 'PREPARATION') {
                 let pElapsed = now - prepStartTime;
                 
-                // 【第一階段 0~1.5秒】：絕對純淨無字，水滴極慢柔和生長
+                // 【第一階段 0~1.5秒】：絕對純淨無字，且暗色水滴極慢柔和生長
                 if (pElapsed < 1500) {
                     let progress = pElapsed / 1500;
                     let easedProg = progress * progress * (3 - 2 * progress); 
                     currentCoreScale = 0.25 + easedProg * 0.75; 
+                    
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
+                    currentResonance = 0.0; // 保持暗色，等待按下才會發亮
                 } 
-                // 【第二階段 1.5~2.3秒】：水滴生長到位，觸發漣漪，僅讓「吸氣」字樣與光環浮現
+                // 【第二階段 1.5~2.3秒】：水滴生長到位，無漣漪，僅讓「吸氣」字樣與光環浮現
                 else if (pElapsed >= 1500 && pElapsed < 2300) {
                     currentCoreScale = 1.0; 
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
+                    currentResonance = 0.0;
 
                     if (!hasTriggeredRipple) {
                         hasTriggeredRipple = true;
-                        triggerAffirmativeGlow(); // 打出第一道預備漣漪
                         
-                        // 光環與「吸氣」字樣在 0.8 秒內優雅淡入，配合漣漪擴散
+                        // 光環與「吸氣」字樣在 0.8 秒內優雅淡入，創造即將開始的預期
                         if (textEl) { 
                             textEl.innerText = "吸 氣";
                             textEl.style.transition = 'opacity 0.8s ease'; 
@@ -755,12 +760,11 @@
                         }
                         if (guideRingEl) { 
                             guideRingEl.style.transition = 'box-shadow 0.1s ease-out, opacity 0.8s ease'; 
-                            // 預備期結束時的光環透明度精準設為 0.25 (完美對齊 MINDFULNESS 的起點，消滅跳動)
                             guideRingEl.style.opacity = '0.25'; 
                         }
                     }
                 } 
-                // 【第三階段 2.3秒後】：視覺就位，零頓挫滑入正式呼吸，周邊 UI 才緩緩浮現
+                // 【第三階段 2.3秒後】：視覺就位，零閃爍滑入正式呼吸，周邊 UI 才緩緩浮現
                 else if (pElapsed >= 2300) {
                     state = 'MINDFULNESS';
                     sessionStartTime = Date.now();
@@ -770,7 +774,7 @@
                     guideDir = 1;
                     isCurrentPhaseInhale = true;
 
-                    // 標題、提示與按鈕現在才姍姍來遲地浮現，確保第一眼純淨
+                    // 標題、提示與按鈕現在才姍姍來遲地浮現，確保第一眼只專注在呼吸圈
                     if (topHeaderEl) { 
                         topHeaderEl.style.transition = 'opacity 2s ease'; 
                         topHeaderEl.style.opacity = '1'; 
@@ -790,7 +794,7 @@
                         btnStop.style.opacity = '1'; 
                     }, 50);
 
-                    if (textEl) textEl.classList.add('glow-inhale');
+                    // 已拔除 textEl 的強制發光與重繪，讓剛才淡入的字體完美定格銜接
                 }
 
                 guideAnimFrame = requestAnimationFrame(animateGuide);
@@ -899,7 +903,7 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【核心修復：強制清除 CSS 殘影與上一次呼吸狀態】 */
+        /* 【絕對純淨重置】：徹底清除 CSS 殘影與上一次呼吸狀態 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -910,9 +914,10 @@
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
-            // 1. 強制色彩復位到琥珀金 (Inhale預設)，徹底殺死藍色殘影
+            // 1. 強制色彩復位到琥珀金 (Inhale預設) 與極暗狀態 (0.0)
             currR = 255; currG = 180; currB = 80;
             cachedColorStr = "255, 180, 80";
+            currentResonance = 0.0;
             document.documentElement.style.setProperty('--c-r', 255); 
             document.documentElement.style.setProperty('--c-g', 180); 
             document.documentElement.style.setProperty('--c-b', 80);
@@ -929,7 +934,9 @@
             mainContainer.style.opacity = '1'; 
             coreCanvasEl.style.opacity = '1';
 
-            // 2. 拔除所有文字元件的 transition 並歸零，完全消滅前一次正念的「鬼影」
+            // 2. 拔除所有文字元件的動畫、CSS並強制歸零
+            if (hintEl) hintEl.classList.remove('flash-mild'); // 拔除 CSS 動畫，防止覆蓋
+            
             const elementsToHide = [topHeaderEl, guideRingEl, textEl, hintEl];
             elementsToHide.forEach(el => {
                 if (el) {
@@ -937,18 +944,18 @@
                     el.style.opacity = '0';
                 }
             });
+            
             if (textEl) {
                 textEl.classList.remove('glow-inhale', 'glow-exhale');
-                textEl.style.color = '#ffffff'; // 修正：確保文字不會在動畫套用前變成黑色
+                textEl.style.color = '#ffffff'; 
             }
             if (guideRingEl) {
-                // 強制復位 Guide Ring 樣式，消滅藍色外圈
                 guideRingEl.style.transform = 'scale(1)';
                 guideRingEl.style.borderColor = `rgba(255, 180, 80, 0.75)`;
                 guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
             }
 
-            // 3. 強制瀏覽器立刻重新計算排版 (Reflow)，讓上面的 transition: none 立刻生效
+            // 3. 強制瀏覽器立刻重新計算排版 (Reflow)
             void document.body.offsetHeight;
 
             setTimeout(() => {
@@ -991,6 +998,8 @@
                 
                 // 重置前一次的參數與樣式，保證下一次循環乾淨無瑕
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
+                currentResonance = 0.0;
+                if (hintEl) hintEl.classList.remove('flash-mild');
                 const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
                 elementsToReset.forEach(el => {
                     if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
