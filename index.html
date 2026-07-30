@@ -15,7 +15,7 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=56">
+    <link rel="manifest" href="manifest.json?v=57">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -148,7 +148,12 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 極致右上角壓角 ✕ 提示卡片 (v56) */
+        /* 金句卡片樣式 (v57) */
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 85vw; width: 500px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .summary-quote-card.show { opacity: 1; }
+        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; margin-bottom: 14px; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
+        .quote-source { font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; }
+
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
             margin-top: 24px; padding: 14px 20px 12px 20px; border-radius: 20px;
@@ -159,24 +164,11 @@
             max-width: 88vw; width: fit-content; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             pointer-events: auto; position: relative;
         }
-        .pwa-prompt-header { 
-            display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; 
-        }
-        .pwa-prompt-title { 
-            font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; text-align: center;
-        }
-        /* ✕ 極致貼緊卡片右上角角落 (top: 4px; right: 6px;) */
-        .pwa-close-btn { 
-            position: absolute; top: 4px; right: 6px;
-            color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 6px 8px;
-            transition: color 0.3s; line-height: 1; cursor: pointer; z-index: 20;
-        }
+        .pwa-prompt-header { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
+        .pwa-prompt-title { font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; text-align: center; }
+        .pwa-close-btn { position: absolute; top: 4px; right: 6px; color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 6px 8px; transition: color 0.3s; line-height: 1; cursor: pointer; z-index: 20; }
         .pwa-close-btn:hover { color: #ffffff; }
-        .pwa-instruction { 
-            display: block; margin-top: 10px; padding-top: 10px; 
-            border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; 
-            line-height: 1.6; color: #cbd5e1; text-align: center; 
-        }
+        .pwa-instruction { display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
 
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
@@ -268,6 +260,11 @@
         <div class="summary-time" id="summary-time">00:00</div>
         <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
         
+        <div class="summary-quote-card" id="summary-quote-card">
+            <div class="quote-text" id="quote-text"></div>
+            <div class="quote-source" id="quote-source"></div>
+        </div>
+
         <div class="pwa-prompt-card" id="pwa-prompt">
             <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
             <div class="pwa-prompt-header">
@@ -280,7 +277,60 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v56';
+        const APP_VERSION = 'v57';
+
+        const QUOTE_VAULT = [
+            { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
+            { text: "正念作為一種新的習慣，會慢慢取代分心或放空的舊習慣，讓我們不再迷失於挽不回的過去與到不了的未來。", source: "《放不下，就握手言和吧》" },
+            { text: "沒什麼是恆久不變的，就連最艱困的時期也一樣。", source: "《我可能錯了》" },
+            { text: "這也會過去。", source: "《我可能錯了》" },
+            { text: "正確，從來就不是重點。", source: "《我可能錯了》" },
+            { text: "你遇見的每個人，都在進行一場你一無所知的艱難戰鬥。與人為善，永遠如此。", source: "《我可能錯了》" },
+            { text: "我有著念頭，但我的念頭並不代表我。", source: "《我可能錯了》" },
+            { text: "與生命共舞，而不是試圖去控制它。", source: "《我可能錯了》" },
+            { text: "放下讓我們不舒服的念頭，就算它們是對的。", source: "《我可能錯了》" },
+            { text: "在是非對錯的想法之外，還有一片原野。我會在那裡與你相遇。", source: "魯米 (Rumi)" },
+            { text: "正念是由刻意專注而生的覺知，置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
+            { text: "人所擁有的任何東西都可以被剝奪，唯獨人性最後的自由——在任何境遇中選擇一己態度和生活方式的自由——不能被剝奪。", source: "維克多·弗蘭克" },
+            { text: "在刺激與回應之間，有一個空間。那個空間裡，藏著我們選擇回應的自由與力量。", source: "維克多·弗蘭克" },
+            { text: "不被過去拉扯，不為未來焦慮；你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
+            { text: "安住於此時此刻，不急著去到任何地方，亦無須成為任何其他人。", source: "喬·卡巴金" },
+            { text: "如果問題有解，何必憂慮？如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
+            { text: "寧靜並非來自環境的順遂，而是來自內心對現狀的接納。", source: "達賴喇嘛" },
+            { text: "給自己一點時間，讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
+            { text: "允許一切發生。雜念如雲飄過，你只需成為那廣袤無垠的天空。", source: "正念導引" },
+            { text: "你無法控制外在事件的發生，但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
+            { text: "靈魂的顏色，取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "我們在想像中承受的痛苦，遠比在現實中承受的多。", source: "塞內卡" },
+            { text: "專注於你手頭能做的事，並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "世上事物分為你能掌控的與你不能掌控的。將所有精力，投注於你能掌控的事情上。", source: "愛比克泰德《手冊》" },
+            { text: "從微小的事物開始練習：一點撒出的油，一點被偷走的酒。告訴自己：『用這點代價，我換到了心靈的平靜與自由。』", source: "愛比克泰德《手冊》" },
+            { text: "不要期待人們不犯錯，那是不可行也不可能的；轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "請賜予我平靜，去接受我無法改變的；賜予我勇氣，去改變我能改變的；並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
+            { text: "心不隨外境運轉，便是不被牽著走；不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
+            { text: "一切過往與幻象如夢幻泡影；唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
+            { text: "水清月現，心靜智生。", source: "禪宗古諺" },
+            { text: "心如明鏡，物來則應，物去不留。", source: "禪宗古諺" },
+            { text: "不必企圖消滅雜念，只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
+            { text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
+            { text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。", source: "禪意手記" }
+        ];
+
+        function getRandomQuote() {
+            let availableIndices = [];
+            try {
+                let stored = localStorage.getItem('flow_quote_pool');
+                if (stored) availableIndices = JSON.parse(stored);
+            } catch(e) {}
+            if (!availableIndices || availableIndices.length === 0) {
+                availableIndices = QUOTE_VAULT.map((_, i) => i);
+            }
+            const randomIndex = Math.floor(Math.random() * availableIndices.length);
+            const quoteIndex = availableIndices[randomIndex];
+            availableIndices.splice(randomIndex, 1);
+            try { localStorage.setItem('flow_quote_pool', JSON.stringify(availableIndices)); } catch(e) {}
+            return QUOTE_VAULT[quoteIndex];
+        }
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -666,6 +716,9 @@
         const pwaPromptEl = document.getElementById('pwa-prompt');
         const pwaCloseBtnEl = document.getElementById('pwa-close-btn');
         const pwaInstructionEl = document.getElementById('pwa-instruction');
+        const summaryQuoteCard = document.getElementById('summary-quote-card');
+        const quoteTextEl = document.getElementById('quote-text');
+        const quoteSourceEl = document.getElementById('quote-source');
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -936,7 +989,6 @@
         firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
         firstClickEl.addEventListener('click', handleFirstClick);
 
-        /* 【點擊開始正念】：絕對純淨重置與狀態初始化 */
         document.getElementById('btn-start').addEventListener('click', (e) => {
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
@@ -995,7 +1047,6 @@
             guideAnimFrame = requestAnimationFrame(animateGuide);
         });
 
-        /* PWA 提示卡片點擊關閉與冷卻邏輯 */
         if (pwaCloseBtnEl) {
             pwaCloseBtnEl.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1019,7 +1070,11 @@
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
             
-            // 裝置與 PWA 判定（手機/平板 + 非獨立APP + 未在7天冷卻期內）
+            // 每次抽籤並設定金句內容
+            const currentQuote = getRandomQuote();
+            quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
+            quoteSourceEl.innerText = "—— " + currentQuote.source;
+
             const ua = navigator.userAgent || '';
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -1049,7 +1104,15 @@
 
             document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
             document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
-            document.getElementById('summary-overlay').style.display = 'flex'; setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
+            document.getElementById('summary-overlay').style.display = 'flex'; 
+            
+            setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
+            
+            // 金句卡片淡入
+            setTimeout(() => {
+                summaryQuoteCard.classList.add('show');
+            }, 100);
+
             setTimeout(() => { document.getElementById('btn-end').style.pointerEvents = 'auto'; document.getElementById('btn-end').style.opacity = '1'; }, 7000); 
         });
 
@@ -1060,6 +1123,10 @@
             setTimeout(() => {
                 if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
                 bowlMasterGain = null; isEndingDissolve = false;
+                
+                // 重置金句狀態
+                summaryQuoteCard.classList.remove('show');
+
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
                 if (pwaPromptEl) { pwaPromptEl.style.display = 'none'; pwaPromptEl.style.opacity = '0'; }
                 
