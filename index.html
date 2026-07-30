@@ -15,13 +15,13 @@
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
     
-    <link rel="manifest" href="manifest.json?v=57">
+    <link rel="manifest" href="manifest.json?v=58">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
-    <link rel="icon" id="dynamic-favicon" type="image/png">
-    <link rel="apple-touch-icon" id="dynamic-apple-icon">
-    <link rel="apple-touch-startup-image" id="dynamic-startup-image">
+    <!-- 直接綁定實體圖示 -->
+    <link rel="icon" type="image/png" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="./icon-512.png">
 
     <title>流動覺察 Flow Awareness</title>
     <style>
@@ -68,7 +68,7 @@
             pointer-events: auto;
         }
         
-        .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; }
+        .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; border-radius: 50%; }
         .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
         .headphone-hint { 
             position: absolute; bottom: calc(75px + var(--sat-bottom)); font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
@@ -148,7 +148,6 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 金句卡片樣式 (v57) */
         .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 85vw; width: 500px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
         .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; margin-bottom: 14px; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
@@ -200,19 +199,9 @@
     <div class="black-transition" id="black-transition"></div>
 
     <div class="first-click-overlay" id="first-click">
-        <svg class="brand-logo-icon" viewBox="0 0 100 100">
-            <defs>
-                <radialGradient id="logoGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#38bdf8" />
-                    <stop offset="65%" stop-color="#ffb450" />
-                    <stop offset="100%" stop-color="#030105" stop-opacity="0" />
-                </radialGradient>
-            </defs>
-            <circle cx="50" cy="50" r="46" fill="url(#logoGlow)" opacity="0.65" />
-            <circle cx="50" cy="50" r="42" fill="none" stroke="#ffb450" stroke-width="3.5" opacity="0.9" />
-            <circle cx="50" cy="50" r="26" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.9" />
-            <circle cx="50" cy="50" r="6" fill="#ffffff" />
-        </svg>
+        <!-- 直接使用實體 Icon 圖片並掛上動畫 -->
+        <img src="./icon-512.png" class="brand-logo-icon" alt="流動覺察 Logo">
+        
         <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
         <div class="headphone-hint">🎧 佩戴耳機 獲得深層沉浸</div>
     </div>
@@ -277,7 +266,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v57';
+        const APP_VERSION = 'v58';
 
         const QUOTE_VAULT = [
             { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
@@ -346,55 +335,6 @@
             document.title = `${titleStr} — Flow Awareness`;
             const appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
             if (appleTitleMeta) appleTitleMeta.content = titleStr;
-        })();
-
-        (function generateHighResAppIcon() {
-            const iconCanvas = document.createElement('canvas'); iconCanvas.width = 512; iconCanvas.height = 512;
-            const ictx = iconCanvas.getContext('2d'); 
-            
-            ictx.fillStyle = '#030105'; ictx.fillRect(0, 0, 512, 512);
-
-            const bgGlow = ictx.createRadialGradient(256, 256, 10, 256, 256, 240);
-            bgGlow.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-            bgGlow.addColorStop(0.2, 'rgba(56, 189, 248, 0.5)');
-            bgGlow.addColorStop(0.5, 'rgba(255, 180, 80, 0.35)');
-            bgGlow.addColorStop(1, 'rgba(3, 1, 5, 0)');
-            ictx.fillStyle = bgGlow; ictx.fillRect(0, 0, 512, 512);
-
-            ictx.save();
-            ictx.shadowColor = 'rgba(255, 180, 80, 0.85)';
-            ictx.shadowBlur = 32;
-            ictx.beginPath(); ictx.arc(256, 256, 138, 0, Math.PI * 2);
-            ictx.lineWidth = 12; ictx.strokeStyle = '#ffb450';
-            ictx.stroke();
-            ictx.restore();
-
-            ictx.save();
-            ictx.shadowColor = 'rgba(56, 189, 248, 0.9)';
-            ictx.shadowBlur = 24;
-            ictx.beginPath(); ictx.arc(256, 256, 90, 0, Math.PI * 2);
-            ictx.lineWidth = 9; ictx.strokeStyle = '#38bdf8';
-            ictx.stroke();
-            ictx.restore();
-
-            ictx.save();
-            ictx.shadowColor = '#ffffff'; ictx.shadowBlur = 20;
-            ictx.beginPath(); ictx.arc(256, 256, 20, 0, Math.PI * 2);
-            ictx.fillStyle = '#ffffff'; ictx.fill();
-            ictx.restore();
-
-            const pngDataUrl = iconCanvas.toDataURL('image/png');
-            const favEl = document.getElementById('dynamic-favicon');
-            const appleEl = document.getElementById('dynamic-apple-icon');
-            if (favEl) favEl.href = pngDataUrl;
-            if (appleEl) appleEl.href = pngDataUrl;
-
-            const splashCanvas = document.createElement('canvas');
-            splashCanvas.width = 1280; splashCanvas.height = 2778;
-            const sctx = splashCanvas.getContext('2d');
-            sctx.fillStyle = '#030105'; sctx.fillRect(0, 0, 1280, 2778);
-            const startupElem = document.getElementById('dynamic-startup-image');
-            if (startupElem) startupElem.href = splashCanvas.toDataURL('image/png');
         })();
 
         document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
@@ -1070,7 +1010,6 @@
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
             
-            // 每次抽籤並設定金句內容
             const currentQuote = getRandomQuote();
             quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
             quoteSourceEl.innerText = "—— " + currentQuote.source;
@@ -1108,7 +1047,6 @@
             
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
-            // 金句卡片淡入
             setTimeout(() => {
                 summaryQuoteCard.classList.add('show');
             }, 100);
@@ -1124,7 +1062,6 @@
                 if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
                 bowlMasterGain = null; isEndingDissolve = false;
                 
-                // 重置金句狀態
                 summaryQuoteCard.classList.remove('show');
 
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
