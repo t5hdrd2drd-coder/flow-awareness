@@ -14,7 +14,7 @@
 
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
-        <!-- Open Graph / Facebook / LINE -->
+    <!-- Open Graph / Facebook / LINE -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://flow-awareness.vercel.app">
     <meta property="og:title" content="流動覺察 Flow Awareness">
@@ -29,7 +29,7 @@
     <meta property="twitter:image" content="./og-image.png">
 
     
-    <link rel="manifest" href="manifest.json?v=58">
+    <link rel="manifest" href="manifest.json?v=59">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -213,9 +213,7 @@
     <div class="black-transition" id="black-transition"></div>
 
     <div class="first-click-overlay" id="first-click">
-        <!-- 直接使用實體 Icon 圖片並掛上動畫 -->
         <img src="./icon-512.png" class="brand-logo-icon" alt="流動覺察 Logo">
-        
         <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
         <div class="headphone-hint">🎧 佩戴耳機 獲得深層沉浸</div>
     </div>
@@ -280,7 +278,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v58';
+        const APP_VERSION = 'v59';
 
         const QUOTE_VAULT = [
             { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
@@ -562,7 +560,11 @@
                 if (masterGain) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
             }
             if (!silentAudioAnchor) {
-                silentAudioAnchor = document.createElement('audio'); silentAudioAnchor.loop = true; silentAudioAnchor.setAttribute('playsinline', '');
+                silentAudioAnchor = document.createElement('audio'); 
+                silentAudioAnchor.loop = true; 
+                silentAudioAnchor.setAttribute('playsinline', '');
+                silentAudioAnchor.setAttribute('webkit-playsinline', '');
+                // 採用帶有極低微幅訊號的 0.1 秒音訊，強制將 iOS 音訊 Class 升級為 Playback（突破靜音開關）
                 silentAudioAnchor.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
                 document.body.appendChild(silentAudioAnchor);
             }
@@ -737,8 +739,13 @@
 
             if (isPressing) {
                 pressStartTime = now;
-                playBreathSound(true); 
-                if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((now - sessionStartTime) / 1000); }
+                // 防錯機制：僅在當前為「吸氣階段（黃光）」時，按住螢幕才觸發吸氣音效
+                if (isCurrentPhaseInhale) {
+                    playBreathSound(true); 
+                    userPressedInInhale = true; 
+                    missedInhaleCount = 0; 
+                    updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
+                }
             } else { 
                 const pressDuration = now - pressStartTime;
                 if (pressDuration >= MIN_VALID_PRESS_DURATION) {
