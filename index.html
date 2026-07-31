@@ -1,124 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-TW" style="background-color: #000000; background: #000000;">
-  <head>
-    <script defer="" src="/_vercel/insights/script.js"></script>
-    <meta name="google-site-verification" content="UsTj0UzmF2QUCPFgCfiZP52NbcYWO5I9oy08Iod8WZs">
+<html lang="zh-TW" style="background-color: #030105; background: #030105;">
+<head>
+    <script defer src="/_vercel/insights/script.js"></script>
+    
+    <meta name="google-site-verification" content="UsTj0UzmF2QUCPFgCfiZP52NbcYWO5I9oy08Iod8WZs" />
     <meta charset="UTF-8">
-    <meta name="color-scheme" content="dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="color-scheme" content="dark">
-  
-    <!-- 2. PWA 全螢幕宣告 -->
+    <meta name="theme-color" content="#030105">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
-  
-     <!-- 3. 強制系統狀態列（瀏海/動態島）變成黑色且半透明，融合背景 -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-   <style>
-        :root {
-          background-color: #000000 !important;
-        }
-        html, body {
-          background-color: #000000 !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          /* 針對 iOS 安全區域與缺口進行填滿 */
-          padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
-        }
-    
-        /* 這裡替換成你實際最外層容器的 ID 或 Class */
-        #root, #app, body > div:first-child {
-          background-color: #000000 !important;
-        }
-
-     /* 確保底層絕對是黑的 */
-    :root {
-      color-scheme: dark;
-    }
-    body {
-     background-color: #000000 !important;
-    }
-
-    /* 黑幕過場的樣式 */
-    #pwa-transition-curtain {
-      position: fixed;
-      top: 0;
-     left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #000000;
-      z-index: 999999; /* 確保它在最上層 */
-      pointer-events: none; /* 避免擋住點擊 */
-      /* 動畫：總長 0.8 秒，延遲 0.2 秒後開始淡出 */
-      animation: pwa-fade-out 0.8s ease forwards 0.2s;
-    }
-
-    @keyframes pwa-fade-out {
-       0% { opacity: 1; }
-      100% { 
-        opacity: 0; 
-         visibility: hidden; 
-      }
-
-    } 
-    <style>
-      /* 1. 強制最底層絕對是黑色 */
-      :root, html, body {
-        background-color: #000000 !important;
-        color-scheme: dark !important;
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-      }
- 
-     /* 2. 確保你的內容區塊預設也是黑色 */
-     #root, #app {
-        background-color: #000000 !important;
-        width: 100%;
-        height: 100%;
-      }
-
-      /* 3. 製作一個「黑色載入幕」來掩蓋讀取時間 */
-      #pwa-loading {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #000000;
-        z-index: 999999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: rgba(255, 255, 255, 0.4); /* 半透明的白色文字 */
-        font-family: sans-serif;
-        letter-spacing: 4px;
-        font-size: 14px;
-        pointer-events: none;
-    
-        /* 動畫：停留 1.5 秒後，花 0.8 秒平滑淡出 */
-        animation: pwa-fade-out 0.8s ease forwards 1.5s; 
-      }
-
-      @keyframes pwa-fade-out {
-        to {
-          opacity: 0;
-          visibility: hidden;
-        }
-      }
-    </style>
-
-    </style>
-
-    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="流動覺察">
+
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
-
-    <!-- Open Graph / Facebook / LINE -->
+        <!-- Open Graph / Facebook / LINE -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://flow-awareness.vercel.app">
     <meta property="og:title" content="流動覺察 Flow Awareness">
@@ -131,821 +27,179 @@
     <meta property="twitter:title" content="流動覺察 Flow Awareness">
     <meta property="twitter:description" content="一場讓你活在當下的正念體驗。允許雜念如雲飄散，將心思輕柔錨定於呼吸。">
     <meta property="twitter:image" content="./og-image.png">
-    <link rel="manifest" href="manifest.json">
+
+    
+    <link rel="manifest" href="manifest.json?v=58">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
     <!-- 直接綁定實體圖示 -->
     <link rel="icon" type="image/png" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="./icon-512.png">
+
     <title>流動覺察 Flow Awareness</title>
     <style>
-      html {
-        background-color: #030105 !important;
-        background: #030105 !important;
-      }
-      :root {
-        --c-r: 255;
-        --c-g: 180;
-        --c-b: 80;
-        --sat-top: env(safe-area-inset-top, 0px);
-        --sat-bottom: env(safe-area-inset-bottom, 0px);
-      }
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        user-select: none !important;
-        -webkit-user-select: none !important;
-        -webkit-touch-callout: none !important;
-        -webkit-tap-highlight-color: transparent !important;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100dvh;
-        overflow: hidden;
-        position: fixed;
-        background-color: #030105 !important;
-        background: #030105 !important;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-        touch-action: none;
-        -webkit-user-drag: none;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-      }
-      .sky-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: 0;
-        opacity: 0;
-        transition: opacity 4s ease-in-out, filter 5s ease;
-        filter: blur(60px);
-        animation: hueShift 75s infinite linear;
-        will-change: opacity, transform;
-        backface-visibility: hidden;
-        transform: translateZ(0);
-      }
-      .sky-container.active {
-        opacity: 0.45;
-      }
-      .sky-cloud {
-        position: absolute;
-        mix-blend-mode: screen;
-        animation: cloudFlow 23s infinite alternate ease-in-out;
-        will-change: transform;
-        backface-visibility: hidden;
-        transform: translateZ(0);
-      }
-      #cloud1 {
-        width: 140vw;
-        height: 140vh;
-        background: radial-gradient(circle, rgba(255, 94, 98, 0.8) 0%, rgba(255, 153, 102, 0.4) 45%, transparent 70%);
-        top: -50vh;
-        left: -20vw;
-        border-radius: 50%;
-      }
-      #cloud2 {
-        width: 150vw;
-        height: 110vh;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.8) 0%, rgba(75, 0, 130, 0.4) 50%, transparent 70%);
-        bottom: -30vh;
-        right: -30vw;
-        border-radius: 50%;
-        animation-duration: 30s;
-        animation-delay: -5s;
-      }
-      #cloud3 {
-        width: 110vw;
-        height: 130vh;
-        background: radial-gradient(circle, rgba(255, 0, 127, 0.7) 0%, rgba(255, 140, 0, 0.3) 50%, transparent 70%);
-        top: 10vh;
-        left: -10vw;
-        border-radius: 50%;
-        animation-duration: 26s;
-        animation-delay: -12s;
-      }
-      #intro-canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 10;
-        pointer-events: none;
-        transition: opacity 2s ease;
-      }
-      .first-click-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 999;
-        background: #030105;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        transition: opacity 1s ease;
-        padding-bottom: var(--sat-bottom);
-        pointer-events: auto;
-      }
-      .brand-logo-icon {
-        width: 72px;
-        height: 72px;
-        margin-bottom: 24px;
-        filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3));
-        animation: logoPulse 4s infinite ease-in-out;
-        border-radius: 50%;
-      }
-      .text-slow-blink {
-        color: #ffffff;
-        font-weight: 200;
-        letter-spacing: 5px;
-        font-size: 0.95rem;
-        animation: slowBlink 3.5s infinite ease-in-out;
-        white-space: nowrap;
-        margin-right: -5px;
-      }
-      .headphone-hint {
-        position: absolute;
-        bottom: calc(75px + var(--sat-bottom));
-        font-size: 0.8rem;
-        font-weight: 300;
-        letter-spacing: 3px;
-        margin-right: -3px;
-        color: rgba(241, 245, 249, 0.85);
-        background: rgba(255, 255, 255, 0.03);
-        padding: 8px 20px;
-        border-radius: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        animation: headphoneGlow 4s infinite ease-in-out;
-        white-space: nowrap;
-      }
-      .intro-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 100;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 1.5s ease;
-        padding-top: var(--sat-top);
-        padding-bottom: var(--sat-bottom);
-      }
-      .intro-card {
-        text-align: center;
-        max-width: 90vw;
-        width: 440px;
-        padding: 20px;
-        z-index: 101;
-        pointer-events: auto;
-        box-sizing: border-box;
-      }
-      .brand-heading {
-        margin-bottom: 20px;
-        width: 100%;
-      }
-      .chinese-title {
-        font-size: clamp(2rem, 8vw, 3.2rem);
-        font-weight: 300;
-        letter-spacing: clamp(6px, 2.5vw, 14px);
-        margin-right: calc(-1 * clamp(6px, 2.5vw, 14px));
-        color: #ffffff;
-        margin-bottom: 8px;
-        white-space: nowrap;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
-      }
-      .main-slogan {
-        font-size: clamp(1.2rem, 4.5vw, 1.6rem);
-        font-weight: 400;
-        letter-spacing: clamp(3px, 1.5vw, 6px);
-        margin-right: calc(-1 * clamp(3px, 1.5vw, 6px));
-        color: #ffffff;
-        margin-bottom: 6px;
-        white-space: nowrap;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-      }
-      .sub-slogan {
-        font-size: clamp(0.65rem, 2.2vw, 0.85rem);
-        font-weight: 300;
-        letter-spacing: clamp(1.5px, 0.8vw, 3px);
-        margin-right: calc(-1 * clamp(1.5px, 0.8vw, 3px));
-        color: rgba(255, 255, 255, 0.75);
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-      .btn-start {
-        margin-top: 28px;
-        background: #ffffff;
-        color: #030105;
-        border: none;
-        padding: 12px 42px;
-        border-radius: 30px;
-        font-size: 0.9rem;
-        letter-spacing: 3px;
-        margin-right: -3px;
-        font-weight: 400;
-        cursor: pointer;
-        transition: transform 0.3s, box-shadow 0.3s;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.12);
-      }
-      .btn-start:hover {
-        transform: scale(1.04);
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-      }
-      #interaction-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 15;
-        display: none;
-        cursor: pointer;
-        touch-action: none !important;
-      }
-      .container {
-        text-align: center;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 20;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 2s ease;
-        pointer-events: none;
-        transform: translateZ(0);
-        padding-top: var(--sat-top);
-        padding-bottom: var(--sat-bottom);
-      }
-      .top-header {
-        position: absolute;
-        top: calc(clamp(20px, 5vh, 40px) + var(--sat-top));
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 2s ease;
-      }
-      h1 {
-        font-weight: 300;
-        letter-spacing: 6px;
-        margin-right: -6px;
-        margin-bottom: 4px;
-        color: #ffffff;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
-        font-size: clamp(1.5rem, 5vw, 2rem);
-        white-space: nowrap;
-        transition: opacity 2s ease;
-      }
-      p.subtitle {
-        font-size: 0.8rem;
-        font-weight: 300;
-        color: #cbd5e1;
-        letter-spacing: 2px;
-        margin-right: -2px;
-        white-space: nowrap;
-        transition: opacity 2s ease;
-      }
-      .breath-wrapper {
-        position: relative;
-        width: clamp(280px, 35vw, 420px);
-        height: clamp(280px, 35vw, 420px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-        perspective: 1000px;
-        overflow: visible;
-      }
-      .guide-ring,
-      .ripple-wave {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 120px;
-        height: 120px;
-        margin-top: -60px;
-        margin-left: -60px;
-      }
-      .organic-core {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 600px;
-        height: 600px;
-        margin-top: -300px;
-        margin-left: -300px;
-        z-index: 2;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 2.5s ease;
-        transform: translateZ(0);
-        will-change: opacity;
-      }
-      .affirmation-water-drop {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 120px;
-        height: 120px;
-        margin-top: -60px;
-        margin-left: -60px;
-        transform: scale(0.7);
-        border-radius: 50%;
-        border: none;
-        background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%);
-        backdrop-filter: blur(2px) contrast(1.1);
-        pointer-events: none;
-        z-index: 5;
-        opacity: 0;
-        animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards;
-      }
-      #breath-text {
-        position: absolute;
-        top: clamp(0px, 2%, 15px);
-        left: 50%;
-        transform: translateX(-50%);
-        font-weight: 400;
-        letter-spacing: 10px;
-        margin-right: -10px;
-        font-size: clamp(1rem, 2.5vw, 1.25rem);
-        z-index: 15;
-        will-change: transform, color;
-        opacity: 0;
-        color: #ffffff;
-        white-space: nowrap;
-        transition: opacity 2s ease, visibility 2s ease;
-      }
-      @media (max-width: 480px) {
-        .breath-wrapper {
-          width: clamp(200px, 62vw, 290px);
-          height: clamp(200px, 62vw, 290px);
-          margin-top: 10px;
-        }
-        .guide-ring,
-        .ripple-wave {
-          width: 100px;
-          height: 100px;
-          margin-top: -50px;
-          margin-left: -50px;
-        }
-        .affirmation-water-drop {
-          width: 100px;
-          height: 100px;
-          margin-top: -50px;
-          margin-left: -50px;
-        }
-        #breath-text {
-          top: -20px;
-          font-size: 1.05rem;
-        }
-        #btn-stop.capsule-btn {
-          background: transparent !important;
-          color: rgba(255, 255, 255, 0.15) !important;
-          border: none !important;
-          box-shadow: none !important;
-          font-size: 0.75rem;
-          letter-spacing: 2px;
-          margin-right: -2px;
-        }
-        #btn-stop.capsule-btn:active {
-          color: rgba(255, 255, 255, 0.6) !important;
-        }
-        #btn-end.capsule-btn {
-          background: rgba(255, 255, 255, 0.06) !important;
-          border: 1px solid rgba(255, 255, 255, 0.22) !important;
-        }
-      }
-      .guide-ring {
-        border-radius: 50%;
-        border: 1.5px solid rgba(255, 255, 255, 0.5);
-        pointer-events: none;
-        z-index: 3;
-        opacity: 0;
-        will-change: transform, opacity, border-color, box-shadow;
-        transform: translateZ(0);
-        transition: box-shadow 0.1s ease-out, opacity 2s ease;
-      }
-      .ripple-wave {
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 1;
-        opacity: 0;
-        transform: scale(1);
-        background: radial-gradient(circle, transparent 40%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.3) 75%, transparent 100%);
-        will-change: transform, opacity;
-        border: none;
-      }
-      .ripple-wave.active {
-        animation: softRadiantExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
-      }
-      .interaction-hint {
-        position: absolute;
-        bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom));
-        z-index: 10;
-        font-size: 0.85rem;
-        color: #ffffff;
-        letter-spacing: 2.5px;
-        margin-right: -2.5px;
-        font-weight: 300;
-        padding: 0;
-        background: transparent;
-        border: none;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 2s ease, transform 0.8s ease;
-        white-space: nowrap;
-      }
-      .interaction-hint.flash-mild {
-        animation: hintPulse 2.8s infinite ease-in-out;
-      }
-      #btn-stop {
-        position: absolute;
-        bottom: calc(clamp(25px, 5vh, 40px) + var(--sat-bottom));
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 9999;
-        display: none;
-        opacity: 0;
-      }
-      .capsule-btn {
-        background: rgba(255, 255, 255, 0.03);
-        color: rgba(241, 245, 249, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 8px 26px;
-        border-radius: 25px;
-        font-size: 0.8rem;
-        letter-spacing: 2px;
-        margin-right: -2px;
-        font-weight: 300;
-        cursor: pointer;
-        transition: all 0.4s ease;
-        backdrop-filter: blur(4px);
-        pointer-events: auto;
-      }
-      .capsule-btn:hover,
-      .capsule-btn:active {
-        background: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        border-color: rgba(255, 255, 255, 0.35);
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
-      }
-      .summary-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 10000;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(3, 1, 5, 0.65);
-        backdrop-filter: blur(25px);
-        opacity: 0;
-        transition: opacity 7.5s ease-in-out;
-        pointer-events: none;
-        padding-top: var(--sat-top);
-        padding-bottom: var(--sat-bottom);
-      }
-      .summary-title {
-        font-size: clamp(1.8rem, 6vw, 2.4rem);
-        font-weight: 200;
-        letter-spacing: clamp(6px, 2vw, 12px);
-        margin-right: calc(-1 * clamp(6px, 2vw, 12px));
-        color: #ffffff;
-        margin-bottom: 16px;
-        white-space: nowrap;
-      }
-      .summary-time {
-        font-size: clamp(2.8rem, 10vw, 3.6rem);
-        font-weight: 100;
-        letter-spacing: 4px;
-        margin-right: -4px;
-        color: #f8fafc;
-      }
-      .summary-stats {
-        font-size: 0.85rem;
-        font-weight: 300;
-        letter-spacing: 2.5px;
-        margin-right: -2.5px;
-        color: #94a3b8;
-        margin-top: 12px;
-        opacity: 0.85;
-        white-space: nowrap;
-      }
-      .summary-quote-card {
-        opacity: 0;
-        transition: opacity 2.5s ease 1.5s;
-        margin-top: 36px;
-        margin-bottom: 12px;
-        max-width: 85vw;
-        width: 500px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .summary-quote-card.show {
-        opacity: 1;
-      }
-      .quote-text {
-        font-size: clamp(0.9rem, 3.5vw, 1.05rem);
-        font-weight: 300;
-        color: #f1f5f9;
-        line-height: 1.8;
-        letter-spacing: 1.5px;
-        margin-bottom: 14px;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
-      }
-      .quote-source {
-        font-size: clamp(0.7rem, 2.5vw, 0.75rem);
-        font-weight: 300;
-        color: #94a3b8;
-        letter-spacing: 2px;
-        margin-right: -2px;
-      }
-      .pwa-prompt-card {
-        display: none;
-        opacity: 0;
-        transition: opacity 2s ease;
-        margin-top: 24px;
-        padding: 14px 20px 12px 20px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        color: rgba(241, 245, 249, 0.85);
-        font-size: clamp(0.72rem, 2.2vw, 0.78rem);
-        font-weight: 300;
-        letter-spacing: 1.2px;
-        text-align: center;
-        max-width: 88vw;
-        width: fit-content;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        pointer-events: auto;
-        position: relative;
-      }
-      .pwa-prompt-header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        text-align: center;
-      }
-      .pwa-prompt-title {
-        font-weight: 300;
-        letter-spacing: 1.2px;
-        white-space: nowrap;
-        text-align: center;
-      }
-      .pwa-close-btn {
-        position: absolute;
-        top: 4px;
-        right: 6px;
-        color: rgba(255, 255, 255, 0.35);
-        font-size: 0.85rem;
-        padding: 6px 8px;
-        transition: color 0.3s;
-        line-height: 1;
-        cursor: pointer;
-        z-index: 20;
-      }
-      .pwa-close-btn:hover {
-        color: #ffffff;
-      }
-      .pwa-instruction {
-        display: block;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        font-size: 0.7rem;
-        line-height: 1.6;
-        color: #cbd5e1;
-        text-align: center;
-      }
-      #btn-end {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 2s ease;
-      }
-      .black-transition {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #030105;
-        z-index: 99999;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 2s ease-in-out;
-      }
-      @keyframes logoPulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.85;
-        }
-        50% {
-          transform: scale(1.05);
-          opacity: 1;
-          filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.4));
-        }
-      }
-      @keyframes hueShift {
-        0% {
-          filter: blur(60px) hue-rotate(0deg);
-        }
-        100% {
-          filter: blur(60px) hue-rotate(360deg);
-        }
-      }
-      @keyframes cloudFlow {
-        0% {
-          transform: rotate(0deg) scale(1);
-        }
-        50% {
-          transform: rotate(8deg) scale(1.05);
-        }
-        100% {
-          transform: rotate(-5deg) scale(0.98);
-        }
-      }
-      @keyframes softRadiantExpand {
-        0% {
-          transform: scale(0.9);
-          opacity: 0.85;
-        }
-        100% {
-          transform: scale(2.4);
-          opacity: 0;
-        }
-      }
-      @keyframes pureBorderlessWater {
-        0% {
-          transform: scale(0.7);
-          opacity: 0;
-        }
-        15% {
-          opacity: 0.85;
-        }
-        60% {
-          opacity: 0.45;
-        }
-        100% {
-          transform: scale(6.0);
-          opacity: 0;
-        }
-      }
-      @keyframes hintPulse {
-        0%,
-        100% {
-          opacity: 0.35;
-          transform: scale(0.98);
-        }
-        50% {
-          opacity: 0.9;
-          transform: scale(1.01);
-        }
-      }
-      @keyframes headphoneGlow {
-        0%,
-        100% {
-          opacity: 0.7;
-          border-color: rgba(255, 255, 255, 0.05);
-        }
-        50% {
-          opacity: 0.95;
-          border-color: rgba(255, 255, 255, 0.18);
-        }
-      }
-      @keyframes slowBlink {
-        0%,
-        100% {
-          opacity: 0.35;
-          transform: scale(0.98);
-        }
-        50% {
-          opacity: 0.95;
-          transform: scale(1);
-        }
-      }
-      @keyframes textSwitchInhale {
-        0% {
-          opacity: 0.1;
-          transform: translateX(-50%) translateY(5px) scale(0.92);
-          color: #fff7ed;
-        }
-        35% {
-          opacity: 1;
-          transform: translateX(-50%) translateY(-2px) scale(1.12);
-          color: #fff7ed;
-        }
-        100% {
-          opacity: 0.9;
-          transform: translateX(-50%) translateY(0) scale(1.0);
-          color: #ffffff;
-        }
-      }
-      @keyframes textSwitchExhale {
-        0% {
-          opacity: 0.1;
-          transform: translateX(-50%) translateY(-5px) scale(0.92);
-          color: #f0f9ff;
-        }
-        35% {
-          opacity: 1;
-          transform: translateX(-50%) translateY(2px) scale(1.12);
-          color: #f0f9ff;
-        }
-        100% {
-          opacity: 0.9;
-          transform: translateX(-50%) translateY(0) scale(1.0);
-          color: #ffffff;
-        }
-      }
-      .glow-inhale {
-        animation: textSwitchInhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-      }
-      .glow-exhale {
-        animation: textSwitchExhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-      }
-    </style>
-    <link rel="apple-touch-icon" href="/icon-512.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2064-2752.jpg" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2752-2064.jpg" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1668-2420.jpg" media="(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2420-1668.jpg" media="(device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1640-2360.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2360-1640.jpg" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1488-2266.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2266-1488.jpg" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1320-2868.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2868-1320.jpg" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1206-2622.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2622-1206.jpg" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1260-2736.jpg" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2736-1260.jpg" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1290-2796.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2796-1290.jpg" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1179-2556.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2556-1179.jpg" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1080-2340.jpg" media="(device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2340-1080.jpg" media="(device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="icons/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+        html { background-color: #030105 !important; background: #030105 !important; }
 
-<!-- === 最終黑科技：動態生成 iOS 專屬啟動黑屏 === -->
+        :root {
+            --c-r: 255; --c-g: 180; --c-b: 80;
+            --sat-top: env(safe-area-inset-top, 0px);
+            --sat-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        html, body {
+            margin: 0; padding: 0; width: 100vw; height: 100dvh; overflow: hidden; position: fixed; 
+            background-color: #030105 !important; background: #030105 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            touch-action: none; -webkit-user-drag: none;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;
+        }
+
+        .sky-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; opacity: 0; 
+            transition: opacity 4s ease-in-out, filter 5s ease; filter: blur(60px); animation: hueShift 75s infinite linear; 
+            will-change: opacity, transform; backface-visibility: hidden; transform: translateZ(0);
+        }
+        .sky-container.active { opacity: 0.45; }
+        .sky-cloud { position: absolute; mix-blend-mode: screen; animation: cloudFlow 23s infinite alternate ease-in-out; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
+        #cloud1 { width: 140vw; height: 140vh; background: radial-gradient(circle, rgba(255, 94, 98, 0.8) 0%, rgba(255, 153, 102, 0.4) 45%, transparent 70%); top: -50vh; left: -20vw; border-radius: 50%; }
+        #cloud2 { width: 150vw; height: 110vh; background: radial-gradient(circle, rgba(56, 189, 248, 0.8) 0%, rgba(75, 0, 130, 0.4) 50%, transparent 70%); bottom: -30vh; right: -30vw; border-radius: 50%; animation-duration: 30s; animation-delay: -5s; }
+        #cloud3 { width: 110vw; height: 130vh; background: radial-gradient(circle, rgba(255, 0, 127, 0.7) 0%, rgba(255, 140, 0, 0.3) 50%, transparent 70%); top: 10vh; left: -10vw; border-radius: 50%; animation-duration: 26s; animation-delay: -12s; }
+
+        #intro-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; transition: opacity 2s ease; }
+
+        .first-click-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; background: #030105;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: opacity 1s ease; padding-bottom: var(--sat-bottom);
+            pointer-events: auto;
+        }
+        
+        .brand-logo-icon { width: 72px; height: 72px; margin-bottom: 24px; filter: drop-shadow(0 0 12px rgba(255, 180, 80, 0.3)); animation: logoPulse 4s infinite ease-in-out; border-radius: 50%; }
+        .text-slow-blink { color: #ffffff; font-weight: 200; letter-spacing: 5px; font-size: 0.95rem; animation: slowBlink 3.5s infinite ease-in-out; white-space: nowrap; margin-right: -5px; }
+        .headphone-hint { 
+            position: absolute; bottom: calc(75px + var(--sat-bottom)); font-size: 0.8rem; font-weight: 300; letter-spacing: 3px; margin-right: -3px;
+            color: rgba(241, 245, 249, 0.85); background: rgba(255, 255, 255, 0.03); padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); animation: headphoneGlow 4s infinite ease-in-out; white-space: nowrap;
+        }
+
+        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 1.5s ease; padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
+        .intro-card { text-align: center; max-width: 90vw; width: 440px; padding: 20px; z-index: 101; pointer-events: auto; box-sizing: border-box; }
+        .brand-heading { margin-bottom: 20px; width: 100%; }
+        .chinese-title { font-size: clamp(2rem, 8vw, 3.2rem); font-weight: 300; letter-spacing: clamp(6px, 2.5vw, 14px); margin-right: calc(-1 * clamp(6px, 2.5vw, 14px)); color: #ffffff; margin-bottom: 8px; white-space: nowrap; text-shadow: 0 0 10px rgba(255, 255, 255, 0.35); }
+        .main-slogan { font-size: clamp(1.2rem, 4.5vw, 1.6rem); font-weight: 400; letter-spacing: clamp(3px, 1.5vw, 6px); margin-right: calc(-1 * clamp(3px, 1.5vw, 6px)); color: #ffffff; margin-bottom: 6px; white-space: nowrap; text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
+        .sub-slogan { font-size: clamp(0.65rem, 2.2vw, 0.85rem); font-weight: 300; letter-spacing: clamp(1.5px, 0.8vw, 3px); margin-right: calc(-1 * clamp(1.5px, 0.8vw, 3px)); color: rgba(255, 255, 255, 0.75); text-transform: uppercase; white-space: nowrap; }
+        
+        .btn-start { margin-top: 28px; background: #ffffff; color: #030105; border: none; padding: 12px 42px; border-radius: 30px; font-size: 0.9rem; letter-spacing: 3px; margin-right: -3px; font-weight: 400; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 0 15px rgba(255,255,255,0.12); }
+        .btn-start:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+
+        #interaction-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; display: none; cursor: pointer; touch-action: none !important; }
+
+        .container { text-align: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 2s ease; pointer-events: none; transform: translateZ(0); padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
+
+        .top-header { position: absolute; top: calc(clamp(20px, 5vh, 40px) + var(--sat-top)); pointer-events: none; opacity: 0; transition: opacity 2s ease; }
+        h1 { font-weight: 300; letter-spacing: 6px; margin-right: -6px; margin-bottom: 4px; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.25); font-size: clamp(1.5rem, 5vw, 2rem); white-space: nowrap; transition: opacity 2s ease; }
+        p.subtitle { font-size: 0.8rem; font-weight: 300; color: #cbd5e1; letter-spacing: 2px; margin-right: -2px; white-space: nowrap; transition: opacity 2s ease; }
+
+        .breath-wrapper { position: relative; width: clamp(280px, 35vw, 420px); height: clamp(280px, 35vw, 420px); display: flex; justify-content: center; align-items: center; margin-top: 20px; perspective: 1000px; overflow: visible; }
+
+        .guide-ring, .ripple-wave { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; }
+
+        .organic-core {
+            position: absolute; top: 50%; left: 50%; width: 600px; height: 600px; margin-top: -300px; margin-left: -300px; 
+            z-index: 2; pointer-events: none; opacity: 0; transition: opacity 2.5s ease; transform: translateZ(0); will-change: opacity; 
+        }
+
+        .affirmation-water-drop { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin-top: -60px; margin-left: -60px; transform: scale(0.7); border-radius: 50%; border: none; background: radial-gradient(circle, transparent 50%, rgba(255, 255, 255, 0.04) 68%, rgba(255, 255, 255, 0.12) 78%, rgba(255, 255, 255, 0.02) 88%, transparent 100%); backdrop-filter: blur(2px) contrast(1.1); pointer-events: none; z-index: 5; opacity: 0; animation: pureBorderlessWater 2.2s cubic-bezier(0.08, 0.75, 0.12, 1.0) forwards; }
+
+        #breath-text { 
+            position: absolute; 
+            top: clamp(0px, 2%, 15px); 
+            left: 50%; 
+            transform: translateX(-50%); 
+            font-weight: 400; 
+            letter-spacing: 10px; 
+            margin-right: -10px; 
+            font-size: clamp(1rem, 2.5vw, 1.25rem); 
+            z-index: 15; 
+            will-change: transform, color; 
+            opacity: 0; 
+            color: #ffffff; 
+            white-space: nowrap; 
+            transition: opacity 2s ease, visibility 2s ease; 
+        }
+
+        @media (max-width: 480px) {
+            .breath-wrapper { width: clamp(200px, 62vw, 290px); height: clamp(200px, 62vw, 290px); margin-top: 10px; }
+            .guide-ring, .ripple-wave { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
+            .affirmation-water-drop { width: 100px; height: 100px; margin-top: -50px; margin-left: -50px; }
+            #breath-text { top: -20px; font-size: 1.05rem; }
+            #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
+            #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
+            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
+        }
+
+        .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; opacity: 0; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out, opacity 2s ease; }
+        .ripple-wave { border-radius: 50%; pointer-events: none; z-index: 1; opacity: 0; transform: scale(1); background: radial-gradient(circle, transparent 40%, rgba(var(--c-r), var(--c-g), var(--c-b), 0.3) 75%, transparent 100%); will-change: transform, opacity; border: none; }
+        .ripple-wave.active { animation: softRadiantExpand 1.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; }
+
+        .interaction-hint { position: absolute; bottom: calc(clamp(100px, 18vh, 160px) + var(--sat-bottom)); z-index: 10; font-size: 0.85rem; color: #ffffff; letter-spacing: 2.5px; margin-right: -2.5px; font-weight: 300; padding: 0; background: transparent; border: none; pointer-events: none; opacity: 0; transition: opacity 2s ease, transform 0.8s ease; white-space: nowrap; }
+        .interaction-hint.flash-mild { animation: hintPulse 2.8s infinite ease-in-out; }
+
+        #btn-stop { position: absolute; bottom: calc(clamp(25px, 5vh, 40px) + var(--sat-bottom)); left: 50%; transform: translateX(-50%); z-index: 9999; display: none; opacity: 0; }
+        .capsule-btn { background: rgba(255, 255, 255, 0.03); color: rgba(241, 245, 249, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); padding: 8px 26px; border-radius: 25px; font-size: 0.8rem; letter-spacing: 2px; margin-right: -2px; font-weight: 300; cursor: pointer; transition: all 0.4s ease; backdrop-filter: blur(4px); pointer-events: auto; }
+        .capsule-btn:hover, .capsule-btn:active { background: rgba(255, 255, 255, 0.15); color: #ffffff; border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
+
+        .summary-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(3, 1, 5, 0.65); backdrop-filter: blur(25px); opacity: 0; transition: opacity 7.5s ease-in-out; pointer-events: none; padding-top: var(--sat-top); padding-bottom: var(--sat-bottom); }
+        .summary-title { font-size: clamp(1.8rem, 6vw, 2.4rem); font-weight: 200; letter-spacing: clamp(6px, 2vw, 12px); margin-right: calc(-1 * clamp(6px, 2vw, 12px)); color: #ffffff; margin-bottom: 16px; white-space: nowrap; }
+        .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
+        .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
+        
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 85vw; width: 500px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .summary-quote-card.show { opacity: 1; }
+        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; margin-bottom: 14px; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
+        .quote-source { font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; }
+
+        .pwa-prompt-card {
+            display: none; opacity: 0; transition: opacity 2s ease;
+            margin-top: 24px; padding: 14px 20px 12px 20px; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: rgba(241, 245, 249, 0.85); font-size: clamp(0.72rem, 2.2vw, 0.78rem);
+            font-weight: 300; letter-spacing: 1.2px; text-align: center;
+            max-width: 88vw; width: fit-content; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            pointer-events: auto; position: relative;
+        }
+        .pwa-prompt-header { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
+        .pwa-prompt-title { font-weight: 300; letter-spacing: 1.2px; white-space: nowrap; text-align: center; }
+        .pwa-close-btn { position: absolute; top: 4px; right: 6px; color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; padding: 6px 8px; transition: color 0.3s; line-height: 1; cursor: pointer; z-index: 20; }
+        .pwa-close-btn:hover { color: #ffffff; }
+        .pwa-instruction { display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.7rem; line-height: 1.6; color: #cbd5e1; text-align: center; }
+
+        #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
+
+        .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
+
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.4)); } }
+        @keyframes hueShift { 0% { filter: blur(60px) hue-rotate(0deg); } 100% { filter: blur(60px) hue-rotate(360deg); } }
+        @keyframes cloudFlow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(8deg) scale(1.05); } 100% { transform: rotate(-5deg) scale(0.98); } }
+        @keyframes softRadiantExpand { 0% { transform: scale(0.9); opacity: 0.85; } 100% { transform: scale(2.4); opacity: 0; } }
+        @keyframes pureBorderlessWater { 0% { transform: scale(0.7); opacity: 0; } 15% { opacity: 0.85; } 60% { opacity: 0.45; } 100% { transform: scale(6.0); opacity: 0; } }
+        @keyframes hintPulse { 0%, 100% { opacity: 0.35; transform: scale(0.98); } 50% { opacity: 0.9; transform: scale(1.01); } }
+        @keyframes headphoneGlow { 0%, 100% { opacity: 0.7; border-color: rgba(255, 255, 255, 0.05); } 50% { opacity: 0.95; border-color: rgba(255, 255, 255, 0.18); } }
+        @keyframes slowBlink { 0%, 100% { opacity: 0.35; transform: scale(0.98); } 50% { opacity: 0.95; transform: scale(1); } }
+        @keyframes textSwitchInhale { 0% { opacity: 0.1; transform: translateX(-50%) translateY(5px) scale(0.92); color: #fff7ed; } 35% { opacity: 1; transform: translateX(-50%) translateY(-2px) scale(1.12); color: #fff7ed; } 100% { opacity: 0.9; transform: translateX(-50%) translateY(0) scale(1.0); color: #ffffff; } }
+        @keyframes textSwitchExhale { 0% { opacity: 0.1; transform: translateX(-50%) translateY(-5px) scale(0.92); color: #f0f9ff; } 35% { opacity: 1; transform: translateX(-50%) translateY(2px) scale(1.12); color: #f0f9ff; } 100% { opacity: 0.9; transform: translateX(-50%) translateY(0) scale(1.0); color: #ffffff; } }
+        .glow-inhale { animation: textSwitchInhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; }
+        .glow-exhale { animation: textSwitchExhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; }
+    </style>
 <script>
   (function() {
     // 判斷：如果是在一般 Safari 瀏覽器中（還沒加入主畫面），才執行這段
@@ -980,1244 +234,906 @@
     }
   })();
 </script>
-  </head>
-  <body>
-    <!-- 把這個載入幕放在最前面 -->
-      <div id="pwa-loading">
-        Flow Awareness...
-      </div>
-      <!-- 把這行放在 body 裡的最前面 -->
-      <div id="pwa-transition-curtain"></div>  
-      <div class="sky-container" id="sky-bg">
-      <div class="sky-cloud" id="cloud1"></div>
-      <div class="sky-cloud" id="cloud2"></div>
-      <div class="sky-cloud" id="cloud3"></div>
+</head>
+<body>
+
+    <div class="sky-container" id="sky-bg">
+        <div class="sky-cloud" id="cloud1"></div>
+        <div class="sky-cloud" id="cloud2"></div>
+        <div class="sky-cloud" id="cloud3"></div>
     </div>
+
     <canvas id="intro-canvas"></canvas>
     <div class="black-transition" id="black-transition"></div>
-    <div class="first-click-overlay" id="first-click">
 
-      <!-- 直接使用實體 Icon 圖片並掛上動畫 -->
-      <img src="./icon-512.png" class="brand-logo-icon" alt="流動覺察 Logo">
-      <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
-      <div class="headphone-hint">🎧 佩戴耳機 獲得深層沉浸</div>
+    <div class="first-click-overlay" id="first-click">
+        <!-- 直接使用實體 Icon 圖片並掛上動畫 -->
+        <img src="./icon-512.png" class="brand-logo-icon" alt="流動覺察 Logo">
+        
+        <span class="text-slow-blink">[ 點 擊 進 入 正 念 空 間 ]</span>
+        <div class="headphone-hint">🎧 佩戴耳機 獲得深層沉浸</div>
     </div>
+
     <div class="intro-overlay" id="intro">
-      <div class="intro-card">
-        <div class="brand-heading">
-          <div class="chinese-title">流 動 覺 察</div>
-          <div class="main-slogan">Flow Awareness</div>
-          <div class="sub-slogan">An Audio-Visual Mindfulness</div>
+        <div class="intro-card">
+            <div class="brand-heading">
+                <div class="chinese-title">流 動 覺 察</div>
+                <div class="main-slogan">Flow Awareness</div>
+                <div class="sub-slogan">An Audio-Visual Mindfulness</div>
+            </div>
+            
+            <p style="color: #cbd5e1; line-height: 1.8; font-weight: 300; font-size: clamp(0.82rem, 2.8vw, 0.94rem); letter-spacing: 0.8px; margin-top: 18px; text-shadow: 0 0 6px rgba(255,255,255,0.15);">
+                允許雜念如雲飄散，不執著，亦無評判；<br>
+                僅將心思輕柔錨定，拉回心，專注呼吸。<br><br>
+                <b>長按</b>，隨光擴散「吸氣」<br>
+                <b>鬆開</b>，隨聲沉靜「呼氣」
+            </p>
+            <button class="btn-start" id="btn-start">開始正念</button>
         </div>
-        <p style="color: #cbd5e1; line-height: 1.8; font-weight: 300; font-size: clamp(0.82rem, 2.8vw, 0.94rem); letter-spacing: 0.8px; margin-top: 18px; text-shadow: 0 0 6px rgba(255,255,255,0.15);">
-          允許雜念如雲飄散，不執著，亦無評判；<br>
-          僅將心思輕柔錨定，拉回心，專注呼吸。<br><br>
-          <b>長按</b>，隨光擴散「吸氣」<br>
-          <b>鬆開</b>，隨聲沉靜「呼氣」
-        </p>
-        <button class="btn-start" id="btn-start">開始正念</button>
-      </div>
     </div>
+
     <div id="interaction-layer"></div>
+
     <div class="container" id="main-container">
-      <div class="top-header" id="top-header">
-        <h1 id="main-title" style="font-weight: 300;">流 動 覺 察</h1>
-        <p id="sub-title" class="subtitle">將注意力錨定於當下</p>
-      </div>
-      <div class="breath-wrapper" id="breath-wrapper">
-        <span id="breath-text">吸 氣</span>
-        <div class="guide-ring" id="guide-ring"></div>
-        <div class="ripple-wave" id="ripple-wave"></div>
-        <canvas class="organic-core" id="core-canvas"></canvas>
-      </div>
-      <div class="interaction-hint" id="hint">按住 空白鍵 / 螢幕 以吸氣</div>
-    </div>
-    <button id="btn-stop" class="capsule-btn">停止</button>
-    <div class="summary-overlay" id="summary-overlay">
-      <h2 class="summary-title">活 在 當 下</h2>
-      <div class="summary-time" id="summary-time">00:00</div>
-      <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
-      <div class="summary-quote-card" id="summary-quote-card">
-        <div class="quote-text" id="quote-text"></div>
-        <div class="quote-source" id="quote-source"></div>
-      </div>
-      <div class="pwa-prompt-card" id="pwa-prompt">
-        <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
-        <div class="pwa-prompt-header">
-          <span class="pwa-prompt-title">加至手機主畫面，隨時開啟正念空間。</span>
+        <div class="top-header" id="top-header">
+            <h1 id="main-title" style="font-weight: 300;">流 動 覺 察</h1>
+            <p id="sub-title" class="subtitle">將注意力錨定於當下</p>
         </div>
-        <div class="pwa-instruction" id="pwa-instruction"></div>
-      </div>
-      <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+
+        <div class="breath-wrapper" id="breath-wrapper">
+            <span id="breath-text">吸 氣</span>
+            <div class="guide-ring" id="guide-ring"></div>
+            <div class="ripple-wave" id="ripple-wave"></div>
+            <canvas class="organic-core" id="core-canvas"></canvas>
+        </div>
+
+        <div class="interaction-hint" id="hint">按住 空白鍵 / 螢幕 以吸氣</div>
     </div>
+
+    <button id="btn-stop" class="capsule-btn">停止</button>
+
+    <div class="summary-overlay" id="summary-overlay">
+        <h2 class="summary-title">活 在 當 下</h2>
+        <div class="summary-time" id="summary-time">00:00</div>
+        <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        
+        <div class="summary-quote-card" id="summary-quote-card">
+            <div class="quote-text" id="quote-text"></div>
+            <div class="quote-source" id="quote-source"></div>
+        </div>
+
+        <div class="pwa-prompt-card" id="pwa-prompt">
+            <span class="pwa-close-btn" id="pwa-close-btn">✕</span>
+            <div class="pwa-prompt-header">
+                <span class="pwa-prompt-title">加至手機主畫面，隨時開啟正念空間。</span>
+            </div>
+            <div class="pwa-instruction" id="pwa-instruction"></div>
+        </div>
+
+        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+    </div>
+
     <script>
-      const APP_VERSION = 'v58';
-      const QUOTE_VAULT = [{
-          text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。",
-          source: "《放不下，就握手言和吧》"
-        },
-        {
-          text: "正念作為一種新的習慣，會慢慢取代分心或放空的舊習慣，讓我們不再迷失於挽不回的過去與到不了的未來。",
-          source: "《放不下，就握手言和吧》"
-        },
-        {
-          text: "沒什麼是恆久不變的，就連最艱困的時期也一樣。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "這也會過去。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "正確，從來就不是重點。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "你遇見的每個人，都在進行一場你一無所知的艱難戰鬥。與人為善，永遠如此。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "我有著念頭，但我的念頭並不代表我。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "與生命共舞，而不是試圖去控制它。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "放下讓我們不舒服的念頭，就算它們是對的。",
-          source: "《我可能錯了》"
-        },
-        {
-          text: "在是非對錯的想法之外，還有一片原野。我會在那裡與你相遇。",
-          source: "魯米 (Rumi)"
-        },
-        {
-          text: "正念是由刻意專注而生的覺知，置身當下，對體驗的來去不加批判。",
-          source: "《平靜的心，專注的大腦》"
-        },
-        {
-          text: "人所擁有的任何東西都可以被剝奪，唯獨人性最後的自由——在任何境遇中選擇一己態度和生活方式的自由——不能被剝奪。",
-          source: "維克多·弗蘭克"
-        },
-        {
-          text: "在刺激與回應之間，有一個空間。那個空間裡，藏著我們選擇回應的自由與力量。",
-          source: "維克多·弗蘭克"
-        },
-        {
-          text: "不被過去拉扯，不為未來焦慮；你所擁有的，只有當下的這一呼吸。",
-          source: "一行禪師"
-        },
-        {
-          text: "安住於此時此刻，不急著去到任何地方，亦無須成為任何其他人。",
-          source: "喬·卡巴金"
-        },
-        {
-          text: "如果問題有解，何必憂慮？如果問題無解，憂慮又有何用？",
-          source: "達賴喇嘛"
-        },
-        {
-          text: "寧靜並非來自環境的順遂，而是來自內心對現狀的接納。",
-          source: "達賴喇嘛"
-        },
-        {
-          text: "給自己一點時間，讓混濁的心水慢慢沉澱，答案自然清晰。",
-          source: "達賴喇嘛"
-        },
-        {
-          text: "允許一切發生。雜念如雲飄過，你只需成為那廣袤無垠的天空。",
-          source: "正念導引"
-        },
-        {
-          text: "你無法控制外在事件的發生，但你永遠能控制自己如何看待它。",
-          source: "愛比克泰德"
-        },
-        {
-          text: "靈魂的顏色，取決於你經常思考的事物。",
-          source: "馬可·奧勒留《沉思錄》"
-        },
-        {
-          text: "我們在想像中承受的痛苦，遠比在現實中承受的多。",
-          source: "塞內卡"
-        },
-        {
-          text: "專注於你手頭能做的事，並將其餘一切坦然交給命運。",
-          source: "馬可·奧勒留《沉思錄》"
-        },
-        {
-          text: "世上事物分為你能掌控的與你不能掌控的。將所有精力，投注於你能掌控的事情上。",
-          source: "愛比克泰德《手冊》"
-        },
-        {
-          text: "從微小的事物開始練習：一點撒出的油，一點被偷走的酒。告訴自己：『用這點代價，我換到了心靈的平靜與自由。』",
-          source: "愛比克泰德《手冊》"
-        },
-        {
-          text: "不要期待人們不犯錯，那是不可行也不可能的；轉而提醒自己，你有能力包容與理解。",
-          source: "馬可·奧勒留《沉思錄》"
-        },
-        {
-          text: "請賜予我平靜，去接受我無法改變的；賜予我勇氣，去改變我能改變的；並賜予我智慧，去分辨兩者的不同。",
-          source: "斯多葛思想 / 《平靜禱詞》"
-        },
-        {
-          text: "心不隨外境運轉，便是不被牽著走；不執著於任何念頭，心自然自由。",
-          source: "《金剛經》白話意譯"
-        },
-        {
-          text: "一切過往與幻象如夢幻泡影；唯有當下的覺察，真實存在。",
-          source: "《金剛經》白話意譯"
-        },
-        {
-          text: "水清月現，心靜智生。",
-          source: "禪宗古諺"
-        },
-        {
-          text: "心如明鏡，物來則應，物去不留。",
-          source: "禪宗古諺"
-        },
-        {
-          text: "不必企圖消滅雜念，只需不賦予它力量，它自會隨風消散。",
-          source: "禪修指引"
-        },
-        {
-          text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。",
-          source: "禪宗智慧"
-        },
-        {
-          text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。",
-          source: "禪意手記"
+        const APP_VERSION = 'v58';
+
+        const QUOTE_VAULT = [
+            { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
+            { text: "正念作為一種新的習慣，會慢慢取代分心或放空的舊習慣，讓我們不再迷失於挽不回的過去與到不了的未來。", source: "《放不下，就握手言和吧》" },
+            { text: "沒什麼是恆久不變的，就連最艱困的時期也一樣。", source: "《我可能錯了》" },
+            { text: "這也會過去。", source: "《我可能錯了》" },
+            { text: "正確，從來就不是重點。", source: "《我可能錯了》" },
+            { text: "你遇見的每個人，都在進行一場你一無所知的艱難戰鬥。與人為善，永遠如此。", source: "《我可能錯了》" },
+            { text: "我有著念頭，但我的念頭並不代表我。", source: "《我可能錯了》" },
+            { text: "與生命共舞，而不是試圖去控制它。", source: "《我可能錯了》" },
+            { text: "放下讓我們不舒服的念頭，就算它們是對的。", source: "《我可能錯了》" },
+            { text: "在是非對錯的想法之外，還有一片原野。我會在那裡與你相遇。", source: "魯米 (Rumi)" },
+            { text: "正念是由刻意專注而生的覺知，置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
+            { text: "人所擁有的任何東西都可以被剝奪，唯獨人性最後的自由——在任何境遇中選擇一己態度和生活方式的自由——不能被剝奪。", source: "維克多·弗蘭克" },
+            { text: "在刺激與回應之間，有一個空間。那個空間裡，藏著我們選擇回應的自由與力量。", source: "維克多·弗蘭克" },
+            { text: "不被過去拉扯，不為未來焦慮；你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
+            { text: "安住於此時此刻，不急著去到任何地方，亦無須成為任何其他人。", source: "喬·卡巴金" },
+            { text: "如果問題有解，何必憂慮？如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
+            { text: "寧靜並非來自環境的順遂，而是來自內心對現狀的接納。", source: "達賴喇嘛" },
+            { text: "給自己一點時間，讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
+            { text: "允許一切發生。雜念如雲飄過，你只需成為那廣袤無垠的天空。", source: "正念導引" },
+            { text: "你無法控制外在事件的發生，但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
+            { text: "靈魂的顏色，取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "我們在想像中承受的痛苦，遠比在現實中承受的多。", source: "塞內卡" },
+            { text: "專注於你手頭能做的事，並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "世上事物分為你能掌控的與你不能掌控的。將所有精力，投注於你能掌控的事情上。", source: "愛比克泰德《手冊》" },
+            { text: "從微小的事物開始練習：一點撒出的油，一點被偷走的酒。告訴自己：『用這點代價，我換到了心靈的平靜與自由。』", source: "愛比克泰德《手冊》" },
+            { text: "不要期待人們不犯錯，那是不可行也不可能的；轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "請賜予我平靜，去接受我無法改變的；賜予我勇氣，去改變我能改變的；並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
+            { text: "心不隨外境運轉，便是不被牽著走；不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
+            { text: "一切過往與幻象如夢幻泡影；唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
+            { text: "水清月現，心靜智生。", source: "禪宗古諺" },
+            { text: "心如明鏡，物來則應，物去不留。", source: "禪宗古諺" },
+            { text: "不必企圖消滅雜念，只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
+            { text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
+            { text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。", source: "禪意手記" }
+        ];
+
+        function getRandomQuote() {
+            let availableIndices = [];
+            try {
+                let stored = localStorage.getItem('flow_quote_pool');
+                if (stored) availableIndices = JSON.parse(stored);
+            } catch(e) {}
+            if (!availableIndices || availableIndices.length === 0) {
+                availableIndices = QUOTE_VAULT.map((_, i) => i);
+            }
+            const randomIndex = Math.floor(Math.random() * availableIndices.length);
+            const quoteIndex = availableIndices[randomIndex];
+            availableIndices.splice(randomIndex, 1);
+            try { localStorage.setItem('flow_quote_pool', JSON.stringify(availableIndices)); } catch(e) {}
+            return QUOTE_VAULT[quoteIndex];
         }
-      ];
-      function getRandomQuote() {
-        let availableIndices = [];
-        try {
-          let stored = localStorage.getItem('flow_quote_pool');
-          if (stored) availableIndices = JSON.parse(stored);
-        } catch (e) {}
-        if (!availableIndices || availableIndices.length === 0) {
-          availableIndices = QUOTE_VAULT.map((_, i) => i);
-        }
-        const randomIndex = Math.floor(Math.random() * availableIndices.length);
-        const quoteIndex = availableIndices[randomIndex];
-        availableIndices.splice(randomIndex, 1);
-        try {
-          localStorage.setItem('flow_quote_pool', JSON.stringify(availableIndices));
-        } catch (e) {}
-        return QUOTE_VAULT[quoteIndex];
-      }
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
-            .catch((err) => {
-              console.log('PWA 註冊失敗:', err);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(`./sw.js?v=${APP_VERSION}`)
+                    .catch((err) => { console.log('PWA 註冊失敗:', err); });
             });
-        });
-      }
-      (function setupLanguage() {
-        const userLang = navigator.language || navigator.userLanguage || '';
-        const isZh = userLang.toLowerCase().includes('zh');
-        const titleStr = isZh ? "流動覺察" : "Flow awareness";
-        document.title = `${titleStr} — Flow Awareness`;
-        const appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-        if (appleTitleMeta) appleTitleMeta.content = titleStr;
-      })();
-      document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-      }, {
-        passive: false
-      });
-      let lastTouchEnd = 0;
-      document.addEventListener('touchend', (e) => {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-          e.preventDefault();
         }
-        lastTouchEnd = now;
-      }, {
-        passive: false
-      });
-      document.addEventListener('gesturestart', (e) => e.preventDefault());
-      document.addEventListener('gesturechange', (e) => e.preventDefault());
-      document.addEventListener('gestureend', (e) => e.preventDefault());
-      document.addEventListener('selectstart', (e) => e.preventDefault());
-      window.addEventListener('contextmenu', (e) => e.preventDefault());
-      let state = 'INIT';
-      let audioCtx = null,
-        sessionStartTime = 0,
-        globalNoiseBuffer = null,
-        wakeLock = null;
-      let masterGain = null,
-        silentAudioAnchor = null;
-      let currentBreathSource = null,
-        currentBreathGain = null,
-        currentBreathResonanceFilter = null;
-      let bowlMasterGain = null,
-        activeEndingOscillators = [];
-      let baseInhalePace = 3.2;
-      const EXHALE_RATIO = 1.18;
-      let consecutiveHighResonance = 0,
-        missedInhaleCount = 0,
-        userPressedInInhale = false;
-      let phaseChangeCount = 0,
-        totalBreaths = 0,
-        sumResonance = 0,
-        resonanceSamples = 0,
-        cycleResonanceSum = 0,
-        cycleResonanceCount = 0;
-      let lastTime = 0;
-      let guidePhase = 0;
-      let userPhase = 0;
-      let guideDir = 1;
-      let guideAnimFrame = null,
-        isCurrentPhaseInhale = true;
-      let currentResonance = 0.0,
-        isPressing = false;
-      let pressStartTime = 0;
-      let hasInhaledInCurrentCycle = false;
-      const MIN_VALID_PRESS_DURATION = 400;
-      let currentCoreScale = 0.25;
-      let prepStartTime = 0;
-      let hasTriggeredRipple = false;
-      const PREP_DURATION = 2300;
-      let isEndingDissolve = false;
-      let currR = 255,
-        currG = 180,
-        currB = 80,
-        cachedColorStr = "255, 180, 80";
-      const bgCanvas = document.getElementById('intro-canvas');
-      const bgCtx = bgCanvas.getContext('2d');
-      const coreCanvas = document.getElementById('core-canvas');
-      const coreCtx = coreCanvas.getContext('2d');
-      let stars = [],
-        canvasAnimFrame = null,
-        breathScale = 1.0,
-        targetBreathScale = 1.0;
-      function fadeMasterOutAndSuspend() {
-        if (!audioCtx || !masterGain) return;
-        const now = audioCtx.currentTime;
-        try {
-          masterGain.gain.cancelScheduledValues(now);
-          masterGain.gain.setTargetAtTime(0, now, 0.015);
-          if (audioCtx.state === 'running') {
-            setTimeout(() => {
-              audioCtx.suspend().catch(() => {});
-            }, 50);
-          }
-        } catch (e) {}
-      }
-      function fadeMasterIn() {
-        if (!audioCtx || !masterGain) return;
-        const now = audioCtx.currentTime;
-        try {
-          masterGain.gain.cancelScheduledValues(now);
-          masterGain.gain.setValueAtTime(0, now);
-          masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3);
-        } catch (e) {}
-      }
-      function killAllOldNodes() {
-        if (currentBreathSource) {
-          try {
-            currentBreathSource.stop();
-            currentBreathSource.disconnect();
-          } catch (e) {}
-          currentBreathSource = null;
+
+        (function setupLanguage() {
+            const userLang = navigator.language || navigator.userLanguage || '';
+            const isZh = userLang.toLowerCase().includes('zh');
+            const titleStr = isZh ? "流動覺察" : "Flow awareness";
+            document.title = `${titleStr} — Flow Awareness`;
+            const appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            if (appleTitleMeta) appleTitleMeta.content = titleStr;
+        })();
+
+        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        let lastTouchEnd = 0; document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) { e.preventDefault(); } lastTouchEnd = now; }, { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault()); document.addEventListener('gesturechange', (e) => e.preventDefault()); document.addEventListener('gestureend', (e) => e.preventDefault()); document.addEventListener('selectstart', (e) => e.preventDefault());
+        window.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        let state = 'INIT'; 
+        let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
+        let masterGain = null, silentAudioAnchor = null;
+        
+        let currentBreathSource = null, currentBreathGain = null, currentBreathResonanceFilter = null;
+        let bowlMasterGain = null, activeEndingOscillators = [];
+
+        let baseInhalePace = 3.2; 
+        const EXHALE_RATIO = 1.18; 
+        let consecutiveHighResonance = 0, missedInhaleCount = 0, userPressedInInhale = false;
+        let phaseChangeCount = 0, totalBreaths = 0, sumResonance = 0, resonanceSamples = 0, cycleResonanceSum = 0, cycleResonanceCount = 0;
+        
+        let lastTime = 0;
+        let guidePhase = 0; 
+        let userPhase = 0;  
+        let guideDir = 1; 
+        let guideAnimFrame = null, isCurrentPhaseInhale = true; 
+        
+        let currentResonance = 0.0, isPressing = false;
+        let pressStartTime = 0; 
+        let hasInhaledInCurrentCycle = false; 
+        const MIN_VALID_PRESS_DURATION = 400; 
+
+        let currentCoreScale = 0.25; 
+        let prepStartTime = 0; 
+        let hasTriggeredRipple = false;
+        const PREP_DURATION = 2300; 
+
+        let isEndingDissolve = false; 
+        let currR = 255, currG = 180, currB = 80, cachedColorStr = "255, 180, 80";
+
+        const bgCanvas = document.getElementById('intro-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        const coreCanvas = document.getElementById('core-canvas');
+        const coreCtx = coreCanvas.getContext('2d');
+        let stars = [], canvasAnimFrame = null, breathScale = 1.0, targetBreathScale = 1.0;
+
+        function fadeMasterOutAndSuspend() {
+            if (!audioCtx || !masterGain) return; const now = audioCtx.currentTime;
+            try { masterGain.gain.cancelScheduledValues(now); masterGain.gain.setTargetAtTime(0, now, 0.015); if (audioCtx.state === 'running') { setTimeout(() => { audioCtx.suspend().catch(()=>{}); }, 50); } } catch(e){}
         }
-        if (currentBreathGain) {
-          try {
-            currentBreathGain.disconnect();
-          } catch (e) {}
-          currentBreathGain = null;
+
+        function fadeMasterIn() {
+            if (!audioCtx || !masterGain) return; const now = audioCtx.currentTime;
+            try { masterGain.gain.cancelScheduledValues(now); masterGain.gain.setValueAtTime(0, now); masterGain.gain.setTargetAtTime(1.0, now + 0.1, 0.3); } catch(e){}
         }
-        if (activeEndingOscillators.length > 0) {
-          activeEndingOscillators.forEach(osc => {
-            try {
-              osc.stop();
-              osc.disconnect();
-            } catch (e) {}
-          });
-          activeEndingOscillators = [];
-        }
-      }
-      function handleAppVisibilityLoss() {
-        isPressing = false;
-        killAllOldNodes();
-        fadeMasterOutAndSuspend();
-        releaseWakeLock();
-      }
-      async function handleAppVisibilityRestore() {
-        if (!audioCtx) return;
-        if (silentAudioAnchor && silentAudioAnchor.paused) silentAudioAnchor.play().catch(e => {});
-        masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        if (audioCtx.state === 'suspended') {
-          try {
-            await audioCtx.resume();
-          } catch (e) {}
-        }
-        setTimeout(restoreAudioLogic, 150);
-      }
-      function restoreAudioLogic() {
-        if (document.visibilityState !== 'visible') return;
-        killAllOldNodes();
-        fadeMasterIn();
-        if (state === 'MINDFULNESS' || state === 'PREPARATION') {
-          requestWakeLock();
-        }
-      }
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') handleAppVisibilityLoss();
-        else if (document.visibilityState === 'visible') handleAppVisibilityRestore();
-      });
-      window.addEventListener('pagehide', handleAppVisibilityLoss);
-      window.addEventListener('pageshow', handleAppVisibilityRestore);
-      window.addEventListener('blur', handleAppVisibilityLoss);
-      window.addEventListener('focus', handleAppVisibilityRestore);
-      function initCanvas() {
-        const dpr = Math.max(window.devicePixelRatio || 1, 2);
-        bgCanvas.width = window.innerWidth * dpr;
-        bgCanvas.height = window.innerHeight * dpr;
-        bgCtx.scale(dpr, dpr);
-        coreCanvas.width = 600 * dpr;
-        coreCanvas.height = 600 * dpr;
-        coreCtx.scale(dpr, dpr);
-        stars = [];
-        for (let i = 0; i < 250; i++) {
-          let layerRand = Math.random();
-          let layerType = layerRand > 0.85 ? 'foreground' : (layerRand > 0.35 ? 'midground' : 'background');
-          stars.push({
-            x: Math.random() * 2400 - 1200,
-            y: Math.random() * 2400 - 1200,
-            z: Math.random() * 1900 + 100,
-            baseRadius: Math.random() * 1.2 + 0.4,
-            layer: layerType
-          });
-        }
-        if (canvasAnimFrame) cancelAnimationFrame(canvasAnimFrame);
-        drawCanvas();
-      }
-      function drawCanvas() {
-        const dW = window.innerWidth,
-          dH = window.innerHeight;
-        bgCtx.clearRect(0, 0, dW, dH);
-        const cx = dW * 0.5,
-          cy = dH * 0.5;
-        breathScale += (targetBreathScale - breathScale) * 0.015;
-        let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION');
-        let easedSpeedFactor = Math.sin(guidePhase * Math.PI);
-        let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
-        if (state === 'PREPARATION') zFlowSpeed = 0.2;
-        if (isEndingDissolve) zFlowSpeed = -8.5;
-        for (let i = 0; i < stars.length; i++) {
-          let star = stars[i];
-          if (isMindful && star.layer === 'background' && !isEndingDissolve) continue;
-          if (isEndingDissolve) {
-            star.x *= 0.985;
-            star.y *= 0.985;
-          }
-          star.z -= zFlowSpeed;
-          if (star.z <= 25) {
-            star.z = 2000;
-            star.x = Math.random() * 2400 - 1200;
-            star.y = Math.random() * 2400 - 1200;
-          }
-          if (star.z >= 2000) {
-            star.z = 25;
-            star.x = Math.random() * 2400 - 1200;
-            star.y = Math.random() * 2400 - 1200;
-          }
-          let baseScale = 400 / star.z;
-          let finalScale = baseScale * breathScale;
-          let px = cx + star.x * finalScale;
-          let py = cy + star.y * finalScale;
-          let isFG = star.layer === 'foreground';
-          let alpha = baseScale * (isFG ? 0.9 : 1.2);
-          alpha = alpha * Math.min(1.0, Math.max(0.0, (star.z - 25) / 275));
-          if (alpha > 1) alpha = 1;
-          if (alpha <= 0.01) continue;
-          bgCtx.globalAlpha = alpha * (isMindful ? (isFG ? 0.75 : 0.35) : 0.6);
-          bgCtx.beginPath();
-          bgCtx.arc(px, py, star.baseRadius * baseScale * (isFG ? 2.8 : 1.0), 0, Math.PI * 2);
-          bgCtx.fillStyle = (isMindful && isFG) ? `rgb(${cachedColorStr})` : 'white';
-          bgCtx.fill();
-        }
-        coreCtx.clearRect(0, 0, 600, 600);
-        if (isMindful || state === 'INTRO') {
-          coreCtx.globalCompositeOperation = 'screen';
-          let responsiveBaseRadius = (window.innerWidth <= 480) ? 50 : 60;
-          let baseRadius = responsiveBaseRadius * currentCoreScale;
-          let expansionFactor = Math.max(0, (currentCoreScale - 1.0) / 1.2);
-          let resAlpha = 0.4 + 0.6 * currentResonance;
-          const coreCx = 300,
-            coreCy = 300;
-          const ambientRadius = baseRadius * 1.4;
-          const ambientGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, ambientRadius);
-          ambientGrad.addColorStop(0.2, `rgba(${currR}, ${currG}, ${currB}, ${0.12 * resAlpha})`);
-          ambientGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
-          coreCtx.beginPath();
-          coreCtx.arc(coreCx, coreCy, ambientRadius, 0, Math.PI * 2);
-          coreCtx.fillStyle = ambientGrad;
-          coreCtx.fill();
-          const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius);
-          dropGrad.addColorStop(0, `rgba(${currR}, ${currG}, ${currB}, ${0.08 * resAlpha})`);
-          dropGrad.addColorStop(0.7, `rgba(${currR}, ${currG}, ${currB}, ${0.15 * resAlpha})`);
-          let edgeDensity = (0.35 + 0.25 * expansionFactor) * resAlpha;
-          dropGrad.addColorStop(0.94, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
-          dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
-          coreCtx.beginPath();
-          coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
-          coreCtx.fillStyle = dropGrad;
-          coreCtx.fill();
-          let hx = coreCx - baseRadius * 0.35;
-          let hy = coreCy - baseRadius * 0.35;
-          let hr = baseRadius * 0.65;
-          const highGrad = coreCtx.createRadialGradient(hx, hy, 0, hx, hy, hr);
-          let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha;
-          highGrad.addColorStop(0, `rgba(255, 255, 255, ${highlightAlpha})`);
-          highGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
-          coreCtx.beginPath();
-          coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
-          coreCtx.fillStyle = highGrad;
-          coreCtx.fill();
-        }
-        canvasAnimFrame = requestAnimationFrame(drawCanvas);
-      }
-      window.addEventListener('resize', () => {
-        if (bgCanvas) initCanvas();
-      });
-      async function requestWakeLock() {
-        if ('wakeLock' in navigator && document.visibilityState === 'visible') {
-          try {
-            wakeLock = await navigator.wakeLock.request('screen');
-          } catch (err) {}
-        }
-      }
-      function releaseWakeLock() {
-        if (wakeLock !== null) {
-          wakeLock.release().then(() => {
-            wakeLock = null;
-          }).catch(err => {});
-        }
-      }
-      function initAudio() {
-        if (!audioCtx) {
-          audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-          masterGain = audioCtx.createGain();
-          masterGain.gain.value = 1.0;
-          masterGain.connect(audioCtx.destination);
-        } else {
-          if (audioCtx.state === 'suspended') audioCtx.resume();
-          if (masterGain) {
-            masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-            masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-          }
-        }
-        if (!silentAudioAnchor) {
-          silentAudioAnchor = document.createElement('audio');
-          silentAudioAnchor.loop = true;
-          silentAudioAnchor.setAttribute('playsinline', '');
-          silentAudioAnchor.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
-          document.body.appendChild(silentAudioAnchor);
-        }
-        silentAudioAnchor.play().catch(e => {});
-      }
-      function getNoiseBuffer() {
-        if (!globalNoiseBuffer && audioCtx) {
-          const bufferSize = audioCtx.sampleRate * 2;
-          globalNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-          const output = globalNoiseBuffer.getChannelData(0);
-          for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
-        }
-        return globalNoiseBuffer;
-      }
-      function fadeOutBreathAudio(fadeTime = 0.15) {
-        if (!audioCtx || !currentBreathGain) return;
-        const now = audioCtx.currentTime;
-        const targetGain = currentBreathGain;
-        const targetSource = currentBreathSource;
-        currentBreathGain = null;
-        currentBreathSource = null;
-        try {
-          targetGain.gain.cancelScheduledValues(now);
-          targetGain.gain.setValueAtTime(targetGain.gain.value, now);
-          targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
-          setTimeout(() => {
-            try {
-              if (targetSource) {
-                targetSource.stop();
-                targetSource.disconnect();
-              }
-              if (targetGain) {
-                targetGain.disconnect();
-              }
-            } catch (e) {}
-          }, fadeTime * 1000 + 40);
-        } catch (e) {}
-      }
-      function stopAllBreathAudio() {
-        fadeOutBreathAudio(0.02);
-      }
-      function playBreathSound(isInhale) {
-        if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        stopAllBreathAudio();
-        const noiseSource = audioCtx.createBufferSource();
-        noiseSource.buffer = getNoiseBuffer();
-        noiseSource.loop = true;
-        currentBreathSource = noiseSource;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        currentBreathResonanceFilter = audioCtx.createBiquadFilter();
-        currentBreathResonanceFilter.type = 'lowpass';
-        const gain = audioCtx.createGain();
-        const now = audioCtx.currentTime;
-        gain.gain.setValueAtTime(0.0001, now);
-        currentBreathGain = gain;
-        const dur = isInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
-        if (isInhale) {
-          filter.Q.value = 0.42;
-          currentBreathResonanceFilter.frequency.value = 2800;
-          filter.frequency.setValueAtTime(160, now);
-          filter.frequency.exponentialRampToValueAtTime(750, now + dur * 0.6);
-          filter.frequency.exponentialRampToValueAtTime(1350, now + dur);
-          gain.gain.linearRampToValueAtTime(0.0001, now + 0.18);
-          gain.gain.linearRampToValueAtTime(0.28, now + dur * 0.55);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1);
-        } else {
-          filter.Q.value = 0.32;
-          currentBreathResonanceFilter.frequency.value = 1600;
-          filter.frequency.setValueAtTime(820, now);
-          filter.frequency.exponentialRampToValueAtTime(220, now + dur);
-          gain.gain.linearRampToValueAtTime(0.0001, now + 0.18);
-          gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1);
-        }
-        noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain);
-        noiseSource.start(now);
-      }
-      function playEndingBowl() {
-        if (!audioCtx || document.visibilityState !== 'visible') return;
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const now = audioCtx.currentTime;
-        activeEndingOscillators = [];
-        const compressor = audioCtx.createDynamicsCompressor();
-        compressor.threshold.value = -10;
-        compressor.knee.value = 10;
-        compressor.ratio.value = 12;
-        compressor.attack.value = 0.003;
-        compressor.release.value = 0.25;
-        const delay = audioCtx.createDelay();
-        delay.delayTime.value = 0.38;
-        const feedback = audioCtx.createGain();
-        feedback.gain.value = 0.35;
-        const delayFilter = audioCtx.createBiquadFilter();
-        delayFilter.type = 'lowpass';
-        delayFilter.frequency.value = 900;
-        delay.connect(delayFilter);
-        delayFilter.connect(feedback);
-        feedback.connect(delay);
-        bowlMasterGain = audioCtx.createGain();
-        const bowlLP = audioCtx.createBiquadFilter();
-        bowlLP.type = 'lowpass';
-        bowlLP.frequency.value = 1500;
-        bowlMasterGain.connect(bowlLP);
-        bowlLP.connect(compressor).connect(masterGain);
-        bowlLP.connect(delay);
-        delayFilter.connect(compressor);
-        bowlMasterGain.gain.setValueAtTime(0.0001, now);
-        bowlMasterGain.gain.exponentialRampToValueAtTime(0.88, now + 0.40);
-        bowlMasterGain.gain.exponentialRampToValueAtTime(0.0001, now + 14.0);
-        const oscs = [{
-          freq: 108.0,
-          gain: 0.16,
-          pan: 0.0
-        }, {
-          freq: 216.0,
-          gain: 0.32,
-          pan: -0.25
-        }, {
-          freq: 216.7,
-          gain: 0.28,
-          pan: 0.25
-        }, {
-          freq: 432.0,
-          gain: 0.22,
-          pan: -0.5
-        }, {
-          freq: 648.0,
-          gain: 0.09,
-          pan: 0.5
-        }];
-        oscs.forEach(o => {
-          const osc = audioCtx.createOscillator();
-          const g = audioCtx.createGain();
-          const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
-          osc.type = 'sine';
-          osc.frequency.value = o.freq;
-          g.gain.value = o.gain;
-          if (panner) {
-            panner.pan.value = o.pan;
-            osc.connect(g).connect(bowlMasterGain);
-          } else {
-            osc.connect(g).connect(bowlMasterGain);
-          }
-          osc.onended = () => {
-            try {
-              osc.disconnect();
-              g.disconnect();
-              if (panner) panner.disconnect();
-            } catch (e) {}
-          };
-          osc.start(now);
-          osc.stop(now + 14.5);
-          activeEndingOscillators.push(osc);
-        });
-      }
-      const textEl = document.getElementById('breath-text');
-      const hintEl = document.getElementById('hint');
-      const rippleEl = document.getElementById('ripple-wave');
-      const guideRingEl = document.getElementById('guide-ring');
-      const mainContainerEl = document.getElementById('main-container');
-      const mainTitleEl = document.getElementById('main-title');
-      const subTitleEl = document.getElementById('sub-title');
-      const topHeaderEl = document.getElementById('top-header');
-      const pwaPromptEl = document.getElementById('pwa-prompt');
-      const pwaCloseBtnEl = document.getElementById('pwa-close-btn');
-      const pwaInstructionEl = document.getElementById('pwa-instruction');
-      const summaryQuoteCard = document.getElementById('summary-quote-card');
-      const quoteTextEl = document.getElementById('quote-text');
-      const quoteSourceEl = document.getElementById('quote-source');
-      function triggerAffirmativeGlow() {
-        if (mainContainerEl) {
-          const sw = document.createElement('div');
-          sw.className = 'affirmation-water-drop';
-          mainContainerEl.appendChild(sw);
-          setTimeout(() => {
-            if (sw && sw.parentNode) sw.parentNode.removeChild(sw);
-          }, 2250);
-        }
-      }
-      function updateUIStateForMindfulness(elapsedSecs) {
-        if (state !== 'MINDFULNESS') return;
-        let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
-        let isWandering = (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
-        if (phaseChangeCount < 6) {
-          const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
-          if (hintEl.innerText !== hintStr) hintEl.innerText = hintStr;
-          hintEl.style.opacity = '0.9';
-          hintEl.classList.add('flash-mild');
-        } else {
-          if (isWandering) {
-            if (hintEl.innerText !== "回 到 呼 吸") hintEl.innerText = "回 到 呼 吸";
-            hintEl.style.opacity = '0.6';
-            hintEl.classList.remove('flash-mild');
-          } else {
-            hintEl.style.opacity = '0';
-            hintEl.classList.remove('flash-mild');
-          }
-        }
-        if (phaseChangeCount >= 6) {
-          if (textEl.style.visibility !== 'hidden') {
-            textEl.style.opacity = '0';
-            textEl.style.visibility = 'hidden';
-          }
-          if (mainTitleEl && mainTitleEl.style.opacity !== '0') {
-            mainTitleEl.style.opacity = '0';
-          }
-        } else {
-          textEl.style.visibility = 'visible';
-          if (mainTitleEl && mainTitleEl.style.opacity !== '1') mainTitleEl.style.opacity = '1';
-        }
-        if (phaseChangeCount >= 6 && subTitleEl) {
-          let fiveMinRemainder = elapsedSecs % 300;
-          if (elapsedSecs >= 295 && fiveMinRemainder < 6.0) {
-            let pulseFactor = Math.sin((fiveMinRemainder / 6.0) * Math.PI);
-            subTitleEl.style.opacity = (0.45 + pulseFactor * 0.30).toFixed(2);
-          } else {
-            if (subTitleEl.style.opacity !== '0.45') subTitleEl.style.opacity = '0.45';
-          }
-        } else if (subTitleEl && phaseChangeCount < 6) {
-          subTitleEl.style.opacity = '0.85';
-        }
-      }
-      function triggerBreathTextChange(isInhale) {
-        if (phaseChangeCount < 6) {
-          textEl.innerText = isInhale ? "吸 氣" : "呼 氣";
-          textEl.classList.remove('glow-inhale', 'glow-exhale');
-          void textEl.offsetWidth;
-          if (isInhale) {
-            textEl.classList.add('glow-inhale');
-          } else {
-            textEl.classList.add('glow-exhale');
-          }
-        }
-        if (rippleEl) {
-          rippleEl.classList.remove('active');
-          void rippleEl.offsetWidth;
-          rippleEl.classList.add('active');
-        }
-        let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
-        updateUIStateForMindfulness(elapsedSecs);
-      }
-      function setPressState(isPress) {
-        if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return;
-        if (isPressing === isPress) return;
-        isPressing = isPress;
-        const now = Date.now();
-        if (isPressing) {
-          pressStartTime = now;
-          playBreathSound(true);
-          if (isCurrentPhaseInhale) {
-            userPressedInInhale = true;
-            missedInhaleCount = 0;
-            updateUIStateForMindfulness((now - sessionStartTime) / 1000);
-          }
-        } else {
-          const pressDuration = now - pressStartTime;
-          if (pressDuration >= MIN_VALID_PRESS_DURATION) {
-            hasInhaledInCurrentCycle = true;
-          }
-          if (isCurrentPhaseInhale) {
-            fadeOutBreathAudio(0.15);
-          } else {
-            if (hasInhaledInCurrentCycle) {
-              playBreathSound(false);
+
+        function killAllOldNodes() {
+            if (currentBreathSource) { 
+                try { 
+                    currentBreathSource.stop(); 
+                    currentBreathSource.disconnect(); 
+                } catch(e){} 
+                currentBreathSource = null; 
             }
-          }
+            if (currentBreathGain) {
+                try { currentBreathGain.disconnect(); } catch(e){}
+                currentBreathGain = null;
+            }
+            if (activeEndingOscillators.length > 0) { 
+                activeEndingOscillators.forEach(osc => { 
+                    try { osc.stop(); osc.disconnect(); } catch(e){} 
+                }); 
+                activeEndingOscillators = []; 
+            }
         }
-      }
-      const interactLayer = document.getElementById('interaction-layer');
-      const handlePress = (e) => {
-        e.preventDefault();
-        setPressState(true);
-      };
-      const handleRelease = (e) => {
-        e.preventDefault();
-        setPressState(false);
-      };
-      interactLayer.addEventListener('touchstart', handlePress, {
-        passive: false
-      });
-      interactLayer.addEventListener('touchend', handleRelease, {
-        passive: false
-      });
-      interactLayer.addEventListener('touchcancel', handleRelease, {
-        passive: false
-      });
-      interactLayer.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-      }, {
-        passive: false
-      });
-      interactLayer.addEventListener('pointerdown', handlePress);
-      interactLayer.addEventListener('pointerup', handleRelease);
-      interactLayer.addEventListener('pointerleave', handleRelease);
-      interactLayer.addEventListener('pointercancel', handleRelease);
-      interactLayer.addEventListener('contextmenu', (e) => e.preventDefault());
-      window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && !e.repeat) {
-          e.preventDefault();
-          setPressState(true);
+
+        function handleAppVisibilityLoss() { isPressing = false; killAllOldNodes(); fadeMasterOutAndSuspend(); releaseWakeLock(); }
+        
+        async function handleAppVisibilityRestore() {
+            if (!audioCtx) return;
+            if (silentAudioAnchor && silentAudioAnchor.paused) silentAudioAnchor.play().catch(e => {});
+            masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            if (audioCtx.state === 'suspended') { 
+                try { await audioCtx.resume(); } catch(e){} 
+            }
+            setTimeout(restoreAudioLogic, 150);
         }
-      });
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'Space') setPressState(false);
-      });
-      function checkPaceAdaptation() {
-        phaseChangeCount++;
-        if (!isCurrentPhaseInhale) totalBreaths++;
-        let avgPhaseResonance = cycleResonanceCount > 0 ? (cycleResonanceSum / cycleResonanceCount) : 0;
-        let isFirstTwoPhasePass = (phaseChangeCount <= 4 && userPressedInInhale);
-        let isNormalPhasePass = (userPressedInInhale && avgPhaseResonance >= 0.65);
-        if (phaseChangeCount <= 10 && !isCurrentPhaseInhale && (isFirstTwoPhasePass || isNormalPhasePass)) {
-          triggerAffirmativeGlow();
+
+        function restoreAudioLogic() {
+            if (document.visibilityState !== 'visible') return; 
+            killAllOldNodes(); 
+            fadeMasterIn();
+            if (state === 'MINDFULNESS' || state === 'PREPARATION') { requestWakeLock(); }
         }
-        if (isCurrentPhaseInhale) {
-          if (!userPressedInInhale) {
-            missedInhaleCount++;
-          } else {
-            missedInhaleCount = 0;
-          }
-          userPressedInInhale = false;
+
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') handleAppVisibilityLoss(); else if (document.visibilityState === 'visible') handleAppVisibilityRestore(); });
+        window.addEventListener('pagehide', handleAppVisibilityLoss); window.addEventListener('pageshow', handleAppVisibilityRestore);
+        window.addEventListener('blur', handleAppVisibilityLoss); window.addEventListener('focus', handleAppVisibilityRestore);
+
+        function initCanvas() {
+            const dpr = Math.max(window.devicePixelRatio || 1, 2);
+            bgCanvas.width = window.innerWidth * dpr; bgCanvas.height = window.innerHeight * dpr; bgCtx.scale(dpr, dpr);
+            coreCanvas.width = 600 * dpr; coreCanvas.height = 600 * dpr; coreCtx.scale(dpr, dpr);
+            
+            stars = [];
+            for(let i=0; i<250; i++) {
+                let layerRand = Math.random();
+                let layerType = layerRand > 0.85 ? 'foreground' : (layerRand > 0.35 ? 'midground' : 'background');
+                stars.push({ x: Math.random() * 2400 - 1200, y: Math.random() * 2400 - 1200, z: Math.random() * 1900 + 100, baseRadius: Math.random() * 1.2 + 0.4, layer: layerType });
+            }
+            if(canvasAnimFrame) cancelAnimationFrame(canvasAnimFrame); drawCanvas();
         }
-        if (avgPhaseResonance >= 0.7) {
-          consecutiveHighResonance++;
-        } else {
-          consecutiveHighResonance = 0;
+
+        function drawCanvas() {
+            const dW = window.innerWidth, dH = window.innerHeight;
+            bgCtx.clearRect(0, 0, dW, dH);
+            const cx = dW * 0.5, cy = dH * 0.5;
+            breathScale += (targetBreathScale - breathScale) * 0.015;
+            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION');
+            
+            let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
+            let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
+            if (state === 'PREPARATION') zFlowSpeed = 0.2; 
+            if (isEndingDissolve) zFlowSpeed = -8.5; 
+
+            for(let i=0; i<stars.length; i++) {
+                let star = stars[i];
+                if (isMindful && star.layer === 'background' && !isEndingDissolve) continue;
+                if (isEndingDissolve) { star.x *= 0.985; star.y *= 0.985; }
+                star.z -= zFlowSpeed; 
+                if(star.z <= 25) { star.z = 2000; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
+                if(star.z >= 2000) { star.z = 25; star.x = Math.random() * 2400 - 1200; star.y = Math.random() * 2400 - 1200; }
+                
+                let baseScale = 400 / star.z; let finalScale = baseScale * breathScale; 
+                let px = cx + star.x * finalScale; let py = cy + star.y * finalScale;
+                let isFG = star.layer === 'foreground'; let alpha = baseScale * (isFG ? 0.9 : 1.2); 
+                alpha = alpha * Math.min(1.0, Math.max(0.0, (star.z - 25) / 275));
+                if(alpha > 1) alpha = 1; if(alpha <= 0.01) continue; 
+
+                bgCtx.globalAlpha = alpha * (isMindful ? (isFG ? 0.75 : 0.35) : 0.6); 
+                bgCtx.beginPath(); bgCtx.arc(px, py, star.baseRadius * baseScale * (isFG ? 2.8 : 1.0), 0, Math.PI * 2); 
+                bgCtx.fillStyle = (isMindful && isFG) ? `rgb(${cachedColorStr})` : 'white';
+                bgCtx.fill();
+            }
+
+            coreCtx.clearRect(0, 0, 600, 600);
+            
+            if (isMindful || state === 'INTRO') {
+                coreCtx.globalCompositeOperation = 'screen';
+                
+                let responsiveBaseRadius = (window.innerWidth <= 480) ? 50 : 60;
+                let baseRadius = responsiveBaseRadius * currentCoreScale; 
+                
+                let expansionFactor = Math.max(0, (currentCoreScale - 1.0) / 1.2); 
+                let resAlpha = 0.4 + 0.6 * currentResonance; 
+                const coreCx = 300, coreCy = 300;
+
+                const ambientRadius = baseRadius * 1.4;
+                const ambientGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, ambientRadius);
+                ambientGrad.addColorStop(0.2, `rgba(${currR}, ${currG}, ${currB}, ${0.12 * resAlpha})`);
+                ambientGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
+                coreCtx.beginPath(); coreCtx.arc(coreCx, coreCy, ambientRadius, 0, Math.PI * 2);
+                coreCtx.fillStyle = ambientGrad; coreCtx.fill();
+
+                const dropGrad = coreCtx.createRadialGradient(coreCx, coreCy, 0, coreCx, coreCy, baseRadius);
+                dropGrad.addColorStop(0, `rgba(${currR}, ${currG}, ${currB}, ${0.08 * resAlpha})`);
+                dropGrad.addColorStop(0.7, `rgba(${currR}, ${currG}, ${currB}, ${0.15 * resAlpha})`);
+                let edgeDensity = (0.35 + 0.25 * expansionFactor) * resAlpha; 
+                dropGrad.addColorStop(0.94, `rgba(${currR}, ${currG}, ${currB}, ${edgeDensity})`);
+                dropGrad.addColorStop(1, `rgba(${currR}, ${currG}, ${currB}, 0)`);
+
+                coreCtx.beginPath();
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
+                coreCtx.fillStyle = dropGrad;
+                coreCtx.fill();
+
+                let hx = coreCx - baseRadius * 0.35; let hy = coreCy - baseRadius * 0.35; let hr = baseRadius * 0.65;
+                const highGrad = coreCtx.createRadialGradient(hx, hy, 0, hx, hy, hr);
+                let highlightAlpha = (0.04 + 0.04 * expansionFactor) * resAlpha;
+                highGrad.addColorStop(0, `rgba(255, 255, 255, ${highlightAlpha})`);
+                highGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+                
+                coreCtx.beginPath();
+                coreCtx.arc(coreCx, coreCy, baseRadius, 0, Math.PI * 2);
+                coreCtx.fillStyle = highGrad;
+                coreCtx.fill();
+            }
+
+            canvasAnimFrame = requestAnimationFrame(drawCanvas);
         }
-        cycleResonanceSum = 0;
-        cycleResonanceCount = 0;
-      }
-      function animateGuide(now) {
-        if (state !== 'MINDFULNESS' && state !== 'PREPARATION') {
-          lastTime = now;
-          guideAnimFrame = requestAnimationFrame(animateGuide);
-          return;
+
+        window.addEventListener('resize', () => { if(bgCanvas) initCanvas(); });
+
+        async function requestWakeLock() { 
+            if ('wakeLock' in navigator && document.visibilityState === 'visible') { 
+                try { 
+                    wakeLock = await navigator.wakeLock.request('screen'); 
+                } catch (err) {} 
+            } 
         }
-        if (!lastTime) lastTime = now;
-        let dt = (now - lastTime) / 1000;
-        lastTime = now;
-        if (state === 'PREPARATION') {
-          let pElapsed = now - prepStartTime;
-          if (pElapsed < 1500) {
-            let progress = pElapsed / 1500;
-            let easedProg = progress * progress * (3 - 2 * progress);
-            currentCoreScale = 0.25 + easedProg * 0.75;
-            currR = 255;
-            currG = 180;
-            currB = 80;
-            cachedColorStr = "255, 180, 80";
-            currentResonance = 0.0;
-          } else if (pElapsed >= 1500 && pElapsed < 2300) {
-            currentCoreScale = 1.0;
-            currR = 255;
-            currG = 180;
-            currB = 80;
-            cachedColorStr = "255, 180, 80";
-            currentResonance = 0.0;
-            if (!hasTriggeredRipple) {
-              hasTriggeredRipple = true;
-              if (textEl) {
-                textEl.innerText = "吸 氣";
-                textEl.style.transition = 'opacity 0.8s ease';
-                textEl.style.opacity = '0.9';
+        function releaseWakeLock() { 
+            if (wakeLock !== null) { 
+                wakeLock.release().then(() => { wakeLock = null; }).catch(err => {}); 
+            } 
+        }
+
+        function initAudio() {
+            if (!audioCtx) { 
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+                masterGain = audioCtx.createGain(); masterGain.gain.value = 1.0; masterGain.connect(audioCtx.destination);
+            } else {
+                if (audioCtx.state === 'suspended') audioCtx.resume(); 
+                if (masterGain) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(1.0, audioCtx.currentTime); }
+            }
+            if (!silentAudioAnchor) {
+                silentAudioAnchor = document.createElement('audio'); silentAudioAnchor.loop = true; silentAudioAnchor.setAttribute('playsinline', '');
+                silentAudioAnchor.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
+                document.body.appendChild(silentAudioAnchor);
+            }
+            silentAudioAnchor.play().catch(e => {});
+        }
+        
+        function getNoiseBuffer() {
+            if (!globalNoiseBuffer && audioCtx) {
+                const bufferSize = audioCtx.sampleRate * 2;
+                globalNoiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = globalNoiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+            }
+            return globalNoiseBuffer;
+        }
+
+        function fadeOutBreathAudio(fadeTime = 0.15) {
+            if (!audioCtx || !currentBreathGain) return;
+            const now = audioCtx.currentTime;
+            const targetGain = currentBreathGain;
+            const targetSource = currentBreathSource;
+
+            currentBreathGain = null;
+            currentBreathSource = null;
+
+            try {
+                targetGain.gain.cancelScheduledValues(now);
+                targetGain.gain.setValueAtTime(targetGain.gain.value, now);
+                targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                setTimeout(() => { 
+                    try { 
+                        if (targetSource) { targetSource.stop(); targetSource.disconnect(); } 
+                        if (targetGain) { targetGain.disconnect(); }
+                    } catch(e){} 
+                }, fadeTime * 1000 + 40);
+            } catch(e){}
+        }
+
+        function stopAllBreathAudio() {
+            fadeOutBreathAudio(0.02);
+        }
+
+        function playBreathSound(isInhale) {
+            if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            
+            stopAllBreathAudio();
+            
+            const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
+            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; 
+            currentBreathResonanceFilter = audioCtx.createBiquadFilter(); currentBreathResonanceFilter.type = 'lowpass'; 
+            const gain = audioCtx.createGain(); const now = audioCtx.currentTime;
+            gain.gain.setValueAtTime(0.0001, now); currentBreathGain = gain;
+            
+            const dur = isInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
+
+            if (isInhale) {
+                filter.Q.value = 0.42; currentBreathResonanceFilter.frequency.value = 2800;
+                filter.frequency.setValueAtTime(160, now); filter.frequency.exponentialRampToValueAtTime(750, now + dur * 0.6); filter.frequency.exponentialRampToValueAtTime(1350, now + dur);
+                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); gain.gain.linearRampToValueAtTime(0.28, now + dur * 0.55); gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1);
+            } else {
+                filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
+                filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
+                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
+            }
+            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); noiseSource.start(now);
+        }
+
+        function playEndingBowl() {
+            if(!audioCtx || document.visibilityState !== 'visible') return; 
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const now = audioCtx.currentTime;
+            activeEndingOscillators = [];
+            const compressor = audioCtx.createDynamicsCompressor(); compressor.threshold.value = -10; compressor.knee.value = 10; compressor.ratio.value = 12; compressor.attack.value = 0.003; compressor.release.value = 0.25;
+            const delay = audioCtx.createDelay(); delay.delayTime.value = 0.38; 
+            const feedback = audioCtx.createGain(); feedback.gain.value = 0.35;    
+            const delayFilter = audioCtx.createBiquadFilter(); delayFilter.type = 'lowpass'; delayFilter.frequency.value = 900; 
+            delay.connect(delayFilter); delayFilter.connect(feedback); feedback.connect(delay); 
+
+            bowlMasterGain = audioCtx.createGain(); 
+            const bowlLP = audioCtx.createBiquadFilter(); bowlLP.type = 'lowpass'; bowlLP.frequency.value = 1500; 
+            bowlMasterGain.connect(bowlLP); bowlLP.connect(compressor).connect(masterGain); bowlLP.connect(delay); delayFilter.connect(compressor);
+
+            bowlMasterGain.gain.setValueAtTime(0.0001, now); bowlMasterGain.gain.exponentialRampToValueAtTime(0.88, now + 0.40); bowlMasterGain.gain.exponentialRampToValueAtTime(0.0001, now + 14.0); 
+
+            const oscs = [{ freq: 108.0, gain: 0.16, pan: 0.0 }, { freq: 216.0, gain: 0.32, pan: -0.25 }, { freq: 216.7, gain: 0.28, pan: 0.25 }, { freq: 432.0, gain: 0.22, pan: -0.5 }, { freq: 648.0, gain: 0.09, pan: 0.5 }];
+            oscs.forEach(o => {
+                const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                osc.type = 'sine'; osc.frequency.value = o.freq; g.gain.value = o.gain;
+                if (panner) { panner.pan.value = o.pan; osc.connect(g).connect(bowlMasterGain); } else { osc.connect(g).connect(bowlMasterGain); }
+                osc.onended = () => { try { osc.disconnect(); g.disconnect(); if (panner) panner.disconnect(); } catch(e){} };
+                osc.start(now); osc.stop(now + 14.5); activeEndingOscillators.push(osc);
+            });
+        }
+
+        const textEl = document.getElementById('breath-text');
+        const hintEl = document.getElementById('hint');
+        const rippleEl = document.getElementById('ripple-wave');
+        const guideRingEl = document.getElementById('guide-ring');
+        const mainContainerEl = document.getElementById('main-container');
+        const mainTitleEl = document.getElementById('main-title');
+        const subTitleEl = document.getElementById('sub-title');
+        const topHeaderEl = document.getElementById('top-header');
+        const pwaPromptEl = document.getElementById('pwa-prompt');
+        const pwaCloseBtnEl = document.getElementById('pwa-close-btn');
+        const pwaInstructionEl = document.getElementById('pwa-instruction');
+        const summaryQuoteCard = document.getElementById('summary-quote-card');
+        const quoteTextEl = document.getElementById('quote-text');
+        const quoteSourceEl = document.getElementById('quote-source');
+
+        function triggerAffirmativeGlow() {
+            if (mainContainerEl) {
+                const sw = document.createElement('div'); sw.className = 'affirmation-water-drop'; mainContainerEl.appendChild(sw);
+                setTimeout(() => { if (sw && sw.parentNode) sw.parentNode.removeChild(sw); }, 2250);
+            }
+        }
+
+        function updateUIStateForMindfulness(elapsedSecs) {
+            if (state !== 'MINDFULNESS') return;
+
+            let isSecondInhaleUnpressed = (isCurrentPhaseInhale && missedInhaleCount >= 1 && !userPressedInInhale && guidePhase >= 0.25);
+            let isWandering = (missedInhaleCount >= 2) || isSecondInhaleUnpressed;
+
+            if (phaseChangeCount < 6) {
+                const hintStr = isCurrentPhaseInhale ? "按住 空白鍵 / 螢幕 以吸氣" : "鬆開 空白鍵 / 螢幕 以呼氣";
+                if (hintEl.innerText !== hintStr) hintEl.innerText = hintStr;
+                hintEl.style.opacity = '0.9'; hintEl.classList.add('flash-mild');
+            } else {
+                if (isWandering) {
+                    if (hintEl.innerText !== "回 到 呼 吸") hintEl.innerText = "回 到 呼 吸";
+                    hintEl.style.opacity = '0.6'; hintEl.classList.remove('flash-mild');
+                } else {
+                    hintEl.style.opacity = '0'; hintEl.classList.remove('flash-mild');
+                }
+            }
+
+            if (phaseChangeCount >= 6) {
+                if (textEl.style.visibility !== 'hidden') { textEl.style.opacity = '0'; textEl.style.visibility = 'hidden'; }
+                if (mainTitleEl && mainTitleEl.style.opacity !== '0') { mainTitleEl.style.opacity = '0'; }
+            } else {
                 textEl.style.visibility = 'visible';
-              }
-              if (guideRingEl) {
-                guideRingEl.style.transition = 'box-shadow 0.1s ease-out, opacity 0.8s ease';
-                guideRingEl.style.opacity = '0.25';
-              }
+                if (mainTitleEl && mainTitleEl.style.opacity !== '1') mainTitleEl.style.opacity = '1';
             }
-          } else if (pElapsed >= 2300) {
-            state = 'MINDFULNESS';
-            sessionStartTime = Date.now();
-            guidePhase = 0;
-            userPhase = 0;
-            guideDir = 1;
-            isCurrentPhaseInhale = true;
-            if (topHeaderEl) {
-              topHeaderEl.style.transition = 'opacity 2s ease';
-              topHeaderEl.style.opacity = '1';
+
+            if (phaseChangeCount >= 6 && subTitleEl) {
+                let fiveMinRemainder = elapsedSecs % 300;
+                if (elapsedSecs >= 295 && fiveMinRemainder < 6.0) {
+                    let pulseFactor = Math.sin((fiveMinRemainder / 6.0) * Math.PI);
+                    subTitleEl.style.opacity = (0.45 + pulseFactor * 0.30).toFixed(2);
+                } else { if (subTitleEl.style.opacity !== '0.45') subTitleEl.style.opacity = '0.45'; }
+            } else if (subTitleEl && phaseChangeCount < 6) {
+                subTitleEl.style.opacity = '0.85';
             }
-            if (hintEl) {
-              hintEl.innerText = "按住 空白鍵 / 螢幕 以吸氣";
-              hintEl.style.transition = 'opacity 2s ease';
-              hintEl.style.opacity = '0.9';
-              hintEl.classList.add('flash-mild');
+        }
+
+        function triggerBreathTextChange(isInhale) {
+            if (phaseChangeCount < 6) {
+                textEl.innerText = isInhale ? "吸 氣" : "呼 氣";
+                textEl.classList.remove('glow-inhale', 'glow-exhale'); void textEl.offsetWidth; 
+                if (isInhale) { textEl.classList.add('glow-inhale'); } else { textEl.classList.add('glow-exhale'); }
             }
-            document.getElementById('interaction-layer').style.display = 'block';
-            const btnStop = document.getElementById('btn-stop');
-            btnStop.style.display = 'block';
+            if (rippleEl) { rippleEl.classList.remove('active'); void rippleEl.offsetWidth; rippleEl.classList.add('active'); }
+            let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
+        }
+
+        function setPressState(isPress) {
+            if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
+            if (isPressing === isPress) return; isPressing = isPress;
+            
+            const now = Date.now();
+
+            if (isPressing) {
+                pressStartTime = now;
+                playBreathSound(true); 
+                if (isCurrentPhaseInhale) { userPressedInInhale = true; missedInhaleCount = 0; updateUIStateForMindfulness((now - sessionStartTime) / 1000); }
+            } else { 
+                const pressDuration = now - pressStartTime;
+                if (pressDuration >= MIN_VALID_PRESS_DURATION) {
+                    hasInhaledInCurrentCycle = true;
+                }
+
+                if (isCurrentPhaseInhale) {
+                    fadeOutBreathAudio(0.15); 
+                } else {
+                    if (hasInhaledInCurrentCycle) {
+                        playBreathSound(false);
+                    }
+                }
+            }
+        }
+
+        const interactLayer = document.getElementById('interaction-layer');
+        const handlePress = (e) => { e.preventDefault(); setPressState(true); }; const handleRelease = (e) => { e.preventDefault(); setPressState(false); };
+        interactLayer.addEventListener('touchstart', handlePress, { passive: false }); interactLayer.addEventListener('touchend', handleRelease, { passive: false }); interactLayer.addEventListener('touchcancel', handleRelease, { passive: false }); interactLayer.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+        interactLayer.addEventListener('pointerdown', handlePress); interactLayer.addEventListener('pointerup', handleRelease); interactLayer.addEventListener('pointerleave', handleRelease); interactLayer.addEventListener('pointercancel', handleRelease); interactLayer.addEventListener('contextmenu', (e) => e.preventDefault());
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space' && !e.repeat) { e.preventDefault(); setPressState(true); }}); window.addEventListener('keyup', (e) => { if (e.code === 'Space') setPressState(false); });
+
+        function checkPaceAdaptation() {
+            phaseChangeCount++; if (!isCurrentPhaseInhale) totalBreaths++; 
+            let avgPhaseResonance = cycleResonanceCount > 0 ? (cycleResonanceSum / cycleResonanceCount) : 0;
+            let isFirstTwoPhasePass = (phaseChangeCount <= 4 && userPressedInInhale); let isNormalPhasePass = (userPressedInInhale && avgPhaseResonance >= 0.65);
+            if (phaseChangeCount <= 10 && !isCurrentPhaseInhale && (isFirstTwoPhasePass || isNormalPhasePass)) { triggerAffirmativeGlow(); }
+            if (isCurrentPhaseInhale) { if (!userPressedInInhale) { missedInhaleCount++; } else { missedInhaleCount = 0; } userPressedInInhale = false; }
+            if (avgPhaseResonance >= 0.7) { consecutiveHighResonance++; } else { consecutiveHighResonance = 0; }
+            cycleResonanceSum = 0; cycleResonanceCount = 0;
+        }
+
+        function animateGuide(now) {
+            if (state !== 'MINDFULNESS' && state !== 'PREPARATION') { lastTime = now; guideAnimFrame = requestAnimationFrame(animateGuide); return; }
+            if (!lastTime) lastTime = now; let dt = (now - lastTime) / 1000; lastTime = now;
+
+            if (state === 'PREPARATION') {
+                let pElapsed = now - prepStartTime;
+                
+                if (pElapsed < 1500) {
+                    let progress = pElapsed / 1500;
+                    let easedProg = progress * progress * (3 - 2 * progress); 
+                    currentCoreScale = 0.25 + easedProg * 0.75; 
+                    
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
+                    currentResonance = 0.0;
+                } 
+                else if (pElapsed >= 1500 && pElapsed < 2300) {
+                    currentCoreScale = 1.0; 
+                    currR = 255; currG = 180; currB = 80;
+                    cachedColorStr = "255, 180, 80";
+                    currentResonance = 0.0;
+
+                    if (!hasTriggeredRipple) {
+                        hasTriggeredRipple = true;
+                        
+                        if (textEl) { 
+                            textEl.innerText = "吸 氣";
+                            textEl.style.transition = 'opacity 0.8s ease'; 
+                            textEl.style.opacity = '0.9'; 
+                            textEl.style.visibility = 'visible';
+                        }
+                        if (guideRingEl) { 
+                            guideRingEl.style.transition = 'box-shadow 0.1s ease-out, opacity 0.8s ease'; 
+                            guideRingEl.style.opacity = '0.25'; 
+                        }
+                    }
+                } 
+                else if (pElapsed >= 2300) {
+                    state = 'MINDFULNESS';
+                    sessionStartTime = Date.now();
+                    
+                    guidePhase = 0;
+                    userPhase = 0;
+                    guideDir = 1;
+                    isCurrentPhaseInhale = true;
+
+                    if (topHeaderEl) { 
+                        topHeaderEl.style.transition = 'opacity 2s ease'; 
+                        topHeaderEl.style.opacity = '1'; 
+                    }
+                    if (hintEl) { 
+                        hintEl.innerText = "按住 空白鍵 / 螢幕 以吸氣";
+                        hintEl.style.transition = 'opacity 2s ease'; 
+                        hintEl.style.opacity = '0.9'; 
+                        hintEl.classList.add('flash-mild');
+                    }
+                    
+                    document.getElementById('interaction-layer').style.display = 'block';
+                    const btnStop = document.getElementById('btn-stop');
+                    btnStop.style.display = 'block';
+                    setTimeout(() => { 
+                        btnStop.style.transition = 'all 0.4s ease, opacity 2s ease'; 
+                        btnStop.style.opacity = '1'; 
+                    }, 50);
+                }
+
+                guideAnimFrame = requestAnimationFrame(animateGuide);
+                return;
+            }
+
+            let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
+
+            if (elapsedSecs > 30) {
+                let progress = Math.min(1.0, (elapsedSecs - 30) / 120); 
+                let smoothedProgress = progress * progress * (3 - 2 * progress); 
+                baseInhalePace = 3.2 + smoothedProgress * 0.4; 
+            } else { baseInhalePace = 3.2; }
+
+            let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
+            guidePhase += guideDir * (dt / currentPhaseDur);
+            
+            if (guidePhase >= 1) { 
+                guidePhase = 1; guideDir = -1; 
+                if (isCurrentPhaseInhale) { 
+                    isCurrentPhaseInhale = false; 
+                    checkPaceAdaptation(); 
+                    triggerBreathTextChange(false); 
+                    if (!isPressing && hasInhaledInCurrentCycle) { 
+                        playBreathSound(false); 
+                    }
+                } 
+            } 
+            else if (guidePhase <= 0) { 
+                guidePhase = 0; guideDir = 1; 
+                if (!isCurrentPhaseInhale) { 
+                    isCurrentPhaseInhale = true; 
+                    hasInhaledInCurrentCycle = false; 
+                    checkPaceAdaptation(); 
+                    triggerBreathTextChange(true); 
+                } 
+            }
+
+            let p = guidePhase; let eased = p * p * p * (p * (p * 6 - 15) + 10);
+            
+            let targetUserPhase = 0.0;
+            if (isCurrentPhaseInhale) {
+                targetUserPhase = isPressing ? guidePhase : 0.0;
+            } else {
+                targetUserPhase = guidePhase;
+            }
+
+            let phaseDiff = targetUserPhase - userPhase;
+            let k = isPressing ? 4.5 : 3.8; 
+            userPhase += phaseDiff * (1.0 - Math.exp(-k * dt));
+
+            if (userPhase > 1) userPhase = 1;
+            if (userPhase < 0) userPhase = 0;
+
+            let uP = userPhase; let userEased = uP * uP * uP * (uP * (uP * 6 - 15) + 10);
+            
+            let scale = 1 + eased * 1.2; let opacity = 0.25 + eased * 0.55; 
+            if (guideRingEl) { guideRingEl.style.transform = `scale(${scale})`; guideRingEl.style.opacity = opacity; }
+            
+            currentCoreScale = 1.0 + userEased * 1.2;
+            
+            let targetRes = (isCurrentPhaseInhale === isPressing) ? 1.0 : 0.0;
+            currentResonance += (targetRes - currentResonance) * 0.08;
+            updateUIStateForMindfulness(elapsedSecs);
+            cycleResonanceSum += currentResonance; cycleResonanceCount++; sumResonance += currentResonance; resonanceSamples++;
+
+            let targetR = isCurrentPhaseInhale ? 255 : 56; let targetG = isCurrentPhaseInhale ? 180 : 189; let targetB = isCurrentPhaseInhale ? 77 : 248;
+            currR += (targetR - currR) * 0.05; currG += (targetG - currG) * 0.05; currB += (targetB - currB) * 0.05;
+            cachedColorStr = `${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)}`;
+            document.documentElement.style.setProperty('--c-r', Math.floor(currR)); document.documentElement.style.setProperty('--c-g', Math.floor(currG)); document.documentElement.style.setProperty('--c-b', Math.floor(currB));
+
+            let bloom = Math.sin(guidePhase * (Math.PI / 2));
+            guideRingEl.style.borderColor = `rgba(${cachedColorStr}, 0.75)`; 
+            guideRingEl.style.boxShadow = `0 0 ${12 + bloom * 24}px rgba(${cachedColorStr}, ${0.35 + bloom * 0.45}), inset 0 0 ${6 + bloom * 8}px rgba(255,255,255,${0.18 + bloom * 0.2})`;
+
+            if (isPressing) { targetBreathScale = 0.7 - currentResonance * 0.1; } else { targetBreathScale = 1.1 + currentResonance * 0.2; }
+            guideAnimFrame = requestAnimationFrame(animateGuide);
+        }
+
+        const firstClickEl = document.getElementById('first-click');
+
+        function handleFirstClick(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            if (state !== 'INIT') return; 
+            state = 'INTRO';
+
+            initAudio(); 
+            initCanvas(); 
+
+            if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+
+            firstClickEl.style.pointerEvents = 'none'; 
+            firstClickEl.style.opacity = '0';
+
+            setTimeout(() => { 
+                firstClickEl.style.display = 'none'; 
+                const introEl = document.getElementById('intro');
+                introEl.style.display = 'flex'; 
+                setTimeout(() => { introEl.style.opacity = '1'; }, 50); 
+            }, 800);
+        }
+
+        firstClickEl.addEventListener('pointerdown', handleFirstClick);
+        firstClickEl.addEventListener('touchstart', handleFirstClick, { passive: false });
+        firstClickEl.addEventListener('click', handleFirstClick);
+
+        document.getElementById('btn-start').addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            if (state !== 'INTRO') return; 
+            
+            state = 'PREPARATION';
+            prepStartTime = performance.now();
+            currentCoreScale = 0.25; 
+            isEndingDissolve = false;
+            hasTriggeredRipple = false; 
+
+            currR = 255; currG = 180; cachedColorStr = "255, 180, 80";
+            currentResonance = 0.0;
+            document.documentElement.style.setProperty('--c-r', 255); 
+            document.documentElement.style.setProperty('--c-g', 180); 
+            document.documentElement.style.setProperty('--c-b', 80);
+
+            requestWakeLock();
+
+            document.getElementById('intro').style.opacity = '0'; 
+            document.getElementById('btn-start').classList.add('disabled'); 
+            
+            document.getElementById('sky-bg').classList.add('active');
+            const mainContainer = document.getElementById('main-container');
+            const coreCanvasEl = document.getElementById('core-canvas');
+            
+            mainContainer.style.opacity = '1'; 
+            coreCanvasEl.style.opacity = '1';
+
+            if (hintEl) hintEl.classList.remove('flash-mild'); 
+            
+            const elementsToHide = [topHeaderEl, guideRingEl, textEl, hintEl];
+            elementsToHide.forEach(el => {
+                if (el) {
+                    el.style.transition = 'none';
+                    el.style.opacity = '0';
+                }
+            });
+            
+            if (textEl) {
+                textEl.classList.remove('glow-inhale', 'glow-exhale');
+                textEl.style.color = '#ffffff'; 
+            }
+            if (guideRingEl) {
+                guideRingEl.style.transform = 'scale(1)';
+                guideRingEl.style.borderColor = `rgba(255, 180, 80, 0.75)`;
+                guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
+            }
+
+            void document.body.offsetHeight;
+
             setTimeout(() => {
-              btnStop.style.transition = 'all 0.4s ease, opacity 2s ease';
-              btnStop.style.opacity = '1';
-            }, 50);
-          }
-          guideAnimFrame = requestAnimationFrame(animateGuide);
-          return;
-        }
-        let elapsedSecs = (Date.now() - sessionStartTime) / 1000;
-        if (elapsedSecs > 30) {
-          let progress = Math.min(1.0, (elapsedSecs - 30) / 120);
-          let smoothedProgress = progress * progress * (3 - 2 * progress);
-          baseInhalePace = 3.2 + smoothedProgress * 0.4;
-        } else {
-          baseInhalePace = 3.2;
-        }
-        let currentPhaseDur = isCurrentPhaseInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
-        guidePhase += guideDir * (dt / currentPhaseDur);
-        if (guidePhase >= 1) {
-          guidePhase = 1;
-          guideDir = -1;
-          if (isCurrentPhaseInhale) {
-            isCurrentPhaseInhale = false;
-            checkPaceAdaptation();
-            triggerBreathTextChange(false);
-            if (!isPressing && hasInhaledInCurrentCycle) {
-              playBreathSound(false);
-            }
-          }
-        } else if (guidePhase <= 0) {
-          guidePhase = 0;
-          guideDir = 1;
-          if (!isCurrentPhaseInhale) {
-            isCurrentPhaseInhale = true;
-            hasInhaledInCurrentCycle = false;
-            checkPaceAdaptation();
-            triggerBreathTextChange(true);
-          }
-        }
-        let p = guidePhase;
-        let eased = p * p * p * (p * (p * 6 - 15) + 10);
-        let targetUserPhase = 0.0;
-        if (isCurrentPhaseInhale) {
-          targetUserPhase = isPressing ? guidePhase : 0.0;
-        } else {
-          targetUserPhase = guidePhase;
-        }
-        let phaseDiff = targetUserPhase - userPhase;
-        let k = isPressing ? 4.5 : 3.8;
-        userPhase += phaseDiff * (1.0 - Math.exp(-k * dt));
-        if (userPhase > 1) userPhase = 1;
-        if (userPhase < 0) userPhase = 0;
-        let uP = userPhase;
-        let userEased = uP * uP * uP * (uP * (uP * 6 - 15) + 10);
-        let scale = 1 + eased * 1.2;
-        let opacity = 0.25 + eased * 0.55;
-        if (guideRingEl) {
-          guideRingEl.style.transform = `scale(${scale})`;
-          guideRingEl.style.opacity = opacity;
-        }
-        currentCoreScale = 1.0 + userEased * 1.2;
-        let targetRes = (isCurrentPhaseInhale === isPressing) ? 1.0 : 0.0;
-        currentResonance += (targetRes - currentResonance) * 0.08;
-        updateUIStateForMindfulness(elapsedSecs);
-        cycleResonanceSum += currentResonance;
-        cycleResonanceCount++;
-        sumResonance += currentResonance;
-        resonanceSamples++;
-        let targetR = isCurrentPhaseInhale ? 255 : 56;
-        let targetG = isCurrentPhaseInhale ? 180 : 189;
-        let targetB = isCurrentPhaseInhale ? 77 : 248;
-        currR += (targetR - currR) * 0.05;
-        currG += (targetG - currG) * 0.05;
-        currB += (targetB - currB) * 0.05;
-        cachedColorStr = `${Math.floor(currR)}, ${Math.floor(currG)}, ${Math.floor(currB)}`;
-        document.documentElement.style.setProperty('--c-r', Math.floor(currR));
-        document.documentElement.style.setProperty('--c-g', Math.floor(currG));
-        document.documentElement.style.setProperty('--c-b', Math.floor(currB));
-        let bloom = Math.sin(guidePhase * (Math.PI / 2));
-        guideRingEl.style.borderColor = `rgba(${cachedColorStr}, 0.75)`;
-        guideRingEl.style.boxShadow = `0 0 ${12 + bloom * 24}px rgba(${cachedColorStr}, ${0.35 + bloom * 0.45}), inset 0 0 ${6 + bloom * 8}px rgba(255,255,255,${0.18 + bloom * 0.2})`;
-        if (isPressing) {
-          targetBreathScale = 0.7 - currentResonance * 0.1;
-        } else {
-          targetBreathScale = 1.1 + currentResonance * 0.2;
-        }
-        guideAnimFrame = requestAnimationFrame(animateGuide);
-      }
-      const firstClickEl = document.getElementById('first-click');
-      function handleFirstClick(e) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        if (state !== 'INIT') return;
-        state = 'INTRO';
-        initAudio();
-        initCanvas();
-        if (document.fullscreenEnabled && document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        }
-        firstClickEl.style.pointerEvents = 'none';
-        firstClickEl.style.opacity = '0';
-        setTimeout(() => {
-          firstClickEl.style.display = 'none';
-          const introEl = document.getElementById('intro');
-          introEl.style.display = 'flex';
-          setTimeout(() => {
-            introEl.style.opacity = '1';
-          }, 50);
-        }, 800);
-      }
-      firstClickEl.addEventListener('pointerdown', handleFirstClick);
-      firstClickEl.addEventListener('touchstart', handleFirstClick, {
-        passive: false
-      });
-      firstClickEl.addEventListener('click', handleFirstClick);
-      document.getElementById('btn-start').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (state !== 'INTRO') return;
-        state = 'PREPARATION';
-        prepStartTime = performance.now();
-        currentCoreScale = 0.25;
-        isEndingDissolve = false;
-        hasTriggeredRipple = false;
-        currR = 255;
-        currG = 180;
-        cachedColorStr = "255, 180, 80";
-        currentResonance = 0.0;
-        document.documentElement.style.setProperty('--c-r', 255);
-        document.documentElement.style.setProperty('--c-g', 180);
-        document.documentElement.style.setProperty('--c-b', 80);
-        requestWakeLock();
-        document.getElementById('intro').style.opacity = '0';
-        document.getElementById('btn-start').classList.add('disabled');
-        document.getElementById('sky-bg').classList.add('active');
-        const mainContainer = document.getElementById('main-container');
-        const coreCanvasEl = document.getElementById('core-canvas');
-        mainContainer.style.opacity = '1';
-        coreCanvasEl.style.opacity = '1';
-        if (hintEl) hintEl.classList.remove('flash-mild');
-        const elementsToHide = [topHeaderEl, guideRingEl, textEl, hintEl];
-        elementsToHide.forEach(el => {
-          if (el) {
-            el.style.transition = 'none';
-            el.style.opacity = '0';
-          }
+                document.getElementById('intro').style.display = 'none'; 
+            }, 1200);
+
+            if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
+            guideAnimFrame = requestAnimationFrame(animateGuide);
         });
-        if (textEl) {
-          textEl.classList.remove('glow-inhale', 'glow-exhale');
-          textEl.style.color = '#ffffff';
+
+        if (pwaCloseBtnEl) {
+            pwaCloseBtnEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (pwaPromptEl) {
+                    pwaPromptEl.style.opacity = '0';
+                    setTimeout(() => { pwaPromptEl.style.display = 'none'; }, 500);
+                }
+                const coolDownUntil = Date.now() + 7 * 24 * 60 * 60 * 1000;
+                try { localStorage.setItem('flow_pwa_cooldown', coolDownUntil.toString()); } catch(err){}
+            });
         }
-        if (guideRingEl) {
-          guideRingEl.style.transform = 'scale(1)';
-          guideRingEl.style.borderColor = `rgba(255, 180, 80, 0.75)`;
-          guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
-        }
-        void document.body.offsetHeight;
-        setTimeout(() => {
-          document.getElementById('intro').style.display = 'none';
-        }, 1200);
-        if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
-        guideAnimFrame = requestAnimationFrame(animateGuide);
-      });
-      if (pwaCloseBtnEl) {
-        pwaCloseBtnEl.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (pwaPromptEl) {
-            pwaPromptEl.style.opacity = '0';
+
+        document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
+        
+        document.getElementById('btn-stop').addEventListener('click', (e) => {
+            e.stopPropagation(); if(state !== 'MINDFULNESS') return; state = 'SUMMARY';
+            isEndingDissolve = true; releaseWakeLock();
+            document.getElementById('interaction-layer').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'none'; document.getElementById('btn-stop').style.opacity = '0';
+            isPressing = false; stopAllBreathAudio(); playEndingBowl();
+            let totalSecs = sessionStartTime === 0 ? 0 : Math.max(0, Math.floor((Date.now() - sessionStartTime) / 1000));
+            let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
+            document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
+            
+            const currentQuote = getRandomQuote();
+            quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
+            quoteSourceEl.innerText = "—— " + currentQuote.source;
+
+            const ua = navigator.userAgent || '';
+            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            let isCoolingDown = false;
+            try {
+                const savedCoolDown = localStorage.getItem('flow_pwa_cooldown');
+                if (savedCoolDown && Date.now() < parseInt(savedCoolDown, 10)) {
+                    isCoolingDown = true;
+                }
+            } catch(err){}
+
+            if (isMobileDevice && !isStandalone && !isCoolingDown && pwaPromptEl) {
+                const isiOS = /iPhone|iPad|iPod/i.test(ua);
+                if (isiOS) {
+                    pwaInstructionEl.innerHTML = "點擊下方選單欄的 <b>「分享 ⎋」</b> 按鈕<br>向上滑動選擇 <b>「加到主畫面 ⊕」</b> 即可完成。";
+                } else {
+                    pwaInstructionEl.innerHTML = "點擊右上角 <b>「三個點 ⋮」</b> 選單按鈕<br>選擇 <b>「安裝應用程式」</b> 或 <b>「加到主畫面」</b>。";
+                }
+                
+                pwaPromptEl.style.display = 'block';
+                pwaInstructionEl.style.display = 'block';
+                setTimeout(() => { pwaPromptEl.style.opacity = '1'; }, 2000);
+            } else if (pwaPromptEl) {
+                pwaPromptEl.style.display = 'none';
+            }
+
+            document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
+            document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
+            document.getElementById('summary-overlay').style.display = 'flex'; 
+            
+            setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
+            
             setTimeout(() => {
-              pwaPromptEl.style.display = 'none';
-            }, 500);
-          }
-          const coolDownUntil = Date.now() + 7 * 24 * 60 * 60 * 1000;
-          try {
-            localStorage.setItem('flow_pwa_cooldown', coolDownUntil.toString());
-          } catch (err) {}
+                summaryQuoteCard.classList.add('show');
+            }, 100);
+
+            setTimeout(() => { document.getElementById('btn-end').style.pointerEvents = 'auto'; document.getElementById('btn-end').style.opacity = '1'; }, 7000); 
         });
-      }
-      document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation());
-      document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation());
-      document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), {
-        passive: false
-      });
-      document.getElementById('btn-stop').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (state !== 'MINDFULNESS') return;
-        state = 'SUMMARY';
-        isEndingDissolve = true;
-        releaseWakeLock();
-        document.getElementById('interaction-layer').style.display = 'none';
-        document.getElementById('btn-stop').style.pointerEvents = 'none';
-        document.getElementById('btn-stop').style.opacity = '0';
-        isPressing = false;
-        stopAllBreathAudio();
-        playEndingBowl();
-        let totalSecs = sessionStartTime === 0 ? 0 : Math.max(0, Math.floor((Date.now() - sessionStartTime) / 1000));
-        let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0');
-        let secs = String(totalSecs % 60).padStart(2, '0');
-        document.getElementById('summary-time').innerText = `${mins}:${secs}`;
-        document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
-        const currentQuote = getRandomQuote();
-        quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
-        quoteSourceEl.innerText = "—— " + currentQuote.source;
-        const ua = navigator.userAgent || '';
-        const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-        let isCoolingDown = false;
-        try {
-          const savedCoolDown = localStorage.getItem('flow_pwa_cooldown');
-          if (savedCoolDown && Date.now() < parseInt(savedCoolDown, 10)) {
-            isCoolingDown = true;
-          }
-        } catch (err) {}
-        if (isMobileDevice && !isStandalone && !isCoolingDown && pwaPromptEl) {
-          const isiOS = /iPhone|iPad|iPod/i.test(ua);
-          if (isiOS) {
-            pwaInstructionEl.innerHTML = "點擊下方選單欄的 <b>「分享 ⎋」</b> 按鈕<br>向上滑動選擇 <b>「加到主畫面 ⊕」</b> 即可完成。";
-          } else {
-            pwaInstructionEl.innerHTML = "點擊右上角 <b>「三個點 ⋮」</b> 選單按鈕<br>選擇 <b>「安裝應用程式」</b> 或 <b>「加到主畫面」</b>。";
-          }
-          pwaPromptEl.style.display = 'block';
-          pwaInstructionEl.style.display = 'block';
-          setTimeout(() => {
-            pwaPromptEl.style.opacity = '1';
-          }, 2000);
-        } else if (pwaPromptEl) {
-          pwaPromptEl.style.display = 'none';
-        }
-        document.getElementById('main-container').style.transition = 'opacity 4s ease';
-        document.getElementById('main-container').style.opacity = '0';
-        document.getElementById('sky-bg').style.transition = 'filter 4s ease';
-        document.getElementById('sky-bg').style.filter = 'blur(80px)';
-        document.getElementById('summary-overlay').style.display = 'flex';
-        setTimeout(() => {
-          document.getElementById('summary-overlay').style.opacity = '1';
-        }, 100);
-        setTimeout(() => {
-          summaryQuoteCard.classList.add('show');
-        }, 100);
-        setTimeout(() => {
-          document.getElementById('btn-end').style.pointerEvents = 'auto';
-          document.getElementById('btn-end').style.opacity = '1';
-        }, 7000);
-      });
-      document.getElementById('btn-end').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (state !== 'SUMMARY') return;
-        state = 'TRANSITION';
-        const blackScreen = document.getElementById('black-transition');
-        blackScreen.style.pointerEvents = 'auto';
-        blackScreen.style.opacity = '1';
-        killAllOldNodes();
-        fadeMasterOutAndSuspend();
-        setTimeout(() => {
-          if (document.fullscreenElement) {
-            document.exitFullscreen().catch(e => {});
-          }
-          bowlMasterGain = null;
-          isEndingDissolve = false;
-          summaryQuoteCard.classList.remove('show');
-          const summaryOverlay = document.getElementById('summary-overlay');
-          summaryOverlay.style.display = 'none';
-          summaryOverlay.style.opacity = '0';
-          if (pwaPromptEl) {
-            pwaPromptEl.style.display = 'none';
-            pwaPromptEl.style.opacity = '0';
-          }
-          const btnEnd = document.getElementById('btn-end');
-          btnEnd.style.opacity = '0';
-          btnEnd.style.pointerEvents = 'none';
-          document.getElementById('main-container').style.opacity = '0';
-          document.getElementById('sky-bg').classList.remove('active');
-          document.getElementById('sky-bg').style.filter = 'blur(60px)';
-          document.getElementById('hint').style.opacity = '0';
-          document.getElementById('btn-start').classList.remove('disabled');
-          document.getElementById('btn-stop').style.display = 'none';
-          document.getElementById('btn-stop').style.pointerEvents = 'auto';
-          textEl.classList.remove('glow-inhale', 'glow-exhale');
-          textEl.style.opacity = '0';
-          textEl.style.visibility = 'visible';
-          missedInhaleCount = 0;
-          userPressedInInhale = false;
-          phaseChangeCount = 0;
-          sessionStartTime = 0;
-          baseInhalePace = 3.2;
-          breathScale = 1.0;
-          targetBreathScale = 1.0;
-          currentResonance = 0.0;
-          if (hintEl) hintEl.classList.remove('flash-mild');
-          const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
-          elementsToReset.forEach(el => {
-            if (el) {
-              el.style.transition = 'none';
-              el.style.opacity = '0';
-            }
-          });
-          firstClickEl.style.display = 'flex';
-          firstClickEl.style.pointerEvents = 'auto';
-          firstClickEl.style.opacity = '1';
-          document.getElementById('intro').style.display = 'none';
-          document.getElementById('intro').style.opacity = '0';
-          state = 'INIT';
-          setTimeout(() => {
-            blackScreen.style.opacity = '0';
-            blackScreen.style.pointerEvents = 'none';
-          }, 100);
-        }, 1000);
-      });
+
+        document.getElementById('btn-end').addEventListener('click', (e) => {
+            e.stopPropagation(); if(state !== 'SUMMARY') return; state = 'TRANSITION';
+            const blackScreen = document.getElementById('black-transition'); blackScreen.style.pointerEvents = 'auto'; blackScreen.style.opacity = '1';
+            killAllOldNodes(); fadeMasterOutAndSuspend();
+            setTimeout(() => {
+                if(document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
+                bowlMasterGain = null; isEndingDissolve = false;
+                
+                summaryQuoteCard.classList.remove('show');
+
+                const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
+                if (pwaPromptEl) { pwaPromptEl.style.display = 'none'; pwaPromptEl.style.opacity = '0'; }
+                
+                const btnEnd = document.getElementById('btn-end'); btnEnd.style.opacity = '0'; btnEnd.style.pointerEvents = 'none';
+                document.getElementById('main-container').style.opacity = '0';
+                document.getElementById('sky-bg').classList.remove('active'); document.getElementById('sky-bg').style.filter = 'blur(60px)';
+                document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
+                textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
+                
+                missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
+                currentResonance = 0.0;
+                if (hintEl) hintEl.classList.remove('flash-mild');
+                const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
+                elementsToReset.forEach(el => {
+                    if (el) { el.style.transition = 'none'; el.style.opacity = '0'; }
+                });
+
+                firstClickEl.style.display = 'flex'; firstClickEl.style.pointerEvents = 'auto'; firstClickEl.style.opacity = '1';
+                document.getElementById('intro').style.display = 'none'; document.getElementById('intro').style.opacity = '0';
+                state = 'INIT'; setTimeout(() => { blackScreen.style.opacity = '0'; blackScreen.style.pointerEvents = 'none'; }, 100);
+            }, 1000); 
+        });
     </script>
-  </body>
+</body>
 </html>
