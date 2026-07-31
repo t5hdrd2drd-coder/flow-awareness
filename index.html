@@ -944,6 +944,42 @@
     <link rel="apple-touch-startup-image" href="icons/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
     <link rel="apple-touch-startup-image" href="icons/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
     <link rel="apple-touch-startup-image" href="icons/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+
+<!-- === 最終黑科技：動態生成 iOS 專屬啟動黑屏 === -->
+<script>
+  (function() {
+    // 判斷：如果是在一般 Safari 瀏覽器中（還沒加入主畫面），才執行這段
+    if (!window.navigator.standalone) {
+      try {
+        // 1. 取得這台手機螢幕的真實解析度
+        var pixelRatio = window.devicePixelRatio || 1;
+        var screenWidth = window.screen.width * pixelRatio;
+        var screenHeight = window.screen.height * pixelRatio;
+
+        // 2. 在背景默默建立一張畫布，尺寸剛好等於手機螢幕
+        var canvas = document.createElement('canvas');
+        canvas.width = screenWidth;
+        canvas.height = screenHeight;
+        
+        // 3. 把整張畫布塗成全黑色
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, screenWidth, screenHeight);
+        
+        // 4. 將這張純黑畫布轉換成圖片網址 (Base64)
+        var dataUrl = canvas.toDataURL('image/png');
+        
+        // 5. 偷偷將這張完美尺寸的黑圖，設定為 iOS 的啟動圖
+        var link = document.createElement('link');
+        link.setAttribute('rel', 'apple-touch-startup-image');
+        link.setAttribute('href', dataUrl);
+        document.head.appendChild(link);
+      } catch (e) {
+        console.error("生成啟動圖失敗", e);
+      }
+    }
+  })();
+</script>
   </head>
   <body>
     <!-- 把這個載入幕放在最前面 -->
