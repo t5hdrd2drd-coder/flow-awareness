@@ -29,7 +29,7 @@
     <meta property="twitter:image" content="./og-image.png">
 
     
-    <link rel="manifest" href="manifest.json?v=59">
+    <link rel="manifest" href="manifest.json?v=60">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
@@ -278,7 +278,7 @@
     </div>
 
     <script>
-        const APP_VERSION = 'v59';
+        const APP_VERSION = 'v60';
 
         const QUOTE_VAULT = [
             { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
@@ -564,7 +564,7 @@
                 silentAudioAnchor.loop = true; 
                 silentAudioAnchor.setAttribute('playsinline', '');
                 silentAudioAnchor.setAttribute('webkit-playsinline', '');
-                // 採用帶有極低微幅訊號的 0.1 秒音訊，強制將 iOS 音訊 Class 升級為 Playback（突破靜音開關）
+                // 採用帶有極低振幅 PCM 訊號的 WAV，強制升級 iOS 音訊 Session 為 Playback 類別（徹底繞過靜音開關）
                 silentAudioAnchor.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
                 document.body.appendChild(silentAudioAnchor);
             }
@@ -739,12 +739,14 @@
 
             if (isPressing) {
                 pressStartTime = now;
-                // 防錯機制：僅在當前為「吸氣階段（黃光）」時，按住螢幕才觸發吸氣音效
                 if (isCurrentPhaseInhale) {
                     playBreathSound(true); 
                     userPressedInInhale = true; 
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
+                } else {
+                    // 呼氣階段若按下螢幕（錯誤操作） -> 立即柔和淡出呼氣聲
+                    fadeOutBreathAudio(0.15);
                 }
             } else { 
                 const pressDuration = now - pressStartTime;
@@ -755,6 +757,7 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
+                    // 呼氣階段正確鬆開螢幕 -> 順暢播放呼氣聲
                     if (hasInhaledInCurrentCycle) {
                         playBreathSound(false);
                     }
