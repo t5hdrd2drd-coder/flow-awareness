@@ -6,7 +6,14 @@
     <meta charset="UTF-8">
     <meta name="color-scheme" content="dark">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <style>
+    <meta name="color-scheme" content="dark">
+  
+    <!-- 2. PWA 全螢幕宣告 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  
+     <!-- 3. 強制系統狀態列（瀏海/動態島）變成黑色且半透明，融合背景 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+   <style>
         :root {
           background-color: #000000 !important;
         }
@@ -53,8 +60,37 @@
         opacity: 0; 
          visibility: hidden; 
       }
-    }
+
+    } 
+    <style>
+         /* 宣告最高權限的變數，確保底色絕對是黑 */
+        :root {
+           background-color: #000000 !important;
+           --sw-background-color: #000000 !important; /* 如果你是用 React 內建的變數 */
+        }
+
+        /* 在 DOM 讀取到之前，就把整個 body 塗黑 */
+        html, body {
+           background-color: #000000 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          color-scheme: dark !important; /* 強制應用暗色模式 */
+      
+          /* 確保內容不會把背景撐開，導致露出白邊 */
+          overflow: hidden; 
+          width: 100vw;
+           height: 100vh;
+         }
+
+        /* 針對你的內容掛載點（React 通用 #root 或 Vue 的 #app），也立刻塗黑 */
+         #root, #app {
+             background-color: #000000 !important;
+           display: none; /* 先把內容藏起來，等完全載入再浮現 (這步很關鍵) */
+        }
+      </style>
+
     </style>
+
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="流動覺察">
@@ -839,7 +875,7 @@
         animation: textSwitchExhale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
       }
     </style>
-    <link rel="apple-touch-icon" href="icons/apple-icon-180.png">
+    <link rel="apple-touch-icon" href="/icon-512.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-startup-image" href="icons/apple-splash-2064-2752.jpg" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
     <link rel="apple-touch-startup-image" href="icons/apple-splash-2752-2064.jpg" media="(device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
