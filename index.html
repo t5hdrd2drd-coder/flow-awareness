@@ -28,7 +28,6 @@
     <meta property="twitter:description" content="一場讓你活在當下的正念體驗。允許雜念如雲飄散，將心思輕柔錨定於呼吸。">
     <meta property="twitter:image" content="./og-image.png">
 
-    
     <link rel="manifest" href="manifest.json?v=61">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
@@ -187,6 +186,27 @@
 
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
 
+        /* 新增：正念沉澱與卡片按鈕樣式 */
+        .total-sedimentation-box {
+            position: absolute; top: calc(25px + var(--sat-top)); left: 50%; transform: translateX(-50%);
+            text-align: center; white-space: nowrap; opacity: 0; transition: opacity 2.5s ease; pointer-events: none;
+        }
+        .total-title { font-size: clamp(0.7rem, 2.2vw, 0.78rem); font-weight: 300; letter-spacing: 6px; margin-right: -6px; color: rgba(255, 255, 255, 0.4); margin-bottom: 4px; }
+        .total-time-val { font-size: clamp(0.85rem, 2.8vw, 0.95rem); font-weight: 300; letter-spacing: 2px; color: #94a3b8; }
+        
+        .summary-title-group { display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 2.5s ease; pointer-events: none; }
+
+        .btn-save-subtle {
+            position: absolute; bottom: calc(20px + var(--sat-bottom)); left: 50%; transform: translateX(-50%);
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.18);
+            font-size: 0.7rem; letter-spacing: 1.5px; margin-right: -1.5px; padding: 4px 12px; border-radius: 20px;
+            cursor: pointer; transition: all 0.3s ease; white-space: nowrap; opacity: 0; pointer-events: none;
+        }
+        .btn-save-subtle:hover { color: rgba(255, 255, 255, 0.55); border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.02); }
+
+        .show-element { opacity: 1 !important; pointer-events: auto !important; }
+        #hidden-card-canvas { display: none; }
+
         @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.4)); } }
         @keyframes hueShift { 0% { filter: blur(60px) hue-rotate(0deg); } 100% { filter: blur(60px) hue-rotate(360deg); } }
         @keyframes cloudFlow { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(8deg) scale(1.05); } 100% { transform: rotate(-5deg) scale(0.98); } }
@@ -257,9 +277,17 @@
     <button id="btn-stop" class="capsule-btn">停止</button>
 
     <div class="summary-overlay" id="summary-overlay">
-        <h2 class="summary-title">活 在 當 下</h2>
-        <div class="summary-time" id="summary-time">00:00</div>
-        <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        <!-- 新增：正念沉澱紀錄 -->
+        <div class="total-sedimentation-box" id="total-sedimentation">
+            <div class="total-title">正 念 沉 澱</div>
+            <div class="total-time-val" id="total-time-val">0 分鐘</div>
+        </div>
+
+        <div class="summary-title-group" id="summary-title-group">
+            <h2 class="summary-title">活 在 當 下</h2>
+            <div class="summary-time" id="summary-time">00:00</div>
+            <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        </div>
         
         <div class="summary-quote-card" id="summary-quote-card">
             <div class="quote-text" id="quote-text"></div>
@@ -275,7 +303,13 @@
         </div>
 
         <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+
+        <!-- 新增：儲存當下卡片 -->
+        <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
+
+    <!-- 新增：隱藏卡片繪製用 Canvas -->
+    <canvas id="hidden-card-canvas" width="1080" height="1920"></canvas>
 
     <script>
         const APP_VERSION = 'v61';
@@ -316,6 +350,90 @@
             { text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
             { text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。", source: "禪意手記" }
         ];
+
+        // --- 新增：正念沉澱資料存取 ---
+        function getMindfulnessData() {
+            let totalSecs = 0;
+            try { totalSecs = parseInt(localStorage.getItem('flow_total_seconds') || '0', 10); } catch(e) {}
+            return { totalSecs };
+        }
+        function saveMindfulnessSession(sessionSeconds) {
+            if (sessionSeconds <= 0) return;
+            let { totalSecs } = getMindfulnessData();
+            totalSecs += sessionSeconds;
+            try { localStorage.setItem('flow_total_seconds', totalSecs.toString()); } catch(e) {}
+        }
+        // --- 結束 ---
+
+        // --- 新增：繪製卡片共用變數與載入器 ---
+        const brandIconImg = new Image();
+        brandIconImg.src = './icon-512.png';
+        function ensureIconLoaded() {
+            return new Promise((resolve) => {
+                if (brandIconImg.complete && brandIconImg.naturalWidth !== 0) {
+                    resolve(brandIconImg);
+                } else {
+                    brandIconImg.onload = () => resolve(brandIconImg);
+                    brandIconImg.onerror = () => resolve(null);
+                }
+            });
+        }
+        function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split('');
+            let line = '';
+            let currentY = y;
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n];
+                let metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n];
+                    currentY += lineHeight;
+                } else { line = testLine; }
+            }
+            ctx.fillText(line, x, currentY);
+        }
+        async function generateZenCard(sessionTimeStr, quoteObj) {
+            const canvas = document.getElementById('hidden-card-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const img = await ensureIconLoaded();
+
+            ctx.fillStyle = '#030105'; ctx.fillRect(0, 0, w, h);
+            const cx = w / 2, cy = h * 0.38;
+
+            const iconSize = 600;
+            if (img) { ctx.drawImage(img, cx - iconSize / 2, cy - iconSize / 2, iconSize, iconSize); }
+
+            ctx.fillStyle = '#ffffff';
+            for (let i = 0; i < 150; i++) {
+                ctx.globalAlpha = Math.random() * 0.6 + 0.15;
+                ctx.beginPath(); ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2.2 + 0.5, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.globalAlpha = 1.0;
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff'; ctx.font = '200 42px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.shadowColor = 'rgba(234, 179, 8, 0.28)'; ctx.shadowBlur = 10;
+            ctx.fillText('活  在  當  下', cx, h * 0.52);
+
+            ctx.fillStyle = '#f8fafc'; ctx.font = '100 86px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.shadowColor = 'rgba(234, 179, 8, 0.32)'; ctx.shadowBlur = 14;
+            ctx.fillText(sessionTimeStr, cx, h * 0.585);
+            ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+
+            ctx.fillStyle = '#ffffff'; ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
+            drawWrappedText(ctx, "「 " + quoteObj.text + " 」", cx, h * 0.72, w - 280, 68);
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.85)'; ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText("—— " + quoteObj.source, cx, h * 0.82);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText("F L O W   A W A R E N E S S", cx, h * 0.90);
+            const today = new Date();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.38)'; ctx.font = '200 24px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`, cx, h * 0.925);
+        }
+        // --- 結束 ---
 
         function getRandomQuote() {
             let availableIndices = [];
@@ -533,7 +651,7 @@
                 coreCtx.fill();
             }
 
-            canvasAnimFrame = requestAnimationFrame(requestAnimationFrame ? drawCanvas : drawCanvas);
+            canvasAnimFrame = requestAnimationFrame(drawCanvas);
         }
 
         window.addEventListener('resize', () => { if(bgCanvas) initCanvas(); });
@@ -551,7 +669,6 @@
             } 
         }
 
-        // 動態生成帶有些微 PCM 音頻頻率特徵的 0.5s WAV Base64（解鎖 iOS Playback Session 關鍵）
         function createDummyAudibleWavURI() {
             const sampleRate = 22050;
             const numSamples = sampleRate * 0.5;
@@ -576,7 +693,6 @@
             writeString(36, 'data');
             view.setUint32(40, numSamples * 2, true);
 
-            // 寫入 20Hz 近乎無感的極低正弦波，音量設為 1 (極微小振幅)，足以強制升級 iOS Audio Session
             for (let i = 0; i < numSamples; i++) {
                 const sample = Math.sin((i / sampleRate) * 2 * Math.PI * 20) * 2;
                 view.setInt16(44 + i * 2, sample, true);
@@ -689,9 +805,13 @@
 
             const oscs = [{ freq: 108.0, gain: 0.16, pan: 0.0 }, { freq: 216.0, gain: 0.32, pan: -0.25 }, { freq: 216.7, gain: 0.28, pan: 0.25 }, { freq: 432.0, gain: 0.22, pan: -0.5 }, { freq: 648.0, gain: 0.09, pan: 0.5 }];
             oscs.forEach(o => {
-                const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
+                let panner = null;
+                if (typeof audioCtx.createStereoPanner === 'function') {
+                    try { panner = audioCtx.createStereoPanner(); } catch(e){}
+                }
                 osc.type = 'sine'; osc.frequency.value = o.freq; g.gain.value = o.gain;
-                if (panner) { panner.pan.value = o.pan; osc.connect(g).connect(bowlMasterGain); } else { osc.connect(g).connect(bowlMasterGain); }
+                if (panner) { panner.pan.value = o.pan; osc.connect(g).connect(panner).connect(bowlMasterGain); } else { osc.connect(g).connect(bowlMasterGain); }
                 osc.onended = () => { try { osc.disconnect(); g.disconnect(); if (panner) panner.disconnect(); } catch(e){} };
                 osc.start(now); osc.stop(now + 14.5); activeEndingOscillators.push(osc);
             });
@@ -711,6 +831,8 @@
         const summaryQuoteCard = document.getElementById('summary-quote-card');
         const quoteTextEl = document.getElementById('quote-text');
         const quoteSourceEl = document.getElementById('quote-source');
+
+        let activeQuoteObj = null; // 新增：保存當次抽取金句供卡片生成使用
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -1057,6 +1179,48 @@
             });
         }
 
+        // --- 新增：跨平台卡片儲存邏輯 ---
+        document.getElementById('btn-save-card').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const btn = document.getElementById('btn-save-card');
+            const originalText = btn.innerText;
+            btn.innerText = '繪製中...';
+            
+            const sessionTimeStr = document.getElementById('summary-time').innerText;
+            await generateZenCard(sessionTimeStr, activeQuoteObj); 
+            const canvas = document.getElementById('hidden-card-canvas');
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) { btn.innerText = originalText; return; }
+
+                const fileName = `flow-awareness-${Date.now()}.png`;
+                const file = new File([blob], fileName, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: '流動覺察 Flow Awareness',
+                            text: '一場讓你活在當下的正念體驗。'
+                        });
+                    } catch (err) {}
+                } else {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                }
+                btn.innerText = originalText;
+            }, 'image/png');
+        });
+        // --- 結束 ---
+
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
         document.getElementById('btn-stop').addEventListener('click', (e) => {
@@ -1068,9 +1232,14 @@
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
             
-            const currentQuote = getRandomQuote();
-            quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
-            quoteSourceEl.innerText = "—— " + currentQuote.source;
+            // 紀錄並渲染沉澱時間
+            saveMindfulnessSession(totalSecs);
+            const mdData = getMindfulnessData();
+            document.getElementById('total-time-val').innerText = `${Math.floor(mdData.totalSecs / 60)} 分鐘`;
+
+            activeQuoteObj = getRandomQuote();
+            quoteTextEl.innerText = "「 " + activeQuoteObj.text + " 」";
+            quoteSourceEl.innerText = "—— " + activeQuoteObj.source;
 
             const ua = navigator.userAgent || '';
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
@@ -1105,11 +1274,23 @@
             
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
+            // 第1階段：活在當下與時間浮現
+            setTimeout(() => {
+                document.getElementById('summary-title-group').classList.add('show-element');
+            }, 100);
+            
+            // 第2階段：金句與出處緊接浮現 (原程式有CSS delay 1.5s，故維持100ms呼叫)
             setTimeout(() => {
                 summaryQuoteCard.classList.add('show');
             }, 100);
 
-            setTimeout(() => { document.getElementById('btn-end').style.pointerEvents = 'auto'; document.getElementById('btn-end').style.opacity = '1'; }, 7000); 
+            // 第3階段：沉澱總時間、結束按鈕、卡片儲存 於 7秒同步浮現
+            setTimeout(() => { 
+                document.getElementById('btn-end').style.pointerEvents = 'auto'; 
+                document.getElementById('btn-end').style.opacity = '1'; 
+                document.getElementById('total-sedimentation').classList.add('show-element');
+                document.getElementById('btn-save-card').classList.add('show-element');
+            }, 7000); 
         });
 
         document.getElementById('btn-end').addEventListener('click', (e) => {
@@ -1121,6 +1302,9 @@
                 bowlMasterGain = null; isEndingDissolve = false;
                 
                 summaryQuoteCard.classList.remove('show');
+                document.getElementById('summary-title-group').classList.remove('show-element');
+                document.getElementById('total-sedimentation').classList.remove('show-element');
+                document.getElementById('btn-save-card').classList.remove('show-element');
 
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
                 if (pwaPromptEl) { pwaPromptEl.style.display = 'none'; pwaPromptEl.style.opacity = '0'; }
