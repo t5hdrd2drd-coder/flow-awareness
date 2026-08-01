@@ -141,7 +141,18 @@
             #breath-text { top: -20px; font-size: 1.05rem; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
-            #btn-end.capsule-btn { background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.08) !important; color: rgba(255, 255, 255, 0.45) !important; }
+            
+            /* 強制手機版無背景透化與絕對置中對齊 */
+            #btn-end.capsule-btn { 
+                background: transparent !important; 
+                backdrop-filter: none !important; 
+                -webkit-backdrop-filter: none !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important; 
+                color: rgba(255, 255, 255, 0.40) !important; 
+                letter-spacing: 6px !important;
+                padding-left: 32px !important; /* 26px padding + 6px 補平字距 */
+                padding-right: 26px !important;
+            }
         }
 
         .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; opacity: 0; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out, opacity 2s ease; }
@@ -303,8 +314,8 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <!-- 結束按鈕：完全透明去框化，擴開字距至 6px，達到極致輕盈質感 -->
-        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255, 255, 255, 0.45); background: transparent; border-color: rgba(255, 255, 255, 0.08); letter-spacing: 6px; margin-right: -6px;">結束</button>
+        <!-- 結束按鈕：完全透化去暗區，Padding 左補 6px 完美修復字距偏右問題 -->
+        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 32px; padding-right: 26px;">結束</button>
 
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
