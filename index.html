@@ -160,8 +160,8 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 完全移除引號，文字區塊置中且文字靠左，出處緊貼右下 */
-        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* 移除寫死的延遲，交由 JS 控制平滑淡入 */
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
         
         .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; }
@@ -290,7 +290,6 @@
         </div>
         
         <div class="summary-quote-card" id="summary-quote-card">
-            <!-- 移除引號，文字靠左，出處置於區塊最右下 -->
             <div class="quote-text-container" id="quote-text-container"></div>
         </div>
 
@@ -424,7 +423,7 @@
             ctx.fillText(sessionTimeStr, cx, h * 0.585);
             ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
 
-            // 移除引號，文字靠左對齊，出處對齊文字區塊右緣
+            // 整體金句區塊向上微調至 66%，為底部留出足夠空間
             ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
             const lines = getLines(ctx, quoteObj.text, w - 160);
             
@@ -435,7 +434,7 @@
             });
 
             const startX = cx - (maxLineWidth / 2);
-            const startY = h * 0.72;
+            const startY = h * 0.66;
             const lineHeight = 68;
 
             ctx.textAlign = 'left';
@@ -450,7 +449,8 @@
             ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText("—— " + quoteObj.source, startX + maxLineWidth, startY + (lines.length * lineHeight) + 20);
 
-            // 浮水印
+            // 重置置中對齊，修復浮水印偏左問題
+            ctx.textAlign = 'center';
             ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText("F L O W   A W A R E N E S S", cx, h * 0.90);
             const today = new Date();
@@ -1259,7 +1259,6 @@
 
             activeQuoteObj = getRandomQuote();
             
-            // 將 DOM 渲染改為無引號，並包裝於 container 中確保右對齊基準正確
             const formattedQuote = activeQuoteObj.text.replace(/\n/g, '<br>');
             document.getElementById('quote-text-container').innerHTML = 
                 `<div class="quote-text">${formattedQuote}</div>` +
@@ -1292,26 +1291,28 @@
                 pwaPromptEl.style.display = 'none';
             }
 
-            document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
+            // 加速主畫面的退場動畫 (從 4s 縮短至 1.2s)
+            document.getElementById('main-container').style.transition = 'opacity 1.2s ease'; document.getElementById('main-container').style.opacity = '0';
             document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
             document.getElementById('summary-overlay').style.display = 'flex'; 
             
+            // 延遲結算頁面的進場，讓視覺沉澱不重疊
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
             setTimeout(() => {
                 document.getElementById('summary-title-group').classList.add('show-element');
-            }, 100);
+            }, 800);
             
             setTimeout(() => {
                 summaryQuoteCard.classList.add('show');
-            }, 100);
+            }, 1200);
 
             setTimeout(() => { 
                 document.getElementById('btn-end').style.pointerEvents = 'auto'; 
                 document.getElementById('btn-end').style.opacity = '1'; 
                 document.getElementById('total-sedimentation').classList.add('show-element');
                 document.getElementById('btn-save-card').classList.add('show-element');
-            }, 7000); 
+            }, 4500); 
         });
 
         document.getElementById('btn-end').addEventListener('click', (e) => {
