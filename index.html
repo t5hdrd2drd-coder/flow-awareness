@@ -14,26 +14,22 @@
 
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
-    <!-- Open Graph / Facebook / LINE -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://flow-awareness.vercel.app">
     <meta property="og:title" content="流動覺察 Flow Awareness">
     <meta property="og:description" content="一場讓你活在當下的正念體驗。允許雜念如雲飄散，將心思輕柔錨定於呼吸。">
     <meta property="og:image" content="./og-image.png">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://flow-awareness.vercel.app">
     <meta property="twitter:title" content="流動覺察 Flow Awareness">
     <meta property="twitter:description" content="一場讓你活在當下的正念體驗。允許雜念如雲飄散，將心思輕柔錨定於呼吸。">
     <meta property="twitter:image" content="./og-image.png">
 
-    
     <link rel="manifest" href="manifest.json?v=61">
     <meta name="author" content="Flow Awareness Studio">
     <meta name="copyright" content="© 2026 Flow Awareness. All Rights Reserved.">
 
-    <!-- 直接綁定實體圖示 -->
     <link rel="icon" type="image/png" href="./icon-512.png">
     <link rel="apple-touch-icon" href="./icon-512.png">
 
@@ -143,7 +139,18 @@
             #breath-text { top: -20px; font-size: 1.05rem; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
-            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
+            
+            #btn-end.capsule-btn { 
+                background: transparent !important; 
+                backdrop-filter: none !important; 
+                -webkit-backdrop-filter: none !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important; 
+                color: rgba(255, 255, 255, 0.40) !important; 
+                letter-spacing: 6px !important;
+                padding-left: 20px !important; 
+                padding-right: 14px !important;
+                margin-top: 10vh !important;
+            }
         }
 
         .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; opacity: 0; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out, opacity 2s ease; }
@@ -162,10 +169,15 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 85vw; width: 500px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
-        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; margin-bottom: 14px; text-shadow: 0 0 10px rgba(255,255,255,0.15); }
-        .quote-source { font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; }
+        
+        .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; width: fit-content; }
+        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; text-shadow: 0 0 10px rgba(255,255,255,0.15); display: block; text-align: left; }
+        
+        .quote-source { display: block; text-align: right; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; margin-top: 14px; white-space: nowrap; }
+        
+        .source-dash { display: inline-block; width: 1.8em; height: 1px; background-color: rgba(148, 163, 184, 0.75); vertical-align: middle; margin-right: 8px; margin-top: -2px; }
 
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
@@ -186,6 +198,26 @@
         #btn-end { opacity: 0; pointer-events: none; transition: opacity 2s ease; }
 
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
+
+        .total-sedimentation-box {
+            position: absolute; top: calc(25px + var(--sat-top)); left: 50%; transform: translateX(-50%);
+            text-align: center; white-space: nowrap; opacity: 0; transition: opacity 2.5s ease; pointer-events: none;
+        }
+        .total-title { font-size: clamp(0.7rem, 2.2vw, 0.78rem); font-weight: 300; letter-spacing: 6px; margin-right: -6px; color: rgba(255, 255, 255, 0.4); margin-bottom: 4px; }
+        .total-time-val { font-size: clamp(0.85rem, 2.8vw, 0.95rem); font-weight: 300; letter-spacing: 2px; color: #94a3b8; }
+        
+        .summary-title-group { display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 2.5s ease; pointer-events: none; }
+
+        .btn-save-subtle {
+            position: absolute; bottom: calc(20px + var(--sat-bottom)); left: 50%; transform: translateX(-50%);
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.18);
+            font-size: 0.7rem; letter-spacing: 1.5px; margin-right: -1.5px; padding: 4px 12px; border-radius: 20px;
+            cursor: pointer; transition: all 0.3s ease; white-space: nowrap; opacity: 0; pointer-events: none;
+        }
+        .btn-save-subtle:hover { color: rgba(255, 255, 255, 0.55); border-color: rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.02); }
+
+        .show-element { opacity: 1 !important; pointer-events: auto !important; }
+        #hidden-card-canvas { display: none; }
 
         @keyframes logoPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 15px rgba(255, 180, 80, 0.4)); } }
         @keyframes hueShift { 0% { filter: blur(60px) hue-rotate(0deg); } 100% { filter: blur(60px) hue-rotate(360deg); } }
@@ -257,13 +289,19 @@
     <button id="btn-stop" class="capsule-btn">停止</button>
 
     <div class="summary-overlay" id="summary-overlay">
-        <h2 class="summary-title">活 在 當 下</h2>
-        <div class="summary-time" id="summary-time">00:00</div>
-        <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        <div class="total-sedimentation-box" id="total-sedimentation">
+            <div class="total-title">正 念 沉 澱</div>
+            <div class="total-time-val" id="total-time-val">0 分鐘</div>
+        </div>
+
+        <div class="summary-title-group" id="summary-title-group">
+            <h2 class="summary-title">活 在 當 下</h2>
+            <div class="summary-time" id="summary-time">00:00</div>
+            <div class="summary-stats" id="summary-stats">共完成了 0 次呼吸</div>
+        </div>
         
         <div class="summary-quote-card" id="summary-quote-card">
-            <div class="quote-text" id="quote-text"></div>
-            <div class="quote-source" id="quote-source"></div>
+            <div class="quote-text-container" id="quote-text-container"></div>
         </div>
 
         <div class="pwa-prompt-card" id="pwa-prompt">
@@ -274,48 +312,173 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+        <button id="btn-end" class="capsule-btn" style="margin-top: 10vh; color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 20px; padding-right: 14px;">結束</button>
+
+        <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
+
+    <canvas id="hidden-card-canvas" width="1080" height="1920"></canvas>
 
     <script>
         const APP_VERSION = 'v61';
 
         const QUOTE_VAULT = [
-            { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
-            { text: "正念作為一種新的習慣，會慢慢取代分心或放空的舊習慣，讓我們不再迷失於挽不回的過去與到不了的未來。", source: "《放不下，就握手言和吧》" },
-            { text: "沒什麼是恆久不變的，就連最艱困的時期也一樣。", source: "《我可能錯了》" },
+            { text: "讓你的前門和後門敞開著，\n讓念頭想來就來、想走就走，\n別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
+            { text: "正念作為一種新的習慣，\n會慢慢取代分心或放空的舊習慣，\n讓我們不再迷失於挽不回的過去，\n與到不了的未來。", source: "《放不下，就握手言和吧》" },
+            { text: "沒什麼是恆久不變的，\n就連最艱困的時期也一樣。", source: "《我可能錯了》" },
             { text: "這也會過去。", source: "《我可能錯了》" },
             { text: "正確，從來就不是重點。", source: "《我可能錯了》" },
-            { text: "你遇見的每個人，都在進行一場你一無所知的艱難戰鬥。與人為善，永遠如此。", source: "《我可能錯了》" },
-            { text: "我有著念頭，但我的念頭並不代表我。", source: "《我可能錯了》" },
-            { text: "與生命共舞，而不是試圖去控制它。", source: "《我可能錯了》" },
-            { text: "放下讓我們不舒服的念頭，就算它們是對的。", source: "《我可能錯了》" },
-            { text: "在是非對錯的想法之外，還有一片原野。我會在那裡與你相遇。", source: "魯米 (Rumi)" },
-            { text: "正念是由刻意專注而生的覺知，置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
-            { text: "人所擁有的任何東西都可以被剝奪，唯獨人性最後的自由——在任何境遇中選擇一己態度和生活方式的自由——不能被剝奪。", source: "維克多·弗蘭克" },
-            { text: "在刺激與回應之間，有一個空間。那個空間裡，藏著我們選擇回應的自由與力量。", source: "維克多·弗蘭克" },
-            { text: "不被過去拉扯，不為未來焦慮；你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
-            { text: "安住於此時此刻，不急著去到任何地方，亦無須成為任何其他人。", source: "喬·卡巴金" },
-            { text: "如果問題有解，何必憂慮？如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
-            { text: "寧靜並非來自環境的順遂，而是來自內心對現狀的接納。", source: "達賴喇嘛" },
-            { text: "給自己一點時間，讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
-            { text: "允許一切發生。雜念如雲飄過，你只需成為那廣袤無垠的天空。", source: "正念導引" },
-            { text: "你無法控制外在事件的發生，但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
-            { text: "靈魂的顏色，取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "我們在想像中承受的痛苦，遠比在現實中承受的多。", source: "塞內卡" },
-            { text: "專注於你手頭能做的事，並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "世上事物分為你能掌控的與你不能掌控的。將所有精力，投注於你能掌控的事情上。", source: "愛比克泰德《手冊》" },
-            { text: "從微小的事物開始練習：一點撒出的油，一點被偷走的酒。告訴自己：『用這點代價，我換到了心靈的平靜與自由。』", source: "愛比克泰德《手冊》" },
-            { text: "不要期待人們不犯錯，那是不可行也不可能的；轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "請賜予我平靜，去接受我無法改變的；賜予我勇氣，去改變我能改變的；並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
-            { text: "心不隨外境運轉，便是不被牽著走；不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
-            { text: "一切過往與幻象如夢幻泡影；唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
+            { text: "你遇見的每個人，\n都在進行一場你一無所知的艱難戰鬥。\n與人為善，永遠如此。", source: "《我可能錯了》" },
+            { text: "我有著念頭，\n但我的念頭並不代表我。", source: "《我可能錯了》" },
+            { text: "與生命共舞，\n而不是試圖去控制它。", source: "《我可能錯了》" },
+            { text: "放下讓我們不舒服的念頭，\n就算它們是對的。", source: "《我可能錯了》" },
+            { text: "在是非對錯的想法之外，還有一片原野。\n我會在那裡與你相遇。", source: "魯米 (Rumi)" },
+            { text: "正念是由刻意專注而生的覺知，\n置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
+            { text: "人所擁有的任何東西都可以被剝奪，\n唯獨人性最後的自由——\n在任何境遇中選擇一己態度的自由——\n不能被剝奪。", source: "維克多·弗蘭克" },
+            { text: "在刺激與回應之間，有一個空間。\n那個空間裡，藏著我們選擇的自由與力量。", source: "維克多·弗蘭克" },
+            { text: "不被過去拉扯，不為未來焦慮；\n你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
+            { text: "安住於此時此刻，不急著去到任何地方，\n亦無須成為任何其他人。", source: "喬·卡巴金" },
+            { text: "如果問題有解，何必憂慮？\n如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
+            { text: "寧靜並非來自環境的順遂，\n而是來自內心對現狀的接納。", source: "達賴喇嘛" },
+            { text: "給自己一點時間，\n讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
+            { text: "允許一切發生。\n雜念如雲飄過，你只需成為廣袤的天空。", source: "正念導引" },
+            { text: "你無法控制外在事件的發生，\n但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
+            { text: "靈魂的顏色，\n取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "我們在想像中承受的痛苦，\n遠比在現實中承受的多。", source: "塞內卡" },
+            { text: "專注於你手頭能做的事，\n並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "世上事物分為你能掌控與不能掌控的。\n將所有精力，投注於你能掌控的事物上。", source: "愛比克泰德《手冊》" },
+            { text: "從微小的事物開始練習：\n一點撒出的油，一點被偷走的酒。\n告訴自己：用這點代價，\n我換到了心靈的平靜與自由。", source: "愛比克泰德《手冊》" },
+            { text: "不要期待人們不犯錯，那是不可能的；\n轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "請賜予我平靜，去接受我無法改變的；\n賜予我勇氣，去改變我能改變的；\n並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
+            { text: "心不隨外境運轉，便是不被牽著走；\n不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
+            { text: "一切過往與幻象如夢幻泡影；\n唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
             { text: "水清月現，心靜智生。", source: "禪宗古諺" },
-            { text: "心如明鏡，物來則應，物去不留。", source: "禪宗古諺" },
-            { text: "不必企圖消滅雜念，只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
-            { text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
-            { text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。", source: "禪意手記" }
+            { text: "心如明鏡，\n物來則應，物去不留。", source: "禪宗古諺" },
+            { text: "不必企圖消滅雜念，\n只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
+            { text: "當你停止尋找平靜，\n平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
+            { text: "花開不張揚，風過不留痕。\n讓心如流水般自然穿過一切。", source: "禪意手記" }
         ];
+
+        function getMindfulnessData() {
+            let totalSecs = 0;
+            try { totalSecs = parseInt(localStorage.getItem('flow_total_seconds') || '0', 10); } catch(e) {}
+            return { totalSecs };
+        }
+        function saveMindfulnessSession(sessionSeconds) {
+            if (sessionSeconds <= 0) return;
+            let { totalSecs } = getMindfulnessData();
+            totalSecs += sessionSeconds;
+            try { localStorage.setItem('flow_total_seconds', totalSecs.toString()); } catch(e) {}
+        }
+
+        const brandIconImg = new Image();
+        brandIconImg.src = './icon-512.png';
+        function ensureIconLoaded() {
+            return new Promise((resolve) => {
+                if (brandIconImg.complete && brandIconImg.naturalWidth !== 0) {
+                    resolve(brandIconImg);
+                } else {
+                    brandIconImg.onload = () => resolve(brandIconImg);
+                    brandIconImg.onerror = () => resolve(null);
+                }
+            });
+        }
+        
+        function getLines(ctx, text, maxWidth) {
+            let lines = [];
+            const paragraphs = text.split('\n');
+            for (let i = 0; i < paragraphs.length; i++) {
+                const words = paragraphs[i].split('');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n];
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        lines.push(line);
+                        line = words[n];
+                    } else { 
+                        line = testLine; 
+                    }
+                }
+                lines.push(line);
+            }
+            return lines;
+        }
+        
+        async function generateZenCard(sessionTimeStr, quoteObj) {
+            const canvas = document.getElementById('hidden-card-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const img = await ensureIconLoaded();
+
+            ctx.fillStyle = '#030105'; ctx.fillRect(0, 0, w, h);
+            const cx = w / 2, cy = h * 0.38;
+
+            const iconSize = 600;
+            if (img) { ctx.drawImage(img, cx - iconSize / 2, cy - iconSize / 2, iconSize, iconSize); }
+
+            ctx.fillStyle = '#ffffff';
+            for (let i = 0; i < 150; i++) {
+                ctx.globalAlpha = Math.random() * 0.6 + 0.15;
+                ctx.beginPath(); ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2.2 + 0.5, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.globalAlpha = 1.0;
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff'; ctx.font = '200 42px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.shadowColor = 'rgba(234, 179, 8, 0.28)'; ctx.shadowBlur = 10;
+            ctx.fillText('活  在  當  下', cx, h * 0.52);
+
+            ctx.fillStyle = '#f8fafc'; ctx.font = '100 86px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.shadowColor = 'rgba(234, 179, 8, 0.32)'; ctx.shadowBlur = 14;
+            ctx.fillText(sessionTimeStr, cx, h * 0.585);
+            ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+
+            ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
+            const lines = getLines(ctx, quoteObj.text, w - 160);
+            let maxQuoteWidth = 0;
+            lines.forEach(l => {
+                let lw = ctx.measureText(l).width;
+                if(lw > maxQuoteWidth) maxQuoteWidth = lw;
+            });
+
+            ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            const sourceText = quoteObj.source;
+            const sourceTextWidth = ctx.measureText(sourceText).width;
+            const dashWidth = 45; 
+            const dashGap = 12;   
+            const totalSourceWidth = sourceTextWidth + dashGap + dashWidth;
+
+            const blockWidth = Math.max(maxQuoteWidth, totalSourceWidth);
+            const startX = cx - (blockWidth / 2);
+            const startY = h * 0.66;
+            const lineHeight = 68;
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], startX, startY + (i * lineHeight));
+            }
+
+            const sourceY = startY + (lines.length * lineHeight) + 20;
+            const rightEdgeX = startX + blockWidth;
+            
+            ctx.textAlign = 'right';
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.85)'; 
+            ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(sourceText, rightEdgeX, sourceY);
+            
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+            ctx.fillRect(rightEdgeX - sourceTextWidth - dashGap - dashWidth, sourceY - 8, dashWidth, 1.5);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText("F L O W   A W A R E N E S S", cx, h * 0.90);
+            const today = new Date();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.38)'; ctx.font = '200 24px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.fillText(`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`, cx, h * 0.925);
+        }
 
         function getRandomQuote() {
             let availableIndices = [];
@@ -358,7 +521,7 @@
         let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
         let masterGain = null, silentAudioAnchor = null;
         
-        let currentBreathSource = null, currentBreathGain = null, currentBreathResonanceFilter = null;
+        let currentBreathSource = null, currentBreathGain = null, currentBreathGate = null, currentBreathResonanceFilter = null;
         let bowlMasterGain = null, activeEndingOscillators = [];
 
         let baseInhalePace = 3.2; 
@@ -413,6 +576,10 @@
                 try { currentBreathGain.disconnect(); } catch(e){}
                 currentBreathGain = null;
             }
+            if (currentBreathGate) {
+                try { currentBreathGate.disconnect(); } catch(e){}
+                currentBreathGate = null;
+            }
             if (activeEndingOscillators.length > 0) { 
                 activeEndingOscillators.forEach(osc => { 
                     try { osc.stop(); osc.disconnect(); } catch(e){} 
@@ -463,7 +630,7 @@
             bgCtx.clearRect(0, 0, dW, dH);
             const cx = dW * 0.5, cy = dH * 0.5;
             breathScale += (targetBreathScale - breathScale) * 0.015;
-            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION');
+            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION' || state === 'LOADING');
             
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
@@ -533,7 +700,7 @@
                 coreCtx.fill();
             }
 
-            canvasAnimFrame = requestAnimationFrame(requestAnimationFrame ? drawCanvas : drawCanvas);
+            canvasAnimFrame = requestAnimationFrame(drawCanvas);
         }
 
         window.addEventListener('resize', () => { if(bgCanvas) initCanvas(); });
@@ -551,7 +718,6 @@
             } 
         }
 
-        // 動態生成帶有些微 PCM 音頻頻率特徵的 0.5s WAV Base64（解鎖 iOS Playback Session 關鍵）
         function createDummyAudibleWavURI() {
             const sampleRate = 22050;
             const numSamples = sampleRate * 0.5;
@@ -576,7 +742,6 @@
             writeString(36, 'data');
             view.setUint32(40, numSamples * 2, true);
 
-            // 寫入 20Hz 近乎無感的極低正弦波，音量設為 1 (極微小振幅)，足以強制升級 iOS Audio Session
             for (let i = 0; i < numSamples; i++) {
                 const sample = Math.sin((i / sampleRate) * 2 * Math.PI * 20) * 2;
                 view.setInt16(44 + i * 2, sample, true);
@@ -618,22 +783,34 @@
         }
 
         function fadeOutBreathAudio(fadeTime = 0.15) {
-            if (!audioCtx || !currentBreathGain) return;
+            if (!audioCtx) return;
             const now = audioCtx.currentTime;
+            
             const targetGain = currentBreathGain;
             const targetSource = currentBreathSource;
+            const targetGate = currentBreathGate;
 
             currentBreathGain = null;
             currentBreathSource = null;
+            currentBreathGate = null;
 
             try {
-                targetGain.gain.cancelScheduledValues(now);
-                targetGain.gain.setValueAtTime(targetGain.gain.value, now);
-                targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                if (targetGate) {
+                    targetGate.gain.cancelScheduledValues(now);
+                    targetGate.gain.setValueAtTime(targetGate.gain.value, now);
+                    targetGate.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                }
+                if (targetGain) {
+                    targetGain.gain.cancelScheduledValues(now);
+                    targetGain.gain.setValueAtTime(targetGain.gain.value, now);
+                    targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                }
+                
                 setTimeout(() => { 
                     try { 
                         if (targetSource) { targetSource.stop(); targetSource.disconnect(); } 
                         if (targetGain) { targetGain.disconnect(); }
+                        if (targetGate) { targetGate.disconnect(); }
                     } catch(e){} 
                 }, fadeTime * 1000 + 40);
             } catch(e){}
@@ -652,8 +829,20 @@
             const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
             const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; 
             currentBreathResonanceFilter = audioCtx.createBiquadFilter(); currentBreathResonanceFilter.type = 'lowpass'; 
-            const gain = audioCtx.createGain(); const now = audioCtx.currentTime;
-            gain.gain.setValueAtTime(0.0001, now); currentBreathGain = gain;
+            
+            const gain = audioCtx.createGain(); 
+            const gate = audioCtx.createGain(); 
+            const now = audioCtx.currentTime;
+
+            if (!isInhale && isPressing) {
+                gate.gain.value = 0.0001; 
+            } else {
+                gate.gain.value = 1.0;
+            }
+
+            gain.gain.setValueAtTime(0.0001, now); 
+            currentBreathGain = gain;
+            currentBreathGate = gate;
             
             const dur = isInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
 
@@ -664,9 +853,14 @@
             } else {
                 filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
                 filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
-                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
+                
+                gain.gain.linearRampToValueAtTime(0.34, now + 0.5); 
+                gain.gain.setValueAtTime(0.34, now + dur - 1.2); 
+                gain.gain.linearRampToValueAtTime(0.0001, now + dur - 0.1); 
             }
-            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); noiseSource.start(now);
+            
+            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(gate).connect(masterGain); 
+            noiseSource.start(now);
         }
 
         function playEndingBowl() {
@@ -711,6 +905,8 @@
         const summaryQuoteCard = document.getElementById('summary-quote-card');
         const quoteTextEl = document.getElementById('quote-text');
         const quoteSourceEl = document.getElementById('quote-source');
+
+        let activeQuoteObj = null;
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -781,7 +977,14 @@
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
                 } else {
-                    fadeOutBreathAudio(0.15);
+                    if (currentBreathGate && audioCtx) {
+                        try {
+                            const curTime = audioCtx.currentTime;
+                            currentBreathGate.gain.cancelScheduledValues(curTime);
+                            currentBreathGate.gain.setValueAtTime(currentBreathGate.gain.value, curTime);
+                            currentBreathGate.gain.exponentialRampToValueAtTime(0.0001, curTime + 0.12);
+                        } catch(e){}
+                    }
                 }
             } else { 
                 const pressDuration = now - pressStartTime;
@@ -792,8 +995,13 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
-                    if (hasInhaledInCurrentCycle) {
-                        playBreathSound(false);
+                    if (currentBreathGate && audioCtx) {
+                        try {
+                            const curTime = audioCtx.currentTime;
+                            currentBreathGate.gain.cancelScheduledValues(curTime);
+                            currentBreathGate.gain.setValueAtTime(0.0001, curTime);
+                            currentBreathGate.gain.linearRampToValueAtTime(1.0, curTime + 0.15);
+                        } catch(e){}
                     }
                 }
             }
@@ -902,9 +1110,7 @@
                     isCurrentPhaseInhale = false; 
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(false); 
-                    if (!isPressing && hasInhaledInCurrentCycle) { 
-                        playBreathSound(false); 
-                    }
+                    playBreathSound(false); 
                 } 
             } 
             else if (guidePhase <= 0) { 
@@ -991,9 +1197,7 @@
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
             
-            state = 'PREPARATION';
-            prepStartTime = performance.now();
-            currentCoreScale = 0.25; 
+            state = 'LOADING'; 
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
@@ -1005,15 +1209,19 @@
 
             requestWakeLock();
 
+            // 1. 說明頁面開始淡出
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
-            
             document.getElementById('sky-bg').classList.add('active');
+            
             const mainContainer = document.getElementById('main-container');
             const coreCanvasEl = document.getElementById('core-canvas');
             
-            mainContainer.style.opacity = '1'; 
-            coreCanvasEl.style.opacity = '1';
+            // 轉場過渡期：維持主容器與 Canvas 隱藏 (opacity = 0)，防止混色光暈球體透出說明頁面
+            mainContainer.style.transition = 'none';
+            mainContainer.style.opacity = '0'; 
+            coreCanvasEl.style.transition = 'none';
+            coreCanvasEl.style.opacity = '0';
 
             if (hintEl) hintEl.classList.remove('flash-mild'); 
             
@@ -1037,12 +1245,25 @@
 
             void document.body.offsetHeight;
 
+            // 說明頁面淡出結束後完全隱藏 DOM
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
             }, 1200);
 
-            if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
-            guideAnimFrame = requestAnimationFrame(animateGuide);
+            // 600ms 待說明卡片完全消失、畫面過渡至深暗背景後，才優雅淡入主容器並正式啟動 PREPARATION
+            setTimeout(() => {
+                if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
+                state = 'PREPARATION'; 
+                prepStartTime = performance.now(); 
+                currentCoreScale = 0.25; 
+                
+                mainContainer.style.transition = 'opacity 1.5s ease';
+                mainContainer.style.opacity = '1';
+                coreCanvasEl.style.transition = 'opacity 1.5s ease';
+                coreCanvasEl.style.opacity = '1';
+
+                guideAnimFrame = requestAnimationFrame(animateGuide);
+            }, 600);
         });
 
         if (pwaCloseBtnEl) {
@@ -1057,6 +1278,46 @@
             });
         }
 
+        document.getElementById('btn-save-card').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const btn = document.getElementById('btn-save-card');
+            const originalText = btn.innerText;
+            btn.innerText = '繪製中...';
+            
+            const sessionTimeStr = document.getElementById('summary-time').innerText;
+            await generateZenCard(sessionTimeStr, activeQuoteObj); 
+            const canvas = document.getElementById('hidden-card-canvas');
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) { btn.innerText = originalText; return; }
+
+                const fileName = `flow-awareness-${Date.now()}.png`;
+                const file = new File([blob], fileName, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: '流動覺察 Flow Awareness',
+                            text: '一場讓你活在當下的正念體驗。'
+                        });
+                    } catch (err) {}
+                } else {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                }
+                btn.innerText = originalText;
+            }, 'image/png');
+        });
+
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
         document.getElementById('btn-stop').addEventListener('click', (e) => {
@@ -1068,9 +1329,16 @@
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
             
-            const currentQuote = getRandomQuote();
-            quoteTextEl.innerText = "「 " + currentQuote.text + " 」";
-            quoteSourceEl.innerText = "—— " + currentQuote.source;
+            saveMindfulnessSession(totalSecs);
+            const mdData = getMindfulnessData();
+            document.getElementById('total-time-val').innerText = `${Math.floor(mdData.totalSecs / 60)} 分鐘`;
+
+            activeQuoteObj = getRandomQuote();
+            
+            const formattedQuote = activeQuoteObj.text.replace(/\n/g, '<br>');
+            document.getElementById('quote-text-container').innerHTML = 
+                `<div class="quote-text">${formattedQuote}</div>` +
+                `<div class="quote-source"><span class="source-dash"></span>${activeQuoteObj.source}</div>`;
 
             const ua = navigator.userAgent || '';
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
@@ -1099,17 +1367,26 @@
                 pwaPromptEl.style.display = 'none';
             }
 
-            document.getElementById('main-container').style.transition = 'opacity 4s ease'; document.getElementById('main-container').style.opacity = '0';
+            document.getElementById('main-container').style.transition = 'opacity 1.2s ease'; document.getElementById('main-container').style.opacity = '0';
             document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
             document.getElementById('summary-overlay').style.display = 'flex'; 
             
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
             setTimeout(() => {
+                document.getElementById('summary-title-group').classList.add('show-element');
+            }, 800);
+            
+            setTimeout(() => {
                 summaryQuoteCard.classList.add('show');
-            }, 100);
+            }, 1200);
 
-            setTimeout(() => { document.getElementById('btn-end').style.pointerEvents = 'auto'; document.getElementById('btn-end').style.opacity = '1'; }, 7000); 
+            setTimeout(() => { 
+                document.getElementById('btn-end').style.pointerEvents = 'auto'; 
+                document.getElementById('btn-end').style.opacity = '1'; 
+                document.getElementById('total-sedimentation').classList.add('show-element');
+                document.getElementById('btn-save-card').classList.add('show-element');
+            }, 4500); 
         });
 
         document.getElementById('btn-end').addEventListener('click', (e) => {
@@ -1121,6 +1398,9 @@
                 bowlMasterGain = null; isEndingDissolve = false;
                 
                 summaryQuoteCard.classList.remove('show');
+                document.getElementById('summary-title-group').classList.remove('show-element');
+                document.getElementById('total-sedimentation').classList.remove('show-element');
+                document.getElementById('btn-save-card').classList.remove('show-element');
 
                 const summaryOverlay = document.getElementById('summary-overlay'); summaryOverlay.style.display = 'none'; summaryOverlay.style.opacity = '0';
                 if (pwaPromptEl) { pwaPromptEl.style.display = 'none'; pwaPromptEl.style.opacity = '0'; }
@@ -1132,7 +1412,9 @@
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
                 
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
+                totalBreaths = 0; 
                 currentResonance = 0.0;
+                
                 if (hintEl) hintEl.classList.remove('flash-mild');
                 const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
                 elementsToReset.forEach(el => {
