@@ -149,8 +149,9 @@
                 border: 1px solid rgba(255, 255, 255, 0.08) !important; 
                 color: rgba(255, 255, 255, 0.40) !important; 
                 letter-spacing: 6px !important;
-                padding-left: 32px !important; 
-                padding-right: 26px !important;
+                padding-left: 20px !important; 
+                padding-right: 14px !important;
+                margin-top: 10vh !important;
             }
         }
 
@@ -313,8 +314,8 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <!-- 彈性增加 margin-top 至 56px (或 clamp 值) 往下推遠金句 -->
-        <button id="btn-end" class="capsule-btn" style="margin-top: clamp(36px, 6vh, 64px); color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 32px; padding-right: 26px;">結束</button>
+        <!-- 結束按鈕：margin-top 改為 10vh，Padding 縮減為 20px 與 14px -->
+        <button id="btn-end" class="capsule-btn" style="margin-top: 10vh; color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 20px; padding-right: 14px;">結束</button>
 
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
@@ -833,10 +834,9 @@
             currentBreathResonanceFilter = audioCtx.createBiquadFilter(); currentBreathResonanceFilter.type = 'lowpass'; 
             
             const gain = audioCtx.createGain(); 
-            const gate = audioCtx.createGain(); // 全新導入：閥門控制器，專管點擊干擾
+            const gate = audioCtx.createGain(); 
             const now = audioCtx.currentTime;
 
-            // 確保若呼氣時已經按著，閥門預設為關閉
             if (!isInhale && isPressing) {
                 gate.gain.value = 0.0001; 
             } else {
@@ -856,12 +856,13 @@
             } else {
                 filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
                 filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
-                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); 
-                gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); 
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
+                
+                // 延遲線性衰減 (Sustain + Linear Fade) 讓呼氣聲悠長
+                gain.gain.linearRampToValueAtTime(0.34, now + 0.5); 
+                gain.gain.setValueAtTime(0.34, now + dur - 1.2); 
+                gain.gain.linearRampToValueAtTime(0.0001, now + dur - 0.1); 
             }
             
-            // 將閥門加進音訊管線中
             noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(gate).connect(masterGain); 
             noiseSource.start(now);
         }
@@ -984,7 +985,6 @@
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
                 } else {
-                    // 呼氣被中斷：操作第二顆閥門控制器 Gate 關閉聲音
                     if (currentBreathGate && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
@@ -1003,7 +1003,6 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
-                    // 呼氣恢復：打開第二顆閥門控制器 Gate (底層 Envelope 持續運作不被打斷)
                     if (currentBreathGate && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
@@ -1207,8 +1206,6 @@
             if (state !== 'INTRO') return; 
             
             state = 'PREPARATION';
-            prepStartTime = performance.now();
-            currentCoreScale = 0.25; 
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
@@ -1220,10 +1217,11 @@
 
             requestWakeLock();
 
+            // 1. 視覺 UI 淡出 (無延遲，讓瀏覽器專心畫 CSS)
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
-            
             document.getElementById('sky-bg').classList.add('active');
+            
             const mainContainer = document.getElementById('main-container');
             const coreCanvasEl = document.getElementById('core-canvas');
             
@@ -1250,14 +1248,18 @@
                 guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
             }
 
-            void document.body.offsetHeight;
-
+            // 2. CSS 淡出結束後徹底隱藏 DOM
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
             }, 1200);
 
-            if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
-            guideAnimFrame = requestAnimationFrame(animateGuide);
+            // 3. 延遲啟動重度運算 (錯開效能瓶頸，消滅文字殘影)
+            setTimeout(() => {
+                if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
+                prepStartTime = performance.now(); // 重置時間基準，確保動畫完美從 0 開始
+                currentCoreScale = 0.25; 
+                guideAnimFrame = requestAnimationFrame(animateGuide);
+            }, 400);
         });
 
         if (pwaCloseBtnEl) {
@@ -1405,8 +1407,11 @@
                 document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
                 
+                // 重置所有變數 (包含 totalBreaths 除蟲)
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
+                totalBreaths = 0; 
                 currentResonance = 0.0;
+                
                 if (hintEl) hintEl.classList.remove('flash-mild');
                 const elementsToReset = [topHeaderEl, guideRingEl, textEl, hintEl];
                 elementsToReset.forEach(el => {
