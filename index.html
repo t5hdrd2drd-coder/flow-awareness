@@ -314,7 +314,6 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <!-- 結束按鈕：margin-top 改為 10vh，Padding 縮減為 20px 與 14px -->
         <button id="btn-end" class="capsule-btn" style="margin-top: 10vh; color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 20px; padding-right: 14px;">結束</button>
 
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
@@ -857,7 +856,6 @@
                 filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
                 filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
                 
-                // 延遲線性衰減 (Sustain + Linear Fade) 讓呼氣聲悠長
                 gain.gain.linearRampToValueAtTime(0.34, now + 0.5); 
                 gain.gain.setValueAtTime(0.34, now + dur - 1.2); 
                 gain.gain.linearRampToValueAtTime(0.0001, now + dur - 0.1); 
@@ -1205,7 +1203,6 @@
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
             
-            state = 'PREPARATION';
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
@@ -1217,7 +1214,6 @@
 
             requestWakeLock();
 
-            // 1. 視覺 UI 淡出 (無延遲，讓瀏覽器專心畫 CSS)
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
             document.getElementById('sky-bg').classList.add('active');
@@ -1248,15 +1244,15 @@
                 guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
             }
 
-            // 2. CSS 淡出結束後徹底隱藏 DOM
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
             }, 1200);
 
-            // 3. 延遲啟動重度運算 (錯開效能瓶頸，消滅文字殘影)
+            // 將狀態切換與時間重置放進 400ms 的延遲中，修復節奏急促的問題
             setTimeout(() => {
+                state = 'PREPARATION';
                 if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
-                prepStartTime = performance.now(); // 重置時間基準，確保動畫完美從 0 開始
+                prepStartTime = performance.now(); 
                 currentCoreScale = 0.25; 
                 guideAnimFrame = requestAnimationFrame(animateGuide);
             }, 400);
@@ -1407,7 +1403,6 @@
                 document.getElementById('hint').style.opacity = '0'; document.getElementById('btn-start').classList.remove('disabled'); document.getElementById('btn-stop').style.display = 'none'; document.getElementById('btn-stop').style.pointerEvents = 'auto'; 
                 textEl.classList.remove('glow-inhale', 'glow-exhale'); textEl.style.opacity = '0'; textEl.style.visibility = 'visible';
                 
-                // 重置所有變數 (包含 totalBreaths 除蟲)
                 missedInhaleCount = 0; userPressedInInhale = false; phaseChangeCount = 0; sessionStartTime = 0; baseInhalePace = 3.2; breathScale = 1.0; targetBreathScale = 1.0;
                 totalBreaths = 0; 
                 currentResonance = 0.0;
