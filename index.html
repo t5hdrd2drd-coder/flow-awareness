@@ -142,7 +142,6 @@
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
             
-            /* 強制手機版無背景透化與絕對置中對齊 */
             #btn-end.capsule-btn { 
                 background: transparent !important; 
                 backdrop-filter: none !important; 
@@ -150,7 +149,7 @@
                 border: 1px solid rgba(255, 255, 255, 0.08) !important; 
                 color: rgba(255, 255, 255, 0.40) !important; 
                 letter-spacing: 6px !important;
-                padding-left: 32px !important; /* 26px padding + 6px 補平字距 */
+                padding-left: 32px !important; 
                 padding-right: 26px !important;
             }
         }
@@ -314,8 +313,8 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <!-- 結束按鈕：完全透化去暗區，Padding 左補 6px 完美修復字距偏右問題 -->
-        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 32px; padding-right: 26px;">結束</button>
+        <!-- 彈性增加 margin-top 至 56px (或 clamp 值) 往下推遠金句 -->
+        <button id="btn-end" class="capsule-btn" style="margin-top: clamp(36px, 6vh, 64px); color: rgba(255, 255, 255, 0.40); background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid rgba(255, 255, 255, 0.08); letter-spacing: 6px; padding-left: 32px; padding-right: 26px;">結束</button>
 
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
@@ -524,7 +523,7 @@
         let audioCtx = null, sessionStartTime = 0, globalNoiseBuffer = null, wakeLock = null;
         let masterGain = null, silentAudioAnchor = null;
         
-        let currentBreathSource = null, currentBreathGain = null, currentBreathResonanceFilter = null;
+        let currentBreathSource = null, currentBreathGain = null, currentBreathGate = null, currentBreathResonanceFilter = null;
         let bowlMasterGain = null, activeEndingOscillators = [];
 
         let baseInhalePace = 3.2; 
@@ -578,6 +577,10 @@
             if (currentBreathGain) {
                 try { currentBreathGain.disconnect(); } catch(e){}
                 currentBreathGain = null;
+            }
+            if (currentBreathGate) {
+                try { currentBreathGate.disconnect(); } catch(e){}
+                currentBreathGate = null;
             }
             if (activeEndingOscillators.length > 0) { 
                 activeEndingOscillators.forEach(osc => { 
@@ -782,22 +785,34 @@
         }
 
         function fadeOutBreathAudio(fadeTime = 0.15) {
-            if (!audioCtx || !currentBreathGain) return;
+            if (!audioCtx) return;
             const now = audioCtx.currentTime;
+            
             const targetGain = currentBreathGain;
             const targetSource = currentBreathSource;
+            const targetGate = currentBreathGate;
 
             currentBreathGain = null;
             currentBreathSource = null;
+            currentBreathGate = null;
 
             try {
-                targetGain.gain.cancelScheduledValues(now);
-                targetGain.gain.setValueAtTime(targetGain.gain.value, now);
-                targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                if (targetGate) {
+                    targetGate.gain.cancelScheduledValues(now);
+                    targetGate.gain.setValueAtTime(targetGate.gain.value, now);
+                    targetGate.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                }
+                if (targetGain) {
+                    targetGain.gain.cancelScheduledValues(now);
+                    targetGain.gain.setValueAtTime(targetGain.gain.value, now);
+                    targetGain.gain.exponentialRampToValueAtTime(0.0001, now + fadeTime);
+                }
+                
                 setTimeout(() => { 
                     try { 
                         if (targetSource) { targetSource.stop(); targetSource.disconnect(); } 
                         if (targetGain) { targetGain.disconnect(); }
+                        if (targetGate) { targetGate.disconnect(); }
                     } catch(e){} 
                 }, fadeTime * 1000 + 40);
             } catch(e){}
@@ -816,8 +831,21 @@
             const noiseSource = audioCtx.createBufferSource(); noiseSource.buffer = getNoiseBuffer(); noiseSource.loop = true; currentBreathSource = noiseSource;
             const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; 
             currentBreathResonanceFilter = audioCtx.createBiquadFilter(); currentBreathResonanceFilter.type = 'lowpass'; 
-            const gain = audioCtx.createGain(); const now = audioCtx.currentTime;
-            gain.gain.setValueAtTime(0.0001, now); currentBreathGain = gain;
+            
+            const gain = audioCtx.createGain(); 
+            const gate = audioCtx.createGain(); // 全新導入：閥門控制器，專管點擊干擾
+            const now = audioCtx.currentTime;
+
+            // 確保若呼氣時已經按著，閥門預設為關閉
+            if (!isInhale && isPressing) {
+                gate.gain.value = 0.0001; 
+            } else {
+                gate.gain.value = 1.0;
+            }
+
+            gain.gain.setValueAtTime(0.0001, now); 
+            currentBreathGain = gain;
+            currentBreathGate = gate;
             
             const dur = isInhale ? baseInhalePace : (baseInhalePace * EXHALE_RATIO);
 
@@ -832,7 +860,10 @@
                 gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); 
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
             }
-            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); noiseSource.start(now);
+            
+            // 將閥門加進音訊管線中
+            noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(gate).connect(masterGain); 
+            noiseSource.start(now);
         }
 
         function playEndingBowl() {
@@ -953,12 +984,13 @@
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
                 } else {
-                    if (currentBreathGain && audioCtx) {
+                    // 呼氣被中斷：操作第二顆閥門控制器 Gate 關閉聲音
+                    if (currentBreathGate && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
-                            currentBreathGain.gain.cancelScheduledValues(curTime);
-                            currentBreathGain.gain.setValueAtTime(currentBreathGain.gain.value, curTime);
-                            currentBreathGain.gain.exponentialRampToValueAtTime(0.0001, curTime + 0.12);
+                            currentBreathGate.gain.cancelScheduledValues(curTime);
+                            currentBreathGate.gain.setValueAtTime(currentBreathGate.gain.value, curTime);
+                            currentBreathGate.gain.exponentialRampToValueAtTime(0.0001, curTime + 0.12);
                         } catch(e){}
                     }
                 }
@@ -971,12 +1003,13 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
-                    if (currentBreathGain && audioCtx) {
+                    // 呼氣恢復：打開第二顆閥門控制器 Gate (底層 Envelope 持續運作不被打斷)
+                    if (currentBreathGate && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
-                            currentBreathGain.gain.cancelScheduledValues(curTime);
-                            currentBreathGain.gain.setValueAtTime(0.0001, curTime);
-                            currentBreathGain.gain.linearRampToValueAtTime(0.28, curTime + 0.15);
+                            currentBreathGate.gain.cancelScheduledValues(curTime);
+                            currentBreathGate.gain.setValueAtTime(currentBreathGate.gain.value, curTime);
+                            currentBreathGate.gain.linearRampToValueAtTime(1.0, curTime + 0.15);
                         } catch(e){}
                     }
                 }
