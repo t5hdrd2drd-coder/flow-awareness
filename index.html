@@ -160,13 +160,17 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 移除寫死的延遲，交由 JS 控制平滑淡入 */
-        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* 加入 width: fit-content，解決短句被出處強制換行的排版缺陷 */
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
         
-        .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; }
+        .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; width: fit-content; }
         .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; text-shadow: 0 0 10px rgba(255,255,255,0.15); display: block; text-align: left; }
-        .quote-source { display: block; text-align: right; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; margin-top: 14px; }
+        
+        .quote-source { display: block; text-align: right; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; margin-top: 14px; white-space: nowrap; }
+        
+        /* 完美的實體幾何長條，完全取代破碎的破折號字元 */
+        .source-dash { display: inline-block; width: 1.8em; height: 1px; background-color: rgba(148, 163, 184, 0.75); vertical-align: middle; margin-right: 8px; margin-top: -2px; }
 
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
@@ -423,33 +427,51 @@
             ctx.fillText(sessionTimeStr, cx, h * 0.585);
             ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
 
-            // 整體金句區塊向上微調至 66%，為底部留出足夠空間
+            // 1. 測量金句的最長行寬度
             ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
             const lines = getLines(ctx, quoteObj.text, w - 160);
-            
-            let maxLineWidth = 0;
+            let maxQuoteWidth = 0;
             lines.forEach(l => {
                 let lw = ctx.measureText(l).width;
-                if(lw > maxLineWidth) maxLineWidth = lw;
+                if(lw > maxQuoteWidth) maxQuoteWidth = lw;
             });
 
-            const startX = cx - (maxLineWidth / 2);
+            // 2. 測量出處及幾何長條的整體寬度
+            ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
+            const sourceText = quoteObj.source;
+            const sourceTextWidth = ctx.measureText(sourceText).width;
+            const dashWidth = 45; // 實體長條寬度
+            const dashGap = 12;   // 長條與文字的距離
+            const totalSourceWidth = sourceTextWidth + dashGap + dashWidth;
+
+            // 3. 完美解決短句排版：取金句與出處兩者的「最大值」作為區塊總寬度
+            const blockWidth = Math.max(maxQuoteWidth, totalSourceWidth);
+            const startX = cx - (blockWidth / 2);
             const startY = h * 0.66;
             const lineHeight = 68;
 
+            // 4. 繪製金句 (緊靠區塊左側)
             ctx.textAlign = 'left';
             ctx.fillStyle = '#ffffff';
+            ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
             for (let i = 0; i < lines.length; i++) {
                 ctx.fillText(lines[i], startX, startY + (i * lineHeight));
             }
 
-            // 出處對齊文字區塊最右側
+            // 5. 繪製出處與物理長條 (緊靠區塊右側)
+            const sourceY = startY + (lines.length * lineHeight) + 20;
+            const rightEdgeX = startX + blockWidth;
+            
             ctx.textAlign = 'right';
             ctx.fillStyle = 'rgba(148, 163, 184, 0.85)'; 
             ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText("—— " + quoteObj.source, startX + maxLineWidth, startY + (lines.length * lineHeight) + 20);
+            ctx.fillText(sourceText, rightEdgeX, sourceY);
+            
+            // 直接畫一個平滑完美的矩形實體線段，取代破折號字元
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+            ctx.fillRect(rightEdgeX - sourceTextWidth - dashGap - dashWidth, sourceY - 8, dashWidth, 1.5);
 
-            // 重置置中對齊，修復浮水印偏左問題
+            // 重置對齊，繪製浮水印
             ctx.textAlign = 'center';
             ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText("F L O W   A W A R E N E S S", cx, h * 0.90);
@@ -1262,7 +1284,7 @@
             const formattedQuote = activeQuoteObj.text.replace(/\n/g, '<br>');
             document.getElementById('quote-text-container').innerHTML = 
                 `<div class="quote-text">${formattedQuote}</div>` +
-                `<div class="quote-source">—— ${activeQuoteObj.source}</div>`;
+                `<div class="quote-source"><span class="source-dash"></span>${activeQuoteObj.source}</div>`;
 
             const ua = navigator.userAgent || '';
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
@@ -1291,12 +1313,10 @@
                 pwaPromptEl.style.display = 'none';
             }
 
-            // 加速主畫面的退場動畫 (從 4s 縮短至 1.2s)
             document.getElementById('main-container').style.transition = 'opacity 1.2s ease'; document.getElementById('main-container').style.opacity = '0';
             document.getElementById('sky-bg').style.transition = 'filter 4s ease'; document.getElementById('sky-bg').style.filter = 'blur(80px)'; 
             document.getElementById('summary-overlay').style.display = 'flex'; 
             
-            // 延遲結算頁面的進場，讓視覺沉澱不重疊
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
             setTimeout(() => {
