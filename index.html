@@ -141,7 +141,7 @@
             #breath-text { top: -20px; font-size: 1.05rem; }
             #btn-stop.capsule-btn { background: transparent !important; color: rgba(255, 255, 255, 0.15) !important; border: none !important; box-shadow: none !important; font-size: 0.75rem; letter-spacing: 2px; margin-right: -2px; }
             #btn-stop.capsule-btn:active { color: rgba(255, 255, 255, 0.6) !important; }
-            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.06) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; }
+            #btn-end.capsule-btn { background: rgba(255, 255, 255, 0.025) !important; border: 1px solid rgba(255, 255, 255, 0.10) !important; color: rgba(255, 255, 255, 0.50) !important; }
         }
 
         .guide-ring { border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 3; opacity: 0; will-change: transform, opacity, border-color, box-shadow; transform: translateZ(0); transition: box-shadow 0.1s ease-out, opacity 2s ease; }
@@ -303,7 +303,8 @@
             <div class="pwa-instruction" id="pwa-instruction"></div>
         </div>
 
-        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
+        <!-- 結束按鈕：調淡約 35%~40%，達成極致沉靜的視覺層次 -->
+        <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255, 255, 255, 0.50); background: rgba(255, 255, 255, 0.025); border-color: rgba(255, 255, 255, 0.10);">結束</button>
 
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
@@ -795,7 +796,6 @@
             fadeOutBreathAudio(0.02);
         }
 
-        // 方案 2：使用動態音量閥門 (Gain Gate)，徹底解決連點音效鬼畜重播問題
         function playBreathSound(isInhale) {
             if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -817,7 +817,6 @@
             } else {
                 filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
                 filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
-                // 貫穿整個呼氣相位的平滑音量包絡線
                 gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); 
                 gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); 
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
@@ -929,7 +928,6 @@
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
         }
 
-        // 精準的按壓控制 (支持呼氣階段的 Gain 閥門控制)
         function setPressState(isPress) {
             if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (isPressing === isPress) return; isPressing = isPress;
@@ -944,7 +942,6 @@
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
                 } else {
-                    // 在呼氣階段按住：優雅地將音量閥門淡出至 0
                     if (currentBreathGain && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
@@ -963,7 +960,6 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
-                    // 呼氣階段鬆開：若背景呼氣音效還在，優雅地拉回閥門，順著剩餘時間淡出，絕不重頭播放！
                     if (currentBreathGain && audioCtx) {
                         try {
                             const curTime = audioCtx.currentTime;
@@ -1079,7 +1075,6 @@
                     isCurrentPhaseInhale = false; 
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(false); 
-                    // 自動觸發呼氣背景音效（僅觸發一次）
                     playBreathSound(false); 
                 } 
             } 
