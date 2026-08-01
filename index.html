@@ -160,8 +160,7 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 加入 width: fit-content，解決短句被出處強制換行的排版缺陷 */
-        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .summary-quote-card { opacity: 0; transition: opacity 2.5s ease; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
         
         .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; width: fit-content; }
@@ -169,7 +168,6 @@
         
         .quote-source { display: block; text-align: right; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; margin-top: 14px; white-space: nowrap; }
         
-        /* 完美的實體幾何長條，完全取代破碎的破折號字元 */
         .source-dash { display: inline-block; width: 1.8em; height: 1px; background-color: rgba(148, 163, 184, 0.75); vertical-align: middle; margin-right: 8px; margin-top: -2px; }
 
         .pwa-prompt-card {
@@ -427,7 +425,6 @@
             ctx.fillText(sessionTimeStr, cx, h * 0.585);
             ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
 
-            // 1. 測量金句的最長行寬度
             ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
             const lines = getLines(ctx, quoteObj.text, w - 160);
             let maxQuoteWidth = 0;
@@ -436,21 +433,18 @@
                 if(lw > maxQuoteWidth) maxQuoteWidth = lw;
             });
 
-            // 2. 測量出處及幾何長條的整體寬度
             ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
             const sourceText = quoteObj.source;
             const sourceTextWidth = ctx.measureText(sourceText).width;
-            const dashWidth = 45; // 實體長條寬度
-            const dashGap = 12;   // 長條與文字的距離
+            const dashWidth = 45; 
+            const dashGap = 12;   
             const totalSourceWidth = sourceTextWidth + dashGap + dashWidth;
 
-            // 3. 完美解決短句排版：取金句與出處兩者的「最大值」作為區塊總寬度
             const blockWidth = Math.max(maxQuoteWidth, totalSourceWidth);
             const startX = cx - (blockWidth / 2);
             const startY = h * 0.66;
             const lineHeight = 68;
 
-            // 4. 繪製金句 (緊靠區塊左側)
             ctx.textAlign = 'left';
             ctx.fillStyle = '#ffffff';
             ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -458,7 +452,6 @@
                 ctx.fillText(lines[i], startX, startY + (i * lineHeight));
             }
 
-            // 5. 繪製出處與物理長條 (緊靠區塊右側)
             const sourceY = startY + (lines.length * lineHeight) + 20;
             const rightEdgeX = startX + blockWidth;
             
@@ -467,11 +460,9 @@
             ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText(sourceText, rightEdgeX, sourceY);
             
-            // 直接畫一個平滑完美的矩形實體線段，取代破折號字元
             ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
             ctx.fillRect(rightEdgeX - sourceTextWidth - dashGap - dashWidth, sourceY - 8, dashWidth, 1.5);
 
-            // 重置對齊，繪製浮水印
             ctx.textAlign = 'center';
             ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText("F L O W   A W A R E N E S S", cx, h * 0.90);
@@ -804,6 +795,7 @@
             fadeOutBreathAudio(0.02);
         }
 
+        // 方案 2：使用動態音量閥門 (Gain Gate)，徹底解決連點音效鬼畜重播問題
         function playBreathSound(isInhale) {
             if (!audioCtx || state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -825,7 +817,10 @@
             } else {
                 filter.Q.value = 0.32; currentBreathResonanceFilter.frequency.value = 1600; 
                 filter.frequency.setValueAtTime(820, now); filter.frequency.exponentialRampToValueAtTime(220, now + dur);
-                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
+                // 貫穿整個呼氣相位的平滑音量包絡線
+                gain.gain.linearRampToValueAtTime(0.0001, now + 0.18); 
+                gain.gain.linearRampToValueAtTime(0.34, now + dur * 0.35); 
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + dur - 0.1); 
             }
             noiseSource.connect(filter).connect(currentBreathResonanceFilter).connect(gain).connect(masterGain); noiseSource.start(now);
         }
@@ -934,6 +929,7 @@
             let elapsedSecs = (Date.now() - sessionStartTime) / 1000; updateUIStateForMindfulness(elapsedSecs);
         }
 
+        // 精準的按壓控制 (支持呼氣階段的 Gain 閥門控制)
         function setPressState(isPress) {
             if (state !== 'MINDFULNESS' || document.visibilityState !== 'visible') return; 
             if (isPressing === isPress) return; isPressing = isPress;
@@ -948,7 +944,15 @@
                     missedInhaleCount = 0; 
                     updateUIStateForMindfulness((now - sessionStartTime) / 1000); 
                 } else {
-                    fadeOutBreathAudio(0.15);
+                    // 在呼氣階段按住：優雅地將音量閥門淡出至 0
+                    if (currentBreathGain && audioCtx) {
+                        try {
+                            const curTime = audioCtx.currentTime;
+                            currentBreathGain.gain.cancelScheduledValues(curTime);
+                            currentBreathGain.gain.setValueAtTime(currentBreathGain.gain.value, curTime);
+                            currentBreathGain.gain.exponentialRampToValueAtTime(0.0001, curTime + 0.12);
+                        } catch(e){}
+                    }
                 }
             } else { 
                 const pressDuration = now - pressStartTime;
@@ -959,8 +963,14 @@
                 if (isCurrentPhaseInhale) {
                     fadeOutBreathAudio(0.15); 
                 } else {
-                    if (hasInhaledInCurrentCycle) {
-                        playBreathSound(false);
+                    // 呼氣階段鬆開：若背景呼氣音效還在，優雅地拉回閥門，順著剩餘時間淡出，絕不重頭播放！
+                    if (currentBreathGain && audioCtx) {
+                        try {
+                            const curTime = audioCtx.currentTime;
+                            currentBreathGain.gain.cancelScheduledValues(curTime);
+                            currentBreathGain.gain.setValueAtTime(0.0001, curTime);
+                            currentBreathGain.gain.linearRampToValueAtTime(0.28, curTime + 0.15);
+                        } catch(e){}
                     }
                 }
             }
@@ -1069,9 +1079,8 @@
                     isCurrentPhaseInhale = false; 
                     checkPaceAdaptation(); 
                     triggerBreathTextChange(false); 
-                    if (!isPressing && hasInhaledInCurrentCycle) { 
-                        playBreathSound(false); 
-                    }
+                    // 自動觸發呼氣背景音效（僅觸發一次）
+                    playBreathSound(false); 
                 } 
             } 
             else if (guidePhase <= 0) { 
