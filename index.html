@@ -14,14 +14,12 @@
 
     <meta name="title" content="流動覺察 Flow Awareness">
     <meta name="description" content="一場讓你活在當下的正念體驗。Flow Awareness — An Audio-Visual Mindfulness Ritual.">
-    <!-- Open Graph / Facebook / LINE -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://flow-awareness.vercel.app">
     <meta property="og:title" content="流動覺察 Flow Awareness">
     <meta property="og:description" content="一場讓你活在當下的正念體驗。允許雜念如雲飄散，將心思輕柔錨定於呼吸。">
     <meta property="og:image" content="./og-image.png">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://flow-awareness.vercel.app">
     <meta property="twitter:title" content="流動覺察 Flow Awareness">
@@ -632,7 +630,7 @@
             bgCtx.clearRect(0, 0, dW, dH);
             const cx = dW * 0.5, cy = dH * 0.5;
             breathScale += (targetBreathScale - breathScale) * 0.015;
-            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION');
+            let isMindful = (state === 'MINDFULNESS' || state === 'SUMMARY' || state === 'PREPARATION' || state === 'LOADING');
             
             let easedSpeedFactor = Math.sin(guidePhase * Math.PI); 
             let zFlowSpeed = isMindful ? (isCurrentPhaseInhale ? (-0.4 - 1.2 * easedSpeedFactor) : (0.3 + 0.9 * easedSpeedFactor)) : 0.8;
@@ -885,13 +883,9 @@
 
             const oscs = [{ freq: 108.0, gain: 0.16, pan: 0.0 }, { freq: 216.0, gain: 0.32, pan: -0.25 }, { freq: 216.7, gain: 0.28, pan: 0.25 }, { freq: 432.0, gain: 0.22, pan: -0.5 }, { freq: 648.0, gain: 0.09, pan: 0.5 }];
             oscs.forEach(o => {
-                const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
-                let panner = null;
-                if (typeof audioCtx.createStereoPanner === 'function') {
-                    try { panner = audioCtx.createStereoPanner(); } catch(e){}
-                }
+                const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
                 osc.type = 'sine'; osc.frequency.value = o.freq; g.gain.value = o.gain;
-                if (panner) { panner.pan.value = o.pan; osc.connect(g).connect(panner).connect(bowlMasterGain); } else { osc.connect(g).connect(bowlMasterGain); }
+                if (panner) { panner.pan.value = o.pan; osc.connect(g).connect(bowlMasterGain); } else { osc.connect(g).connect(bowlMasterGain); }
                 osc.onended = () => { try { osc.disconnect(); g.disconnect(); if (panner) panner.disconnect(); } catch(e){} };
                 osc.start(now); osc.stop(now + 14.5); activeEndingOscillators.push(osc);
             });
@@ -1005,7 +999,7 @@
                         try {
                             const curTime = audioCtx.currentTime;
                             currentBreathGate.gain.cancelScheduledValues(curTime);
-                            currentBreathGate.gain.setValueAtTime(currentBreathGate.gain.value, curTime);
+                            currentBreathGate.gain.setValueAtTime(0.0001, curTime);
                             currentBreathGate.gain.linearRampToValueAtTime(1.0, curTime + 0.15);
                         } catch(e){}
                     }
@@ -1203,6 +1197,7 @@
             e.stopPropagation(); 
             if (state !== 'INTRO') return; 
             
+            state = 'LOADING'; 
             isEndingDissolve = false;
             hasTriggeredRipple = false; 
 
@@ -1214,6 +1209,7 @@
 
             requestWakeLock();
 
+            // 1. 說明頁面開始淡出
             document.getElementById('intro').style.opacity = '0'; 
             document.getElementById('btn-start').classList.add('disabled'); 
             document.getElementById('sky-bg').classList.add('active');
@@ -1221,8 +1217,11 @@
             const mainContainer = document.getElementById('main-container');
             const coreCanvasEl = document.getElementById('core-canvas');
             
-            mainContainer.style.opacity = '1'; 
-            coreCanvasEl.style.opacity = '1';
+            // 轉場過渡期：維持主容器與 Canvas 隱藏 (opacity = 0)，防止混色光暈球體透出說明頁面
+            mainContainer.style.transition = 'none';
+            mainContainer.style.opacity = '0'; 
+            coreCanvasEl.style.transition = 'none';
+            coreCanvasEl.style.opacity = '0';
 
             if (hintEl) hintEl.classList.remove('flash-mild'); 
             
@@ -1244,18 +1243,27 @@
                 guideRingEl.style.boxShadow = `0 0 12px rgba(255, 180, 80, 0.35), inset 0 0 6px rgba(255,255,255,0.18)`;
             }
 
+            void document.body.offsetHeight;
+
+            // 說明頁面淡出結束後完全隱藏 DOM
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none'; 
             }, 1200);
 
-            // 將狀態切換與時間重置放進 400ms 的延遲中，修復節奏急促的問題
+            // 600ms 待說明卡片完全消失、畫面過渡至深暗背景後，才優雅淡入主容器並正式啟動 PREPARATION
             setTimeout(() => {
-                state = 'PREPARATION';
                 if (guideAnimFrame) cancelAnimationFrame(guideAnimFrame);
+                state = 'PREPARATION'; 
                 prepStartTime = performance.now(); 
                 currentCoreScale = 0.25; 
+                
+                mainContainer.style.transition = 'opacity 1.5s ease';
+                mainContainer.style.opacity = '1';
+                coreCanvasEl.style.transition = 'opacity 1.5s ease';
+                coreCanvasEl.style.opacity = '1';
+
                 guideAnimFrame = requestAnimationFrame(animateGuide);
-            }, 400);
+            }, 600);
         });
 
         if (pwaCloseBtnEl) {
