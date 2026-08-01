@@ -186,7 +186,7 @@
 
         .black-transition { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030105; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 2s ease-in-out; }
 
-        /* 新增：正念沉澱與卡片按鈕樣式 */
+        /* 正念沉澱與卡片按鈕樣式 */
         .total-sedimentation-box {
             position: absolute; top: calc(25px + var(--sat-top)); left: 50%; transform: translateX(-50%);
             text-align: center; white-space: nowrap; opacity: 0; transition: opacity 2.5s ease; pointer-events: none;
@@ -277,7 +277,6 @@
     <button id="btn-stop" class="capsule-btn">停止</button>
 
     <div class="summary-overlay" id="summary-overlay">
-        <!-- 新增：正念沉澱紀錄 -->
         <div class="total-sedimentation-box" id="total-sedimentation">
             <div class="total-title">正 念 沉 澱</div>
             <div class="total-time-val" id="total-time-val">0 分鐘</div>
@@ -304,54 +303,52 @@
 
         <button id="btn-end" class="capsule-btn" style="margin-top: 28px; color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.22);">結束</button>
 
-        <!-- 新增：儲存當下卡片 -->
         <button class="btn-save-subtle" id="btn-save-card">儲存當下卡片</button>
     </div>
 
-    <!-- 新增：隱藏卡片繪製用 Canvas -->
     <canvas id="hidden-card-canvas" width="1080" height="1920"></canvas>
 
     <script>
         const APP_VERSION = 'v61';
 
+        // 重新排版並加入手動斷句(\n)，確保畫面與卡片不再有孤字
         const QUOTE_VAULT = [
-            { text: "讓你的前門和後門敞開著，讓念頭想來就來想走就走，別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
-            { text: "正念作為一種新的習慣，會慢慢取代分心或放空的舊習慣，讓我們不再迷失於挽不回的過去與到不了的未來。", source: "《放不下，就握手言和吧》" },
-            { text: "沒什麼是恆久不變的，就連最艱困的時期也一樣。", source: "《我可能錯了》" },
+            { text: "讓你的前門和後門敞開著，\n讓念頭想來就來、想走就走，\n別給它們奉茶就是了。", source: "《放不下，就握手言和吧》" },
+            { text: "正念作為一種新的習慣，\n會慢慢取代分心或放空的舊習慣，\n讓我們不再迷失於挽不回的過去，\n與到不了的未來。", source: "《放不下，就握手言和吧》" },
+            { text: "沒什麼是恆久不變的，\n就連最艱困的時期也一樣。", source: "《我可能錯了》" },
             { text: "這也會過去。", source: "《我可能錯了》" },
             { text: "正確，從來就不是重點。", source: "《我可能錯了》" },
-            { text: "你遇見的每個人，都在進行一場你一無所知的艱難戰鬥。與人為善，永遠如此。", source: "《我可能錯了》" },
-            { text: "我有著念頭，但我的念頭並不代表我。", source: "《我可能錯了》" },
-            { text: "與生命共舞，而不是試圖去控制它。", source: "《我可能錯了》" },
-            { text: "放下讓我們不舒服的念頭，就算它們是對的。", source: "《我可能錯了》" },
-            { text: "在是非對錯的想法之外，還有一片原野。我會在那裡與你相遇。", source: "魯米 (Rumi)" },
-            { text: "正念是由刻意專注而生的覺知，置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
-            { text: "人所擁有的任何東西都可以被剝奪，唯獨人性最後的自由——在任何境遇中選擇一己態度和生活方式的自由——不能被剝奪。", source: "維克多·弗蘭克" },
-            { text: "在刺激與回應之間，有一個空間。那個空間裡，藏著我們選擇回應的自由與力量。", source: "維克多·弗蘭克" },
-            { text: "不被過去拉扯，不為未來焦慮；你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
-            { text: "安住於此時此刻，不急著去到任何地方，亦無須成為任何其他人。", source: "喬·卡巴金" },
-            { text: "如果問題有解，何必憂慮？如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
-            { text: "寧靜並非來自環境的順遂，而是來自內心對現狀的接納。", source: "達賴喇嘛" },
-            { text: "給自己一點時間，讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
-            { text: "允許一切發生。雜念如雲飄過，你只需成為那廣袤無垠的天空。", source: "正念導引" },
-            { text: "你無法控制外在事件的發生，但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
-            { text: "靈魂的顏色，取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "我們在想像中承受的痛苦，遠比在現實中承受的多。", source: "塞內卡" },
-            { text: "專注於你手頭能做的事，並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "世上事物分為你能掌控的與你不能掌控的。將所有精力，投注於你能掌控的事情上。", source: "愛比克泰德《手冊》" },
-            { text: "從微小的事物開始練習：一點撒出的油，一點被偷走的酒。告訴自己：『用這點代價，我換到了心靈的平靜與自由。』", source: "愛比克泰德《手冊》" },
-            { text: "不要期待人們不犯錯，那是不可行也不可能的；轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
-            { text: "請賜予我平靜，去接受我無法改變的；賜予我勇氣，去改變我能改變的；並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
-            { text: "心不隨外境運轉，便是不被牽著走；不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
-            { text: "一切過往與幻象如夢幻泡影；唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
+            { text: "你遇見的每個人，\n都在進行一場你一無所知的艱難戰鬥。\n與人為善，永遠如此。", source: "《我可能錯了》" },
+            { text: "我有著念頭，\n但我的念頭並不代表我。", source: "《我可能錯了》" },
+            { text: "與生命共舞，\n而不是試圖去控制它。", source: "《我可能錯了》" },
+            { text: "放下讓我們不舒服的念頭，\n就算它們是對的。", source: "《我可能錯了》" },
+            { text: "在是非對錯的想法之外，還有一片原野。\n我會在那裡與你相遇。", source: "魯米 (Rumi)" },
+            { text: "正念是由刻意專注而生的覺知，\n置身當下，對體驗的來去不加批判。", source: "《平靜的心，專注的大腦》" },
+            { text: "人所擁有的任何東西都可以被剝奪，\n唯獨人性最後的自由——\n在任何境遇中選擇一己態度的自由——\n不能被剝奪。", source: "維克多·弗蘭克" },
+            { text: "在刺激與回應之間，有一個空間。\n那個空間裡，藏著我們選擇的自由與力量。", source: "維克多·弗蘭克" },
+            { text: "不被過去拉扯，不為未來焦慮；\n你所擁有的，只有當下的這一呼吸。", source: "一行禪師" },
+            { text: "安住於此時此刻，不急著去到任何地方，\n亦無須成為任何其他人。", source: "喬·卡巴金" },
+            { text: "如果問題有解，何必憂慮？\n如果問題無解，憂慮又有何用？", source: "達賴喇嘛" },
+            { text: "寧靜並非來自環境的順遂，\n而是來自內心對現狀的接納。", source: "達賴喇嘛" },
+            { text: "給自己一點時間，\n讓混濁的心水慢慢沉澱，答案自然清晰。", source: "達賴喇嘛" },
+            { text: "允許一切發生。\n雜念如雲飄過，你只需成為廣袤的天空。", source: "正念導引" },
+            { text: "你無法控制外在事件的發生，\n但你永遠能控制自己如何看待它。", source: "愛比克泰德" },
+            { text: "靈魂的顏色，\n取決於你經常思考的事物。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "我們在想像中承受的痛苦，\n遠比在現實中承受的多。", source: "塞內卡" },
+            { text: "專注於你手頭能做的事，\n並將其餘一切坦然交給命運。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "世上事物分為你能掌控與不能掌控的。\n將所有精力，投注於你能掌控的事物上。", source: "愛比克泰德《手冊》" },
+            { text: "從微小的事物開始練習：\n一點撒出的油，一點被偷走的酒。\n告訴自己：用這點代價，\n我換到了心靈的平靜與自由。", source: "愛比克泰德《手冊》" },
+            { text: "不要期待人們不犯錯，那是不可能的；\n轉而提醒自己，你有能力包容與理解。", source: "馬可·奧勒留《沉思錄》" },
+            { text: "請賜予我平靜，去接受我無法改變的；\n賜予我勇氣，去改變我能改變的；\n並賜予我智慧，去分辨兩者的不同。", source: "斯多葛思想 / 《平靜禱詞》" },
+            { text: "心不隨外境運轉，便是不被牽著走；\n不執著於任何念頭，心自然自由。", source: "《金剛經》白話意譯" },
+            { text: "一切過往與幻象如夢幻泡影；\n唯有當下的覺察，真實存在。", source: "《金剛經》白話意譯" },
             { text: "水清月現，心靜智生。", source: "禪宗古諺" },
-            { text: "心如明鏡，物來則應，物去不留。", source: "禪宗古諺" },
-            { text: "不必企圖消滅雜念，只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
-            { text: "當你停止尋找平靜，平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
-            { text: "花開不張揚，風過不留痕。讓心如流水般自然穿過一切。", source: "禪意手記" }
+            { text: "心如明鏡，\n物來則應，物去不留。", source: "禪宗古諺" },
+            { text: "不必企圖消滅雜念，\n只需不賦予它力量，它自會隨風消散。", source: "禪修指引" },
+            { text: "當你停止尋找平靜，\n平靜就在你鬆開手的那一刻出現。", source: "禪宗智慧" },
+            { text: "花開不張揚，風過不留痕。\n讓心如流水般自然穿過一切。", source: "禪意手記" }
         ];
 
-        // --- 新增：正念沉澱資料存取 ---
         function getMindfulnessData() {
             let totalSecs = 0;
             try { totalSecs = parseInt(localStorage.getItem('flow_total_seconds') || '0', 10); } catch(e) {}
@@ -363,9 +360,7 @@
             totalSecs += sessionSeconds;
             try { localStorage.setItem('flow_total_seconds', totalSecs.toString()); } catch(e) {}
         }
-        // --- 結束 ---
 
-        // --- 新增：繪製卡片共用變數與載入器 ---
         const brandIconImg = new Image();
         brandIconImg.src = './icon-512.png';
         function ensureIconLoaded() {
@@ -378,21 +373,31 @@
                 }
             });
         }
+        
+        // 更新換行邏輯：優先處理手動的 \n，再處理寬度溢出
         function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split('');
-            let line = '';
+            const paragraphs = text.split('\n');
             let currentY = y;
-            for (let n = 0; n < words.length; n++) {
-                let testLine = line + words[n];
-                let metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    ctx.fillText(line, x, currentY);
-                    line = words[n];
-                    currentY += lineHeight;
-                } else { line = testLine; }
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                const words = paragraphs[i].split('');
+                let line = '';
+                for (let n = 0; n < words.length; n++) {
+                    let testLine = line + words[n];
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        ctx.fillText(line, x, currentY);
+                        line = words[n];
+                        currentY += lineHeight;
+                    } else { 
+                        line = testLine; 
+                    }
+                }
+                ctx.fillText(line, x, currentY);
+                currentY += lineHeight;
             }
-            ctx.fillText(line, x, currentY);
         }
+        
         async function generateZenCard(sessionTimeStr, quoteObj) {
             const canvas = document.getElementById('hidden-card-canvas');
             const ctx = canvas.getContext('2d');
@@ -433,7 +438,6 @@
             ctx.fillStyle = 'rgba(255, 255, 255, 0.38)'; ctx.font = '200 24px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.fillText(`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`, cx, h * 0.925);
         }
-        // --- 結束 ---
 
         function getRandomQuote() {
             let availableIndices = [];
@@ -832,7 +836,7 @@
         const quoteTextEl = document.getElementById('quote-text');
         const quoteSourceEl = document.getElementById('quote-source');
 
-        let activeQuoteObj = null; // 新增：保存當次抽取金句供卡片生成使用
+        let activeQuoteObj = null;
 
         function triggerAffirmativeGlow() {
             if (mainContainerEl) {
@@ -1179,7 +1183,6 @@
             });
         }
 
-        // --- 新增：跨平台卡片儲存邏輯 ---
         document.getElementById('btn-save-card').addEventListener('click', async (e) => {
             e.stopPropagation();
             const btn = document.getElementById('btn-save-card');
@@ -1219,7 +1222,6 @@
                 btn.innerText = originalText;
             }, 'image/png');
         });
-        // --- 結束 ---
 
         document.getElementById('btn-stop').addEventListener('pointerdown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('mousedown', (e) => e.stopPropagation()); document.getElementById('btn-stop').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
         
@@ -1232,13 +1234,13 @@
             let mins = String(Math.floor(totalSecs / 60)).padStart(2, '0'); let secs = String(totalSecs % 60).padStart(2, '0');
             document.getElementById('summary-time').innerText = `${mins}:${secs}`; document.getElementById('summary-stats').innerText = `共完成了 ${totalBreaths} 次呼吸`;
             
-            // 紀錄並渲染沉澱時間
             saveMindfulnessSession(totalSecs);
             const mdData = getMindfulnessData();
             document.getElementById('total-time-val').innerText = `${Math.floor(mdData.totalSecs / 60)} 分鐘`;
 
             activeQuoteObj = getRandomQuote();
-            quoteTextEl.innerText = "「 " + activeQuoteObj.text + " 」";
+            // 使用 innerHTML 呈現手動斷句的 <br>
+            quoteTextEl.innerHTML = "「 " + activeQuoteObj.text.replace(/\n/g, '<br>') + " 」";
             quoteSourceEl.innerText = "—— " + activeQuoteObj.source;
 
             const ua = navigator.userAgent || '';
@@ -1274,17 +1276,14 @@
             
             setTimeout(() => { document.getElementById('summary-overlay').style.opacity = '1'; }, 100);
             
-            // 第1階段：活在當下與時間浮現
             setTimeout(() => {
                 document.getElementById('summary-title-group').classList.add('show-element');
             }, 100);
             
-            // 第2階段：金句與出處緊接浮現 (原程式有CSS delay 1.5s，故維持100ms呼叫)
             setTimeout(() => {
                 summaryQuoteCard.classList.add('show');
             }, 100);
 
-            // 第3階段：沉澱總時間、結束按鈕、卡片儲存 於 7秒同步浮現
             setTimeout(() => { 
                 document.getElementById('btn-end').style.pointerEvents = 'auto'; 
                 document.getElementById('btn-end').style.opacity = '1'; 
