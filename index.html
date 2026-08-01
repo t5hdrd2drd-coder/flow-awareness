@@ -160,18 +160,13 @@
         .summary-time { font-size: clamp(2.8rem, 10vw, 3.6rem); font-weight: 100; letter-spacing: 4px; margin-right: -4px; color: #f8fafc; }
         .summary-stats { font-size: 0.85rem; font-weight: 300; letter-spacing: 2.5px; margin-right: -2.5px; color: #94a3b8; margin-top: 12px; opacity: 0.85; white-space: nowrap; }
         
-        /* 更新卡片排版寬度與 Option B 樣式 */
+        /* 完全移除引號，文字區塊置中且文字靠左，出處緊貼右下 */
         .summary-quote-card { opacity: 0; transition: opacity 2.5s ease 1.5s; margin-top: 36px; margin-bottom: 12px; max-width: 92vw; width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .summary-quote-card.show { opacity: 1; }
         
-        .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; }
-        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; text-shadow: 0 0 10px rgba(255,255,255,0.15); display: inline; }
-        
-        /* 引號懸掛樣式 */
-        .quote-mark { opacity: 0.25; font-weight: 300; font-size: clamp(0.9rem, 3.5vw, 1.05rem); letter-spacing: 0; }
-        .quote-mark-start { position: absolute; right: 100%; top: 0; }
-        
-        .quote-source { display: block; text-align: center; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; }
+        .quote-text-container { position: relative; display: inline-block; text-align: left; margin-bottom: 14px; max-width: 100%; }
+        .quote-text { font-size: clamp(0.9rem, 3.5vw, 1.05rem); font-weight: 300; color: #f1f5f9; line-height: 1.8; letter-spacing: 1.5px; text-shadow: 0 0 10px rgba(255,255,255,0.15); display: block; text-align: left; }
+        .quote-source { display: block; text-align: right; font-size: clamp(0.7rem, 2.5vw, 0.75rem); font-weight: 300; color: #94a3b8; letter-spacing: 2px; margin-right: -2px; width: 100%; margin-top: 14px; }
 
         .pwa-prompt-card {
             display: none; opacity: 0; transition: opacity 2s ease;
@@ -295,9 +290,8 @@
         </div>
         
         <div class="summary-quote-card" id="summary-quote-card">
-            <!-- 採用懸掛式標點與靠左對齊 -->
+            <!-- 移除引號，文字靠左，出處置於區塊最右下 -->
             <div class="quote-text-container" id="quote-text-container"></div>
-            <div class="quote-source" id="quote-source"></div>
         </div>
 
         <div class="pwa-prompt-card" id="pwa-prompt">
@@ -380,7 +374,6 @@
             });
         }
         
-        // 取得斷行與自動換行後的字串陣列
         function getLines(ctx, text, maxWidth) {
             let lines = [];
             const paragraphs = text.split('\n');
@@ -431,7 +424,7 @@
             ctx.fillText(sessionTimeStr, cx, h * 0.585);
             ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
 
-            // F. 金句渲染：放寬邊界 (w-160=920px) + 區塊置中字靠左 + 懸掛半透明引號
+            // 移除引號，文字靠左對齊，出處對齊文字區塊右緣
             ctx.font = '300 42px -apple-system, BlinkMacSystemFont, sans-serif';
             const lines = getLines(ctx, quoteObj.text, w - 160);
             
@@ -446,28 +439,16 @@
             const lineHeight = 68;
 
             ctx.textAlign = 'left';
-
-            // 繪製前引號 (懸掛於外側)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-            const quoteWidth = ctx.measureText("「").width;
-            ctx.fillText("「", startX - quoteWidth, startY);
-
-            // 繪製文字主體
             ctx.fillStyle = '#ffffff';
             for (let i = 0; i < lines.length; i++) {
                 ctx.fillText(lines[i], startX, startY + (i * lineHeight));
             }
 
-            // 繪製後引號 (緊跟最後一行)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-            const lastLineWidth = ctx.measureText(lines[lines.length - 1]).width;
-            ctx.fillText("」", startX + lastLineWidth, startY + ((lines.length - 1) * lineHeight));
-
-            // 出處置中對齊
-            ctx.textAlign = 'center';
+            // 出處對齊文字區塊最右側
+            ctx.textAlign = 'right';
             ctx.fillStyle = 'rgba(148, 163, 184, 0.85)'; 
             ctx.font = '300 28px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.fillText("—— " + quoteObj.source, cx, startY + (lines.length * lineHeight) + 20);
+            ctx.fillText("—— " + quoteObj.source, startX + maxLineWidth, startY + (lines.length * lineHeight) + 20);
 
             // 浮水印
             ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '200 30px -apple-system, BlinkMacSystemFont, sans-serif';
@@ -1277,14 +1258,12 @@
             document.getElementById('total-time-val').innerText = `${Math.floor(mdData.totalSecs / 60)} 分鐘`;
 
             activeQuoteObj = getRandomQuote();
-            // 在 DOM 注入懸掛式前引號與斷句文字
+            
+            // 將 DOM 渲染改為無引號，並包裝於 container 中確保右對齊基準正確
             const formattedQuote = activeQuoteObj.text.replace(/\n/g, '<br>');
             document.getElementById('quote-text-container').innerHTML = 
-                `<span class="quote-mark quote-mark-start">「</span>` +
-                `<span class="quote-text">${formattedQuote}</span>` +
-                `<span class="quote-mark">」</span>`;
-            
-            quoteSourceEl.innerText = "—— " + activeQuoteObj.source;
+                `<div class="quote-text">${formattedQuote}</div>` +
+                `<div class="quote-source">—— ${activeQuoteObj.source}</div>`;
 
             const ua = navigator.userAgent || '';
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
